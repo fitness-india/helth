@@ -72,7 +72,6 @@
             #dashboard-view, #coach-view { background: white; padding: 0; }
         }
         
-        .tab-btn.active { color: #1a8d1a; border-bottom: 2px solid #1a8d1a; }
         .tool-content { display: none; }
         .tool-content.active { display: block; }
         
@@ -232,11 +231,11 @@
                     <h2 class="text-3xl font-bold mb-2">Free Health Tools</h2>
                     <p class="text-gray-500 mb-8">Calculate your daily needs instantly.</p>
                     
-                    <!-- Tabs -->
-                    <div class="flex justify-center gap-2 mb-8 bg-white p-2 rounded-full shadow-sm inline-flex border border-gray-200 overflow-x-auto max-w-full hide-scrollbar">
-                        <button onclick="switchTool('bmi')" id="btn-tool-bmi" class="tab-btn active px-6 py-2.5 rounded-full font-bold text-white bg-brand shadow-md">BMI Calculator</button>
-                        <button onclick="switchTool('water')" id="btn-tool-water" class="tab-btn px-6 py-2.5 rounded-full font-semibold text-gray-500 hover:bg-gray-50 transition">Water Intake</button>
-                        <button onclick="switchTool('calorie')" id="btn-tool-calorie" class="tab-btn px-6 py-2.5 rounded-full font-semibold text-gray-500 hover:bg-gray-50 transition">Calorie Need</button>
+                    <!-- Tabs - BUG FIXED: Using background color toggling instead of overlapping elements -->
+                    <div class="flex justify-center gap-2 mb-8 bg-white p-2 rounded-full shadow-sm inline-flex border border-gray-200 overflow-x-auto max-w-full hide-scrollbar relative">
+                        <button onclick="switchTool('bmi', this)" id="btn-tool-bmi" class="tab-btn px-6 py-2.5 rounded-full font-bold bg-brand text-white shadow-md transition-colors duration-300">BMI Calculator</button>
+                        <button onclick="switchTool('water', this)" id="btn-tool-water" class="tab-btn px-6 py-2.5 rounded-full font-semibold text-gray-500 hover:text-brand hover:bg-brand/10 transition-colors duration-300">Water Intake</button>
+                        <button onclick="switchTool('calorie', this)" id="btn-tool-calorie" class="tab-btn px-6 py-2.5 rounded-full font-semibold text-gray-500 hover:text-brand hover:bg-brand/10 transition-colors duration-300">Calorie Need</button>
                     </div>
 
                     <!-- Tools Container -->
@@ -493,7 +492,7 @@
                     <div class="md:col-span-2"><label class="block text-sm font-bold text-gray-700 mb-1">Address *</label><input type="text" id="ob-address" required placeholder="House/Flat No, Street, Landmark" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
                     <div><label class="block text-sm font-bold text-gray-700 mb-1">PIN Code *</label><input type="text" id="ob-pin" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
                     <div><label class="block text-sm font-bold text-gray-700 mb-1">City *</label><input type="text" id="ob-city" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">State *</label><input type="text" id="ob-state" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">State *</label><input type="text" id="ob-state" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
                 </div>
                 
                 <button type="submit" id="btn-save-profile" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-6 hover:bg-brandDark transition shadow-lg flex items-center justify-center gap-2">
@@ -918,14 +917,13 @@
         };
 
         // --- UTILITIES ---
-        // Hide Loader on start (FIX APPLIED HERE)
+        // Hide Loader on start 
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('global-loader').classList.add('hidden-loader');
-            }, 500); // 500ms delay to ensure smooth transition
+            }, 500); 
         });
 
-        // Failsafe: if 'load' event missed, hide it anyway after 2.5s
         setTimeout(() => {
             const loader = document.getElementById('global-loader');
             if(loader && !loader.classList.contains('hidden-loader')) {
@@ -949,7 +947,7 @@
             window.scrollTo(0,0);
         };
 
-        // FIX FOR MOBILE HANG (Image Compression)
+        // Image Compression
         window.compressAndPreview = (inputElement, previewId, dataId, isAvatar) => {
             const file = inputElement.files[0];
             if (!file) return;
@@ -960,10 +958,7 @@
                 const img = new Image();
                 img.src = event.target.result;
                 img.onload = () => {
-                    // Create Canvas for compression
                     const canvas = document.createElement('canvas');
-                    
-                    // MAX Width to prevent crash (400px is enough for profile/dashboard)
                     const MAX_WIDTH = 400; 
                     let width = img.width;
                     let height = img.height;
@@ -973,7 +968,6 @@
                         width = MAX_WIDTH;
                     }
                     
-                    // Force square crop for Avatar
                     if(isAvatar) {
                         width = MAX_WIDTH;
                         height = MAX_WIDTH;
@@ -984,7 +978,6 @@
                     const ctx = canvas.getContext('2d');
                     
                     if(isAvatar) {
-                        // Crop logic for square
                         const minDim = Math.min(img.width, img.height);
                         const sx = (img.width - minDim) / 2;
                         const sy = (img.height - minDim) / 2;
@@ -993,10 +986,7 @@
                         ctx.drawImage(img, 0, 0, width, height);
                     }
 
-                    // Compress Quality (0.6 = 60% quality, drastic size reduction)
                     const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
-                    
-                    // Set to UI
                     document.getElementById(previewId).src = compressedDataUrl;
                     document.getElementById(dataId).value = compressedDataUrl;
                 }
@@ -1010,13 +1000,11 @@
                 document.getElementById('btn-sidebar-login').classList.add('hidden');
                 document.getElementById('sidebar-user-widget').classList.remove('hidden');
                 
-                // Fetch user profile from DB
                 const docSnap = await getDoc(doc(db, COL_USERS, user.uid));
                 if (docSnap.exists()) {
                     window.userProfile = docSnap.data();
                     updateSidebarUI(window.userProfile);
                 } else {
-                    // New user, show onboarding
                     window.userProfile = null;
                     document.getElementById('ob-name').value = user.displayName || '';
                     document.getElementById('ob-email').value = user.email || '';
@@ -1046,12 +1034,10 @@
                 openModal('modal-onboard');
                 return;
             }
-            // Go to Dashboard
             document.getElementById('public-views').classList.add('hidden');
             document.getElementById('coach-view').classList.add('hidden');
             document.getElementById('dashboard-view').classList.remove('hidden');
             
-            // Populate Dashboard UI
             const p = window.userProfile;
             document.getElementById('dash-name').innerText = p.name;
             document.getElementById('dash-email').innerHTML = `<i class="fa-regular fa-envelope w-4"></i> ${p.email}`;
@@ -1061,10 +1047,8 @@
             document.getElementById('dash-avatar-main').src = avatar;
             document.getElementById('dash-avatar-top').src = avatar;
 
-            // Load Existing Report if any
             loadUserReport();
             
-            // Populate Onboarding form for editing
             document.getElementById('ob-name').value = p.name;
             document.getElementById('ob-email').value = p.email;
             document.getElementById('ob-phone').value = p.phone;
@@ -1079,18 +1063,14 @@
                 document.getElementById('ob-current-img-preview').src = p.currentBodyImage;
                 document.getElementById('ob-current-img-data').value = p.currentBodyImage;
             }
-            // Make files not required for edit
             document.getElementById('ob-file').removeAttribute('required');
             document.getElementById('ob-current-file').removeAttribute('required');
             
             window.scrollTo(0,0);
-            
-            // Close mobile menu if open
             const notiMenu = document.getElementById('noti-menu');
             if(notiMenu) notiMenu.classList.add('hidden');
         };
 
-        // FIX FOR INFINITE LOADING IN ONBOARDING (Try/Catch added)
         window.saveProfileData = async () => {
             if(!currentUser) { showToast("User not logged in!"); return; }
 
@@ -1101,7 +1081,6 @@
             submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
 
             try {
-                // Get State value safely (Fixed the undefined error)
                 const stateInput = document.getElementById('ob-state');
                 const stateValue = stateInput ? stateInput.value : '';
 
@@ -1126,8 +1105,6 @@
                 updateSidebarUI(p);
                 closeModal('modal-onboard');
                 showToast("Profile Saved Successfully!");
-                
-                // Refresh dashboard immediately
                 window.handleDashboardAccess();
 
             } catch(e) { 
@@ -1143,14 +1120,12 @@
             }
         };
 
-        // Google Login
         document.getElementById('btn-google-login').addEventListener('click', () => {
             const provider = new GoogleAuthProvider();
             signInWithPopup(auth, provider).then(() => closeModal('modal-auth'))
             .catch((e) => showToast("Google Login Error: " + e.message));
         });
 
-        // Phone Auth
         const setupRecaptcha = () => {
             if(!window.recaptchaVerifier) {
                 window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -1222,11 +1197,10 @@
 
             if(!age || !h || !w) return showToast("Please fill all details");
 
-            // LOGIC from image
             const idealWeight = gender === 'Male' ? (h - 100) * 0.9 : (h - 100) * 0.85; 
             const diff = w - idealWeight;
-            const water = w / 20; // 1L per 20kg
-            const protein = w * 1; // 1gm per kg
+            const water = w / 20; 
+            const protein = w * 1; 
 
             const report = {
                 age: age, gender: gender, height: h, weight: w,
@@ -1238,7 +1212,6 @@
                 timestamp: new Date().getTime()
             };
 
-            // Save to DB
             try {
                 await setDoc(doc(db, COL_REPORTS, currentUser.uid), report);
                 showToast("Report Generated!");
@@ -1282,7 +1255,6 @@
             document.getElementById('rx-out-protein').innerText = `${r.protein} gm (1g/kg)`;
             document.getElementById('rx-out-water').innerText = `${r.water} Liters (1L per 20kg)`;
             
-            // Update Checklist Goal
             document.getElementById('dash-water-goal').innerText = `${r.water} Liters`;
         };
 
@@ -1307,22 +1279,22 @@
                     loadMembersList();
                     loadAdminResults();
                     
-                    // Populate settings form
                     document.getElementById('set-admins').value = siteSettings.admins.join(', ');
                     document.getElementById('set-wa').value = siteSettings.wa || '';
                     document.getElementById('set-call').value = siteSettings.call || '';
                     document.getElementById('set-fb').value = siteSettings.fb || '';
                     document.getElementById('set-ig').value = siteSettings.ig || '';
                     document.getElementById('set-yt').value = siteSettings.yt || '';
+                    document.getElementById('set-logo').value = siteSettings.logo || '';
+                    document.getElementById('set-banner').value = siteSettings.banner || '';
                     window.scrollTo(0,0);
                 } else {
                     showToast("Access Denied! Please ask coach about coach panel.");
                 }
             } catch(e) {
-                // If core doesn't exist, allow default admin to create it
                 if(currentUser.email === 'befitindia1@gmail.com') {
                     await setDoc(doc(db, COL_SETTINGS, 'core'), siteSettings);
-                    checkCoachAccess(); // retry
+                    checkCoachAccess();
                 } else {
                     showToast("Error checking auth or Denied.");
                 }
@@ -1345,7 +1317,6 @@
             document.getElementById('coach-tab-'+tabId).classList.remove('hidden');
         };
 
-        // Members List
         window.loadMembersList = async () => {
             const list = document.getElementById('admin-members-list');
             list.innerHTML = '<tr><td colspan="4" class="px-6 py-10 text-center"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></td></tr>';
@@ -1384,7 +1355,6 @@
         window.viewMemberDetails = async (uid) => {
             openModal('modal-coach-member');
             
-            // Fetch User
             const userSnap = await getDoc(doc(db, COL_USERS, uid));
             const u = userSnap.data();
             
@@ -1398,7 +1368,6 @@
             
             document.getElementById('cm-btn-wa').href = `https://wa.me/91${u.phone.replace(/\D/g,'')}?text=Hello%20${encodeURIComponent(u.name)},%20`;
 
-            // Fetch Report
             const repSnap = await getDoc(doc(db, COL_REPORTS, uid));
             if(repSnap.exists()) {
                 const r = repSnap.data();
@@ -1423,7 +1392,6 @@
             }
         };
 
-        // Results Management
         window.saveNewResult = async () => {
             const btn = document.getElementById('btn-save-result');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -1498,7 +1466,6 @@
             }
         };
 
-        // Settings Save
         window.saveWebSettings = async () => {
             const btn = document.getElementById('btn-save-settings');
             btn.innerHTML = 'Saving...'; btn.disabled = true;
@@ -1512,7 +1479,6 @@
             const logo = document.getElementById('set-logo').value;
             const banner = document.getElementById('set-banner').value;
 
-            // Failsafe: Ensure master admin is never removed
             if(!emails.includes('befitindia1@gmail.com')) emails.push('befitindia1@gmail.com');
 
             const newSettings = { admins: emails, wa, call, fb, ig, yt, logo, banner };
@@ -1526,7 +1492,6 @@
             finally { btn.innerHTML = 'Save Settings'; btn.disabled = false; }
         };
 
-        // Apply settings to public UI
         const applySettingsToUI = () => {
             if(siteSettings.wa) {
                 const waLink = `https://wa.me/${siteSettings.wa.replace(/\D/g,'')}?text=Hi%20Health%20Station%20360`;
@@ -1538,7 +1503,6 @@
             if(siteSettings.ig) document.getElementById('dyn-ig').href = siteSettings.ig;
             if(siteSettings.yt) document.getElementById('dyn-yt').href = siteSettings.yt;
             
-            // Apply Dynamic Images
             if(siteSettings.logo) {
                 const logoEl = document.getElementById('dyn-logo');
                 const logoMobEl = document.getElementById('dyn-logo-mob');
@@ -1551,7 +1515,6 @@
             }
         };
 
-        // Load Public Results
         const loadPublicResults = async () => {
             const container = document.getElementById('dyn-results-container');
             try {
@@ -1574,7 +1537,6 @@
             } catch(e) { console.error("Error loading public results"); }
         };
 
-        // Init App Settings on Load
         getDoc(doc(db, COL_SETTINGS, 'core')).then(docSnap => {
             if (docSnap.exists()) {
                 siteSettings = docSnap.data();
@@ -1584,18 +1546,26 @@
         });
 
 
-        // --- FREE TOOLS LOGIC ---
-        window.switchTool = (toolId) => {
+        // --- FREE TOOLS LOGIC (FIXED) ---
+        window.switchTool = (toolId, btnElement) => {
+            // Remove active classes from all buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active', 'bg-brand', 'text-white', 'shadow-md');
-                btn.classList.add('text-gray-500', 'bg-transparent', 'hover:bg-gray-50');
+                btn.classList.remove('bg-brand', 'text-white', 'shadow-md');
+                btn.classList.add('text-gray-500', 'hover:text-brand', 'hover:bg-brand/10');
             });
-            const activeBtn = document.getElementById('btn-tool-' + toolId);
-            activeBtn.classList.remove('text-gray-500', 'bg-transparent', 'hover:bg-gray-50');
-            activeBtn.classList.add('active', 'bg-brand', 'text-white', 'shadow-md');
+            
+            // Add active classes to the clicked button
+            btnElement.classList.remove('text-gray-500', 'hover:text-brand', 'hover:bg-brand/10');
+            btnElement.classList.add('bg-brand', 'text-white', 'shadow-md');
 
-            document.querySelectorAll('.tool-content').forEach(c => c.classList.remove('active'));
-            document.getElementById('tool-' + toolId).classList.add('active');
+            // Hide all tool contents
+            document.querySelectorAll('.tool-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            
+            // Show the selected tool content
+            const activeContent = document.getElementById('tool-' + toolId);
+            activeContent.classList.add('active');
         };
 
         window.calcBMI = () => {
@@ -1630,16 +1600,14 @@
             const g = document.getElementById('calc-cal-g').value;
             if(!a || !w || !h) return showToast("Enter all details");
             
-            // Mifflin-St Jeor Equation
             let bmr = (10 * w) + (6.25 * h) - (5 * a);
             bmr = g === 'm' ? bmr + 5 : bmr - 161;
-            const tdee = Math.round(bmr * 1.2); // Sedentary base
+            const tdee = Math.round(bmr * 1.2); 
             
             document.getElementById('val-cal').innerText = tdee + ' kcal';
             document.getElementById('res-cal').classList.remove('hidden');
         };
 
-        // --- PWA INSTALL ---
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -1659,7 +1627,6 @@
             }
         };
 
-        // SCROLL SPY LOGIC
         const sections = document.querySelectorAll("section");
         const navLinks = document.querySelectorAll(".nav-link");
         const navLinksMobile = document.querySelectorAll(".nav-link-mobile");
@@ -1688,26 +1655,6 @@
                 }
             });
         };
-        window.switchTool = function(toolId, btnElement) {
-    // Sob tool gulo hide kora
-    document.getElementById('tool-bmi').classList.add('hidden');
-    document.getElementById('tool-water').classList.add('hidden');
-    document.getElementById('tool-calorie').classList.add('hidden');
-
-    // Sob button theke rong soriye gray kora
-    const allBtns = document.querySelectorAll('.tool-btn');
-    allBtns.forEach(btn => {
-        btn.classList.remove('bg-brand', 'text-white', 'shadow-md');
-        btn.classList.add('text-gray-500', 'hover:bg-gray-50');
-    });
-
-    // Je tool-e click kora hoyeche seta dekhano
-    document.getElementById('tool-' + toolId).classList.remove('hidden');
-
-    // Je button-e click kora hoyeche setate Green background ar White lekha add kora
-    btnElement.classList.remove('text-gray-500', 'hover:bg-gray-50');
-    btnElement.classList.add('bg-brand', 'text-white', 'shadow-md');
-};
     </script>
 </body>
 </html>
