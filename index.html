@@ -1688,6 +1688,46 @@
                 }
             });
         };
+        window.switchTool = function(toolId, btnElement) {
+    // Sob tool gulo hide kora
+    document.getElementById('tool-bmi').classList.add('hidden');
+    document.getElementById('tool-water').classList.add('hidden');
+    document.getElementById('tool-calorie').classList.add('hidden');
+
+    // Sob button theke rong soriye gray kora
+    const allBtns = document.querySelectorAll('.tool-btn');
+    allBtns.forEach(btn => {
+        btn.classList.remove('bg-brand', 'text-white', 'shadow-md');
+        btn.classList.add('text-gray-500', 'hover:bg-gray-50');
+    });
+
+    // Je tool-e click kora hoyeche seta dekhano
+    document.getElementById('tool-' + toolId).classList.remove('hidden');
+
+    // Je button-e click kora hoyeche setate Green background ar White lekha add kora
+    btnElement.classList.remove('text-gray-500', 'hover:bg-gray-50');
+    btnElement.classList.add('bg-brand', 'text-white', 'shadow-md');
+};
+        window.switchTool = function(toolId, btnElement) {
+    // Sob tool gulo hide kora
+    document.getElementById('tool-bmi').classList.add('hidden');
+    document.getElementById('tool-water').classList.add('hidden');
+    document.getElementById('tool-calorie').classList.add('hidden');
+
+    // Sob button theke rong soriye gray kora
+    const allBtns = document.querySelectorAll('.tool-btn');
+    allBtns.forEach(btn => {
+        btn.classList.remove('bg-brand', 'text-white', 'shadow-md');
+        btn.classList.add('text-gray-500', 'hover:bg-gray-50');
+    });
+
+    // Je tool-e click kora hoyeche seta dekhano
+    document.getElementById('tool-' + toolId).classList.remove('hidden');
+
+    // Je button-e click kora hoyeche setate Green background ar White lekha add kora
+    btnElement.classList.remove('text-gray-500', 'hover:bg-gray-50');
+    btnElement.classList.add('bg-brand', 'text-white', 'shadow-md');
+};
     </script>
 </body>
 </html>
