@@ -762,6 +762,17 @@
                     
                     <form onsubmit="event.preventDefault(); saveWebSettings();" class="space-y-5">
                         
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Website Logo URL</label>
+                                <input type="url" id="set-logo" placeholder="https://..." class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Hero Banner Image URL</label>
+                                <input type="url" id="set-banner" placeholder="https://..." class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand text-sm">
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">WhatsApp Number (For Booking)</label>
                             <input type="text" id="set-wa" placeholder="e.g. 916289308561" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand">
@@ -1498,11 +1509,13 @@
             const fb = document.getElementById('set-fb').value;
             const ig = document.getElementById('set-ig').value;
             const yt = document.getElementById('set-yt').value;
+            const logo = document.getElementById('set-logo').value;
+            const banner = document.getElementById('set-banner').value;
 
             // Failsafe: Ensure master admin is never removed
             if(!emails.includes('befitindia1@gmail.com')) emails.push('befitindia1@gmail.com');
 
-            const newSettings = { admins: emails, wa, call, fb, ig, yt };
+            const newSettings = { admins: emails, wa, call, fb, ig, yt, logo, banner };
             
             try {
                 await setDoc(doc(db, COL_SETTINGS, 'core'), newSettings);
@@ -1524,6 +1537,18 @@
             if(siteSettings.fb) document.getElementById('dyn-fb').href = siteSettings.fb;
             if(siteSettings.ig) document.getElementById('dyn-ig').href = siteSettings.ig;
             if(siteSettings.yt) document.getElementById('dyn-yt').href = siteSettings.yt;
+            
+            // Apply Dynamic Images
+            if(siteSettings.logo) {
+                const logoEl = document.getElementById('dyn-logo');
+                const logoMobEl = document.getElementById('dyn-logo-mob');
+                if(logoEl) logoEl.src = siteSettings.logo;
+                if(logoMobEl) logoMobEl.src = siteSettings.logo;
+            }
+            if(siteSettings.banner) {
+                const bannerEl = document.getElementById('dyn-hero-img');
+                if(bannerEl) bannerEl.src = siteSettings.banner;
+            }
         };
 
         // Load Public Results
@@ -1563,10 +1588,10 @@
         window.switchTool = (toolId) => {
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active', 'bg-brand', 'text-white', 'shadow-md');
-                btn.classList.add('text-gray-500');
+                btn.classList.add('text-gray-500', 'bg-transparent', 'hover:bg-gray-50');
             });
             const activeBtn = document.getElementById('btn-tool-' + toolId);
-            activeBtn.classList.remove('text-gray-500');
+            activeBtn.classList.remove('text-gray-500', 'bg-transparent', 'hover:bg-gray-50');
             activeBtn.classList.add('active', 'bg-brand', 'text-white', 'shadow-md');
 
             document.querySelectorAll('.tool-content').forEach(c => c.classList.remove('active'));
