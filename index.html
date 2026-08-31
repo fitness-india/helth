@@ -705,14 +705,33 @@
         // File to Input helper (Base64)
         window.fileToInput = (input, targetId, previewId) => {
             const f = input.files[0];
-            if(f) {
-                const r = new FileReader();
-                r.onloadend = () => {
-                    document.getElementById(targetId).value = r.result;
-                    if(previewId) document.getElementById(previewId).src = r.result;
-                }
-                r.readAsDataURL(f);
-            }
+            if(!f) return;
+            
+            // Image Auto-Compression Logic (< 1MB for Firestore)
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    const MAX_SIZE = 800; // Resize to max 800px
+                    
+                    if(w > h && w > MAX_SIZE) { h *= MAX_SIZE / w; w = MAX_SIZE; }
+                    else if(h > MAX_SIZE) { w *= MAX_SIZE / h; h = MAX_SIZE; }
+                    
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    
+                    // Compress as JPEG (0.7 quality)
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    document.getElementById(targetId).value = compressedBase64;
+                    if(previewId) document.getElementById(previewId).src = compressedBase64;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(f);
         };
 
         // Admin Base Functions
@@ -843,7 +862,17 @@
 
         // 4. Onboarding Save
         window.saveProfileData = async () => {
-            if(!currentUser) return;
+            if(!currentUser) {
+                showToast("User not logged in!");
+                return;
+            }
+
+            // Show Loading state on button
+            const submitBtn = document.querySelector('#modal-onboard button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "Saving Profile... Please wait";
+            submitBtn.disabled = true;
+
             const p = {
                 name: document.getElementById('ob-name').value, 
                 email: document.getElementById('ob-email').value,
@@ -853,10 +882,11 @@
                 pin: document.getElementById('ob-pin').value,
                 city: document.getElementById('ob-city').value, 
                 state: document.getElementById('ob-state').value,
-                photo: document.getElementById('ob-img-data').value || 'https://ui-avatars.com/api/?name=' + document.getElementById('ob-name').value + '&background=random',
+                photo: document.getElementById('ob-img-data').value || 'https://ui-avatars.com/api/?name=' + document.getElementById('ob-name').value.replace(/ /g, '+') + '&background=random',
                 currentBodyImage: document.getElementById('ob-current-img-data').value || '',
                 uid: currentUser.uid
             };
+            
             try {
                 await setDoc(doc(COL_USERS, currentUser.uid), p);
                 window.userProfile = p;
@@ -864,8 +894,12 @@
                 showToast("Profile Saved Successfully!");
                 window.handleDashboardAccess();
             } catch(e) { 
-                showToast("Database Error: Firebase Rules check korun!"); 
+                showToast("Error! Image size might still be too large or Rules issue."); 
                 console.error("Firestore Error:", e);
+            } finally {
+                // Reset button state
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
             }
         };
 
