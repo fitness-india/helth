@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1a8d1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Health Station 360 - Nutrition & Wellness</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en', 
+                includedLanguages: 'en,bn,hi', 
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -48,13 +64,21 @@
             body * { visibility: hidden; }
             #rx-print-area, #rx-print-area * { visibility: visible; }
             #rx-print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0;}
+            
+            #coach-member-print, #coach-member-print * { visibility: visible; }
+            #coach-member-print { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; background: white;}
+            
             .no-print { display: none !important; }
-            #dashboard-view { background: white; padding: 0; }
+            #dashboard-view, #coach-view { background: white; padding: 0; }
         }
         
         .tab-btn.active { color: #1a8d1a; border-bottom: 2px solid #1a8d1a; }
         .tool-content { display: none; }
         .tool-content.active { display: block; }
+        
+        /* Fix Google Translate styling */
+        .goog-te-gadget-simple { border-radius: 8px !important; padding: 4px !important; border: 1px solid #e5e7eb !important; }
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -64,6 +88,7 @@
         <p class="font-bold text-gray-600 text-lg">Health Station 360</p>
         <p class="text-xs text-gray-400 mt-2">Loading your wellness journey...</p>
     </div>
+    
     <div id="toast" class="toast-box">Notification Message</div>
 
     <!-- ======================= PUBLIC WEBSITE VIEW ======================= -->
@@ -75,8 +100,12 @@
             </div>
             
             <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+                <!-- Translation Tool -->
+                <div id="google_translate_element" class="px-4 mb-4 mt-2"></div>
+
                 <a href="#home" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-brand bg-brand/10 font-semibold transition-colors"><i class="fa-solid fa-house w-5 text-center"></i> Home</a>
                 <a href="#programs" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-dumbbell w-5 text-center"></i> Programs</a>
+                <a href="#results-section" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-star w-5 text-center"></i> Results</a>
                 <a href="#tools" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-calculator w-5 text-center"></i> Free Tools</a>
                 <a href="#booking" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-regular fa-calendar-check w-5 text-center"></i> Booking</a>
                 
@@ -105,6 +134,13 @@
                     <i class="fa-solid fa-user-shield w-5 text-center"></i> Coach Panel
                 </button>
             </nav>
+
+            <div class="p-4 border-t border-gray-100">
+                <div class="bg-brand text-white rounded-xl p-4 text-center shadow-lg">
+                    <p class="font-bold mb-2">Install Our App</p>
+                    <button onclick="installPWA()" class="bg-white text-brand px-4 py-2 rounded-lg font-bold w-full text-sm hover:bg-gray-50">Install Now</button>
+                </div>
+            </div>
         </aside>
 
         <header class="lg:hidden bg-white shadow-sm sticky top-0 z-40 px-4 py-3 flex justify-between items-center h-16">
@@ -124,7 +160,6 @@
 
         <main class="lg:ml-64 pb-24 lg:pb-0">
             
-            <!-- Hero Section -->
             <section id="home" class="bg-white px-4 py-12 lg:p-16 relative overflow-hidden min-h-[90vh] flex items-center">
                 <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10">
                     <div class="flex-1 z-10">
@@ -141,46 +176,6 @@
                     <div class="flex-1 relative w-full flex justify-center">
                         <div class="absolute inset-0 bg-brand/10 rounded-full blur-3xl transform scale-90"></div>
                         <img id="dyn-hero-img" src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800" class="relative z-10 w-full max-w-md rounded-3xl shadow-2xl object-cover h-[450px]">
-                    </div>
-                </div>
-            </section>
-
-            <section id="results" class="bg-gray-50 py-16 px-4 border-t border-b border-gray-100">
-                <div class="max-w-6xl mx-auto">
-                    <h2 class="text-3xl font-bold mb-2 text-center text-gray-800">Real Results, Real People</h2>
-                    <p class="text-center text-gray-500 mb-10">See how we transformed lives with balanced nutrition.</p>
-                    
-                    <div id="results-container" class="flex gap-6 overflow-x-auto pb-6 hide-scrollbar snap-x snap-mandatory">
-                        <!-- Static Results (Will be combined with dynamic later) -->
-                        <div class="min-w-[320px] md:min-w-[400px] snap-center bg-white p-4 rounded-3xl shadow-sm border border-gray-200">
-                            <div class="flex gap-2 mb-4">
-                                <div class="flex-1 relative">
-                                    <img src="https://images.unsplash.com/photo-1629851147573-4f9999999999?w=300" onerror="this.src='https://placehold.co/300x400/eeeeee/999999?text=Before'" class="w-full h-48 object-cover rounded-2xl">
-                                    <span class="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wide">Before</span>
-                                </div>
-                                <div class="flex-1 relative">
-                                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300" onerror="this.src='https://placehold.co/300x400/1a8d1a/ffffff?text=After'" class="w-full h-48 object-cover rounded-2xl">
-                                    <span class="absolute top-2 left-2 bg-brand text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wide">After</span>
-                                </div>
-                            </div>
-                            <h3 class="font-bold text-lg text-center">Lost 15kg in 4 Months</h3>
-                            <p class="text-xs text-gray-500 text-center mt-1">"Health Station changed my life completely."</p>
-                        </div>
-                        
-                        <div class="min-w-[320px] md:min-w-[400px] snap-center bg-white p-4 rounded-3xl shadow-sm border border-gray-200">
-                            <div class="flex gap-2 mb-4">
-                                <div class="flex-1 relative">
-                                    <img src="https://placehold.co/300x400/eeeeee/999999?text=Before" class="w-full h-48 object-cover rounded-2xl">
-                                    <span class="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wide">Before</span>
-                                </div>
-                                <div class="flex-1 relative">
-                                    <img src="https://placehold.co/300x400/1a8d1a/ffffff?text=After" class="w-full h-48 object-cover rounded-2xl">
-                                    <span class="absolute top-2 left-2 bg-brand text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wide">After</span>
-                                </div>
-                            </div>
-                            <h3 class="font-bold text-lg text-center">Gained 8kg Muscle</h3>
-                            <p class="text-xs text-gray-500 text-center mt-1">"Perfect diet plan for healthy weight gain."</p>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -217,6 +212,18 @@
                             <p class="text-gray-500 text-sm mb-4">Boost your daily energy, immunity, and overall wellness with our detox plans.</p>
                             <a href="#booking" class="text-brand font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">Start Now <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="results-section" class="bg-gray-50 py-16 px-4 border-t border-b border-gray-100">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-2 text-center text-gray-800">Real Results, Real People</h2>
+                    <p class="text-center text-gray-500 mb-10">See how we transformed lives with balanced nutrition.</p>
+                    
+                    <div id="dyn-results-container" class="flex gap-6 overflow-x-auto pb-6 hide-scrollbar snap-x snap-mandatory">
+                        <!-- Dynamic Results Loaded Here -->
+                        <div class="w-full text-center text-gray-400 py-8 italic">Loading results...</div>
                     </div>
                 </div>
             </section>
@@ -301,7 +308,7 @@
                     <div class="flex-1 bg-brand text-white rounded-3xl p-10 shadow-xl relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-2xl -mr-20 -mt-20"></div>
                         <h2 class="text-3xl lg:text-4xl font-bold mb-4 relative z-10">Book Free Consultation</h2>
-                        <p class="mb-8 opacity-90 relative z-10 leading-relaxed">Take the first step towards a healthier you. Amader expert der sathe kotha bolun.</p>
+                        <p class="mb-8 opacity-90 relative z-10 leading-relaxed">Take the first step towards a healthier you. Talk to our experts.</p>
                         
                         <ul class="space-y-5 font-medium mb-12 relative z-10">
                             <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200 text-xl"></i> Personalized Guidance</li>
@@ -371,7 +378,7 @@
                         <ul class="space-y-3 text-gray-400 text-sm">
                             <li><a href="#home" class="hover:text-brand transition">Home</a></li>
                             <li><a href="#programs" class="hover:text-brand transition">Programs</a></li>
-                            <li><a href="#results" class="hover:text-brand transition">Real Results</a></li>
+                            <li><a href="#results-section" class="hover:text-brand transition">Real Results</a></li>
                         </ul>
                     </div>
                     <div>
@@ -444,7 +451,6 @@
                     <input type="text" id="p-otp" placeholder="Enter 6-digit OTP" class="w-full p-3.5 border rounded-xl mb-3 outline-none text-center tracking-[0.5em] font-bold text-lg focus:border-brand bg-gray-50 focus:bg-white transition">
                     <button id="btn-verify-otp" class="w-full bg-green-600 text-white py-3.5 rounded-xl font-bold shadow hover:bg-green-700 transition">Verify OTP</button>
                 </div>
-                <p class="text-xs text-center text-gray-400 mt-4">By logging in, you agree to our Terms and Privacy Policy.</p>
             </div>
         </div>
     </div>
@@ -480,7 +486,6 @@
                     </div>
                 </div>
 
-                <!-- Mandatory Text Fields -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><label class="block text-xs font-bold text-gray-700 mb-1">Full Name *</label><input type="text" id="ob-name" required class="w-full p-2.5 rounded-lg border outline-none bg-gray-50 focus:border-brand focus:bg-white text-sm"></div>
                     <div><label class="block text-xs font-bold text-gray-700 mb-1">Email *</label><input type="email" id="ob-email" required class="w-full p-2.5 rounded-lg border outline-none bg-gray-50 focus:border-brand focus:bg-white text-sm"></div>
@@ -505,7 +510,6 @@
 
     <!-- ======================= DASHBOARD VIEW ======================= -->
     <div id="dashboard-view" class="hidden min-h-screen bg-gray-50 pt-20 lg:pt-8 p-4">
-        
         <div class="max-w-4xl mx-auto mb-6 flex justify-between items-center no-print">
             <div>
                 <h2 class="text-2xl font-bold text-gray-800">My Dashboard</h2>
@@ -560,7 +564,6 @@
                 </div>
                 
                 <div class="space-y-3">
-                    <!-- Task: Water -->
                     <label class="flex items-center justify-between p-4 border border-gray-100 rounded-2xl hover:bg-blue-50/50 cursor-pointer transition">
                         <div class="flex gap-4 items-center">
                             <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-xl"><i class="fa-solid fa-glass-water"></i></div>
@@ -572,7 +575,6 @@
                         <input type="checkbox" onchange="showToast('Water intake logged!')" class="w-6 h-6 accent-brand rounded">
                     </label>
 
-                    <!-- Task: Exercise -->
                     <label class="flex items-center justify-between p-4 border border-gray-100 rounded-2xl hover:bg-orange-50/50 cursor-pointer transition">
                         <div class="flex gap-4 items-center">
                             <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center text-xl"><i class="fa-solid fa-person-running"></i></div>
@@ -584,7 +586,6 @@
                         <input type="checkbox" onchange="showToast('Great job staying active!')" class="w-6 h-6 accent-brand rounded">
                     </label>
 
-                    <!-- Task: Diet -->
                     <label class="flex items-center justify-between p-4 border border-gray-100 rounded-2xl hover:bg-green-50/50 cursor-pointer transition">
                         <div class="flex gap-4 items-center">
                             <div class="w-12 h-12 rounded-full bg-green-100 text-green-500 flex items-center justify-center text-xl"><i class="fa-solid fa-apple-whole"></i></div>
@@ -602,7 +603,6 @@
         <!-- TAB 2: Report & Physical Data Form -->
         <div id="dash-tab-report" class="hidden max-w-4xl mx-auto">
             
-            <!-- Generate Report Form -->
             <div id="req-physical-data" class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center mb-6 no-print relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full -mr-10 -mt-10"></div>
                 <i class="fa-solid fa-file-medical text-5xl text-brand mb-4 relative z-10"></i>
@@ -628,15 +628,13 @@
                 </div>
                 
                 <div id="rx-print-area" class="p-8 md:p-12 text-blue-900 font-sans bg-white relative">
-                    <!-- Header -->
                     <div class="text-center border-b-2 border-blue-900 pb-4 mb-6">
                         <p class="font-bold text-sm">Wellness Coach</p>
                         <h2 class="text-3xl font-extrabold uppercase tracking-wide my-1">HEALTH STATION 360</h2>
                         <p class="text-sm font-bold">Nutrition • Wellness • Lifestyle</p>
-                        <p class="text-xs font-bold mt-2 absolute top-8 right-8 text-right">Contact<br>6289308561</p>
+                        <p class="text-xs font-bold mt-2 absolute top-8 right-8 text-right" id="rx-coach-contact">Contact<br>6289308561</p>
                     </div>
                     
-                    <!-- Patient Info -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-2 text-sm font-bold mb-6">
                         <div class="col-span-2">Name: <span class="border-b border-black font-normal inline-block min-w-[200px]" id="rx-name">--</span></div>
                         <div class="col-span-2">Date: <span class="border-b border-black font-normal inline-block min-w-[150px]" id="rx-date">--</span></div>
@@ -648,7 +646,6 @@
                         Approx Ideal Weight: <span class="border-b border-black font-normal inline-block w-20 text-center text-brand" id="rx-iw">--</span> kg
                     </div>
 
-                    <!-- Main Table -->
                     <table class="w-full border-collapse border-2 border-blue-900 text-sm mb-8">
                         <tr class="bg-blue-50 text-blue-900">
                             <th class="border-2 border-blue-900 p-3 text-left w-1/3">Body Metrics</th>
@@ -676,13 +673,11 @@
                         </tr>
                     </table>
 
-                    <!-- Footer Note -->
                     <div class="border-t-2 border-blue-900 pt-4 text-center">
                         <p class="text-lg font-bold italic text-brand">"Good Health Depends on Good Cellular Nutrition."</p>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -703,50 +698,48 @@
             <div class="bg-white p-4 rounded-3xl shadow-sm border border-green-100 h-fit lg:col-span-1">
                 <button onclick="switchAdminTab('settings')" id="adm-tab-settings" class="adm-tab w-full text-left p-3.5 bg-brand/10 text-brand font-bold rounded-xl mb-2 transition"><i class="fa-solid fa-globe w-6 text-center"></i> Website Settings</button>
                 <button onclick="switchAdminTab('members')" id="adm-tab-members" class="adm-tab w-full text-left p-3.5 hover:bg-gray-50 text-gray-600 font-bold rounded-xl mb-2 transition"><i class="fa-solid fa-users w-6 text-center"></i> Manage Members</button>
+                <button onclick="switchAdminTab('results')" id="adm-tab-results" class="adm-tab w-full text-left p-3.5 hover:bg-gray-50 text-gray-600 font-bold rounded-xl mb-2 transition"><i class="fa-solid fa-star w-6 text-center"></i> Manage Results</button>
             </div>
 
             <!-- Content Area -->
             <div class="lg:col-span-3 bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-green-100">
                 
-                <!-- Admin Tab 1: Website Settings -->
+                <!-- Tab 1: Settings -->
                 <div id="adm-content-settings" class="block">
                     <h3 class="text-xl font-bold mb-6 text-gray-800 border-b border-gray-100 pb-3">Edit Website Details</h3>
                     <form id="coach-settings-form" class="space-y-6" onsubmit="event.preventDefault(); saveWebSettings();">
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Visuals -->
                             <div class="border border-gray-200 p-5 rounded-2xl bg-gray-50">
                                 <label class="block text-sm font-bold mb-2 text-gray-700">Logo Image URL</label>
-                                <input type="text" id="set-logo" placeholder="Paste image URL here" class="w-full p-2.5 border rounded-lg bg-white text-sm outline-none focus:border-brand">
+                                <input type="text" id="set-logo" class="w-full p-2.5 border rounded-lg bg-white text-sm outline-none focus:border-brand">
                             </div>
                             <div class="border border-gray-200 p-5 rounded-2xl bg-gray-50">
                                 <label class="block text-sm font-bold mb-2 text-gray-700">Hero Banner Image URL</label>
-                                <input type="text" id="set-hero" placeholder="Paste main image URL" class="w-full p-2.5 border rounded-lg bg-white text-sm outline-none focus:border-brand">
+                                <input type="text" id="set-hero" class="w-full p-2.5 border rounded-lg bg-white text-sm outline-none focus:border-brand">
                             </div>
                         </div>
-
-                        <!-- Contact & Social -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-gray-100 pt-6">
                             <div><label class="text-xs font-bold text-gray-500 mb-1 block">Phone / Call Number</label><input type="text" id="set-phone" class="w-full p-2.5 border rounded-lg bg-gray-50 outline-none focus:border-brand text-sm"></div>
                             <div><label class="text-xs font-bold text-gray-500 mb-1 block">WhatsApp Link (wa.me/...)</label><input type="text" id="set-wa" class="w-full p-2.5 border rounded-lg bg-gray-50 outline-none focus:border-brand text-sm"></div>
                             <div><label class="text-xs font-bold text-gray-500 mb-1 block">Facebook URL</label><input type="text" id="set-fb" class="w-full p-2.5 border rounded-lg bg-gray-50 outline-none focus:border-brand text-sm"></div>
                             <div><label class="text-xs font-bold text-gray-500 mb-1 block">Instagram URL</label><input type="text" id="set-ig" class="w-full p-2.5 border rounded-lg bg-gray-50 outline-none focus:border-brand text-sm"></div>
                             <div class="md:col-span-2"><label class="text-xs font-bold text-gray-500 mb-1 block">YouTube URL</label><input type="text" id="set-yt" class="w-full p-2.5 border rounded-lg bg-gray-50 outline-none focus:border-brand text-sm"></div>
+                            <div class="md:col-span-2">
+                                <label class="text-xs font-bold text-gray-500 mb-1 block">Authorized Admin Emails (Comma separated)</label>
+                                <input type="text" id="set-admins" placeholder="befitindia1@gmail.com, another@mail.com" class="w-full p-2.5 border rounded-lg bg-gray-50 outline-none focus:border-brand text-sm">
+                                <p class="text-[10px] text-gray-400 mt-1">Only these emails can access Coach Panel.</p>
+                            </div>
                         </div>
-                        
-                        <button type="submit" id="btn-save-settings" class="w-full bg-brand text-white py-4 rounded-xl font-bold shadow-md hover:bg-brandDark transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Update Website Live
-                        </button>
+                        <button type="submit" id="btn-save-settings" class="w-full bg-brand text-white py-4 rounded-xl font-bold shadow-md hover:bg-brandDark transition"><i class="fa-solid fa-cloud-arrow-up"></i> Update Website Live</button>
                     </form>
                 </div>
 
-                <!-- Admin Tab 2: Manage Members -->
+                <!-- Tab 2: Manage Members -->
                 <div id="adm-content-members" class="hidden">
                     <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-3">
                         <h3 class="text-xl font-bold text-gray-800">Registered Members</h3>
                         <button onclick="loadMembersList()" class="text-sm bg-gray-100 px-3 py-1.5 rounded-lg font-bold text-gray-600 hover:bg-gray-200"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
                     </div>
-                    
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead>
@@ -754,7 +747,7 @@
                                     <th class="p-3 font-bold rounded-tl-lg">Member</th>
                                     <th class="p-3 font-bold">Contact</th>
                                     <th class="p-3 font-bold">Goal</th>
-                                    <th class="p-3 font-bold rounded-tr-lg">Location</th>
+                                    <th class="p-3 font-bold rounded-tr-lg">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="members-table-body">
@@ -764,17 +757,68 @@
                     </div>
                 </div>
 
+                <!-- Tab 3: Manage Results -->
+                <div id="adm-content-results" class="hidden">
+                    <h3 class="text-xl font-bold mb-6 text-gray-800 border-b border-gray-100 pb-3">Add New Result</h3>
+                    <form onsubmit="event.preventDefault(); saveNewResult();" class="space-y-4 mb-8 bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Client Name / Title</label><input type="text" id="res-name" required class="w-full p-2.5 border rounded-lg bg-white outline-none"></div>
+                            <div><label class="block text-xs font-bold text-gray-600 mb-1">Description (e.g. Lost 15kg in 4 months)</label><input type="text" id="res-desc" required class="w-full p-2.5 border rounded-lg bg-white outline-none"></div>
+                            
+                            <div class="border border-dashed border-brand p-3 rounded-xl">
+                                <label class="block text-xs font-bold text-brand mb-1">Before Image (Upload or URL)</label>
+                                <input type="text" id="res-bef-url" placeholder="Paste URL here..." class="w-full p-2 border rounded-lg bg-white text-xs mb-2">
+                                <input type="file" accept="image/*" class="text-xs w-full" onchange="compressAndPreview(this,'res-bef-preview','res-bef-b64')">
+                                <input type="hidden" id="res-bef-b64">
+                                <img id="res-bef-preview" class="hidden w-16 h-16 mt-2 rounded object-cover">
+                            </div>
+                            
+                            <div class="border border-dashed border-brand p-3 rounded-xl">
+                                <label class="block text-xs font-bold text-brand mb-1">After Image (Upload or URL)</label>
+                                <input type="text" id="res-aft-url" placeholder="Paste URL here..." class="w-full p-2 border rounded-lg bg-white text-xs mb-2">
+                                <input type="file" accept="image/*" class="text-xs w-full" onchange="compressAndPreview(this,'res-aft-preview','res-aft-b64')">
+                                <input type="hidden" id="res-aft-b64">
+                                <img id="res-aft-preview" class="hidden w-16 h-16 mt-2 rounded object-cover">
+                            </div>
+                        </div>
+                        <button type="submit" id="btn-save-result" class="bg-brand text-white px-6 py-2.5 rounded-lg font-bold shadow hover:bg-brandDark transition">Save Result</button>
+                    </form>
+
+                    <h3 class="text-lg font-bold mb-4 text-gray-800">Existing Results</h3>
+                    <div id="admin-results-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Loaded via JS -->
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+
+    <div id="modal-coach-member" class="hidden fixed inset-0 bg-black/60 z-[120] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <div class="sticky top-0 bg-white p-4 border-b flex justify-between items-center z-10 no-print">
+                <h2 class="text-xl font-bold">Member Details & Report</h2>
+                <div class="flex gap-2">
+                    <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-black transition"><i class="fa-solid fa-print"></i> Print PDF</button>
+                    <button onclick="closeModal('modal-coach-member')" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 transition">Close</button>
+                </div>
+            </div>
+            
+            <!-- This area will be printed -->
+            <div id="coach-member-print" class="p-6 md:p-10">
+                <!-- Data injected via JS viewMemberDetails() -->
+                <div id="coach-member-content"></div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- ======================= FIREBASE & JAVASCRIPT LOGIC ======================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, getDocs, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyB1k5DPETIoN97uQC_lF3zllSTqw0EbNHI",
             authDomain: "health-station-360.firebaseapp.com",
@@ -788,12 +832,33 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        // Global State
         window.currentUser = null;
         window.userProfile = null;
         let confirmationResult = null;
-        const COACH_EMAIL = "befitindia1@gmail.com";
         const APP_ID = "health-station-360";
+        const COL_USERS = collection(db, 'artifacts', APP_ID, 'users');
+        const DOC_SETTINGS = doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'website');
+        const COL_RESULTS = collection(db, 'artifacts', APP_ID, 'public', 'data', 'results');
+
+        let authorizedAdmins = ["befitindia1@gmail.com"]; // Default
+        window.allMembersData = []; // Store fetched members for admin modal
+
+        // --- PWA LOGIC ---
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        window.installPWA = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            } else {
+                showToast("App is already installed or not supported on this browser.");
+            }
+        };
 
         // --- UTILITIES ---
         window.showToast = (msg) => {
@@ -801,10 +866,10 @@
             t.innerText = msg; t.classList.add("show");
             setTimeout(() => t.classList.remove("show"), 3000);
         }
-
         window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
         window.toggleAuthModal = () => document.getElementById('modal-auth').classList.toggle('hidden');
 
+        // Image Compressor (Ensures small size for Firestore)
         window.compressAndPreview = (input, imgId, b64Id) => {
             if(input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -812,12 +877,12 @@
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        let w = img.width, h = img.height, max = 800; // Compress size
+                        let w = img.width, h = img.height, max = 800; 
                         if(w > h && w > max) { h *= max/w; w = max; } else if(h > max) { w *= max/h; h = max; }
                         canvas.width = w; canvas.height = h;
                         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        const dataURL = canvas.toDataURL('image/jpeg', 0.6); // 60% quality compression
-                        document.getElementById(b64Id).value = dataURL;
+                        const dataURL = canvas.toDataURL('image/jpeg', 0.6); // 60% compression
+                        if(b64Id) document.getElementById(b64Id).value = dataURL;
                         if(imgId) {
                             const p = document.getElementById(imgId);
                             p.src = dataURL; p.classList.remove('hidden');
@@ -829,10 +894,9 @@
             }
         }
 
-        // --- AUTHENTICATION LOGIC ---
+        // --- AUTHENTICATION ---
         document.getElementById('btn-google-login').addEventListener('click', () => {
-            const provider = new GoogleAuthProvider();
-            signInWithPopup(auth, provider).catch(e => showToast(e.message));
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(e => showToast(e.message));
         });
 
         const setupRecaptcha = () => {
@@ -863,8 +927,9 @@
         });
 
         window.logoutUser = () => signOut(auth).then(() => { 
+            showToast("Logged out successfully");
             window.currentUser=null; window.userProfile=null; 
-            closeViewsAndShowMain(); showToast("Logged out successfully");
+            closeViewsAndShowMain();
             document.getElementById('sidebar-user-widget').classList.add('hidden');
             document.getElementById('btn-sidebar-login').classList.remove('hidden');
         });
@@ -874,24 +939,22 @@
                 window.currentUser = user;
                 closeModal('modal-auth');
                 
-                // Fetch Profile from Firestore
                 try {
-                    const snap = await getDoc(doc(db, 'artifacts', APP_ID, 'users', user.uid));
+                    const snap = await getDoc(doc(COL_USERS, user.uid));
                     if(snap.exists()) {
                         window.userProfile = snap.data();
                         updateSidebarUI();
-                        // Pre-fill edit form
                         document.getElementById('ep-name').value = userProfile.name;
                         document.getElementById('ep-phone').value = userProfile.phone;
                         document.getElementById('ep-address').value = userProfile.address;
                     } else {
-                        // Needs Onboarding
+                        // First time login - Needs Onboarding
                         document.getElementById('ob-name').value = user.displayName || '';
                         document.getElementById('ob-email').value = user.email || '';
                         document.getElementById('ob-phone').value = user.phoneNumber || '';
                         document.getElementById('modal-onboard').classList.remove('hidden');
                     }
-                } catch(e) { console.error("Firestore error: ", e); }
+                } catch(e) { console.error("Error: ", e); }
             } else {
                 window.currentUser = null;
                 window.userProfile = null;
@@ -900,30 +963,36 @@
         });
 
         window.saveProfileData = async () => {
-            if(!currentUser) return;
+            if(!currentUser) return showToast("User not logged in!");
             const btn = document.getElementById('btn-save-profile');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...'; btn.disabled = true;
 
-            const photoData = document.getElementById('ob-img-data').value || `https://ui-avatars.com/api/?name=${document.getElementById('ob-name').value}&background=1a8d1a&color=fff`;
+            const photoData = document.getElementById('ob-img-data').value || `https://ui-avatars.com/api/?name=${document.getElementById('ob-name').value.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
             
             const p = {
-                name: document.getElementById('ob-name').value, email: document.getElementById('ob-email').value,
-                phone: document.getElementById('ob-phone').value, goal: document.getElementById('ob-goal').value,
-                address: document.getElementById('ob-address').value, pin: document.getElementById('ob-pin').value,
-                city: document.getElementById('ob-city').value, photo: photoData, 
-                currentPhysique: document.getElementById('ob-current-img-data').value, uid: currentUser.uid
+                name: document.getElementById('ob-name').value, 
+                email: document.getElementById('ob-email').value,
+                phone: document.getElementById('ob-phone').value, 
+                goal: document.getElementById('ob-goal').value,
+                address: document.getElementById('ob-address').value, 
+                pin: document.getElementById('ob-pin').value,
+                city: document.getElementById('ob-city').value, 
+                state: document.getElementById('ob-state').value,
+                photo: photoData, 
+                currentPhysique: document.getElementById('ob-current-img-data').value || '', 
+                uid: currentUser.uid
             };
 
             try {
-                await setDoc(doc(db, 'artifacts', APP_ID, 'users', currentUser.uid), p);
+                await setDoc(doc(COL_USERS, currentUser.uid), p);
                 window.userProfile = p;
                 closeModal('modal-onboard');
-                showToast("Profile Created!");
+                showToast("Profile Created Successfully!");
                 updateSidebarUI();
                 handleDashboardAccess();
             } catch(e) { 
-                showToast(e.code === 'permission-denied' ? "Firestore Rules Denied." : "Image too large or error occurred."); 
+                showToast("Error: Images may be too large. Upload smaller images."); 
             } finally { btn.innerHTML = originalText; btn.disabled = false; }
         };
 
@@ -937,7 +1006,7 @@
             }
         }
 
-        // --- NAVIGATION & VIEWS LOGIC ---
+        // --- NAVIGATION & VIEWS ---
         window.handleDashboardAccess = () => {
             if(!currentUser) { toggleAuthModal(); return; }
             if(!userProfile) { document.getElementById('modal-onboard').classList.remove('hidden'); return; }
@@ -947,12 +1016,11 @@
             document.getElementById('dashboard-view').classList.remove('hidden');
             window.scrollTo(0,0);
             
-            // Populate Dashboard Data
             if(userProfile.photo) document.getElementById('dash-prof-img').src = userProfile.photo;
             document.getElementById('dash-prof-name').innerText = userProfile.name;
             document.getElementById('dash-prof-goal').innerText = userProfile.goal;
 
-            if(userProfile.physicalData) generateReportUI(userProfile.physicalData);
+            if(userProfile.physicalData) generateReportUI(userProfile.physicalData, userProfile);
         };
 
         window.closeViewsAndShowMain = () => {
@@ -962,7 +1030,7 @@
             window.scrollTo(0,0);
         };
 
-        // Scroll Spy for Public view
+        // Scroll Spy
         const sections = document.querySelectorAll("section");
         const navLinks = document.querySelectorAll(".nav-link");
         const navLinksMob = document.querySelectorAll(".nav-link-mob");
@@ -983,15 +1051,15 @@
             }
         });
 
-        // --- DASHBOARD TABS & PRESCRIPTION LOGIC ---
+        // --- DASHBOARD LOGIC ---
         window.switchDashTab = (tab) => {
             document.getElementById('dash-tab-tasks').classList.add('hidden');
             document.getElementById('dash-tab-report').classList.add('hidden');
-            document.querySelectorAll('.dash-tab-btn').forEach(b => { b.classList.remove('text-brand', 'border-b-2', 'border-brand'); b.classList.add('text-gray-500'); });
+            document.getElementById('tab-tasks').className = "dash-tab-btn px-6 py-3 font-medium text-gray-500 hover:text-gray-800";
+            document.getElementById('tab-report').className = "dash-tab-btn px-6 py-3 font-medium text-gray-500 hover:text-gray-800";
             
             document.getElementById(`dash-tab-${tab}`).classList.remove('hidden');
-            document.getElementById(`tab-${tab}`).classList.add('text-brand', 'border-b-2', 'border-brand');
-            document.getElementById(`tab-${tab}`).classList.remove('text-gray-500');
+            document.getElementById(`tab-${tab}`).className = "dash-tab-btn px-6 py-3 font-bold text-brand border-b-2 border-brand";
         };
 
         window.generateReport = async () => {
@@ -999,42 +1067,44 @@
             const w = parseFloat(document.getElementById('pd-w').value);
             const a = parseInt(document.getElementById('pd-a').value);
             const g = document.getElementById('pd-g').value;
-            if(!h || !w || !a) return showToast("Enter all details");
+            if(!h || !w || !a) return showToast("Please enter all physical details!");
 
             const pData = { height: h, weight: w, age: a, gender: g };
             try {
-                await setDoc(doc(db, 'artifacts', APP_ID, 'users', currentUser.uid), { physicalData: pData }, {merge:true});
+                await setDoc(doc(COL_USERS, currentUser.uid), { physicalData: pData }, {merge:true});
                 userProfile.physicalData = pData;
-                generateReportUI(pData);
+                generateReportUI(pData, userProfile);
                 showToast("Report Generated!");
-            } catch(e) { showToast("Failed to save report to DB."); }
+            } catch(e) { showToast("Failed to save report."); }
         };
 
-        function generateReportUI(data) {
-            document.getElementById('req-physical-data').classList.add('hidden');
-            document.getElementById('rx-view').classList.remove('hidden');
+        function generateReportUI(data, userObj, isCoachView = false) {
+            if(!isCoachView){
+                document.getElementById('req-physical-data').classList.add('hidden');
+                document.getElementById('rx-view').classList.remove('hidden');
+            }
             
-            // Logic based on requested Image Chart
+            // Logic based on image chart
             const bmi = (data.weight / Math.pow(data.height/100, 2)).toFixed(1);
             const water = (data.weight / 20).toFixed(1); // 1L per 20kg
             const pro = data.weight; // 1g per kg
-            
-            // Approx Ideal Weight Formula (Simple version of chart)
             let iw = data.gender === 'Male' ? (data.height - 100) * 0.9 : (data.height - 100) * 0.85; 
 
-            document.getElementById('rx-name').innerText = userProfile.name;
-            document.getElementById('rx-date').innerText = new Date().toLocaleDateString();
-            document.getElementById('rx-age').innerText = data.age;
-            document.getElementById('rx-w').innerText = data.weight + " kg";
-            document.getElementById('rx-h').innerText = data.height;
-            document.getElementById('rx-iw').innerText = iw.toFixed(1);
-            
-            document.getElementById('rx-bmi').innerText = bmi;
-            document.getElementById('rx-wat').innerText = water + " Liters";
-            document.getElementById('rx-pro').innerText = pro + " gm";
+            // Prefix IDs based on view
+            const prefix = isCoachView ? 'cm-' : 'rx-';
 
-            // Update Progress Tab Goal
-            document.getElementById('dash-water-goal').innerText = water + " L";
+            if(document.getElementById(prefix+'name')) document.getElementById(prefix+'name').innerText = userObj.name || '--';
+            if(document.getElementById(prefix+'date')) document.getElementById(prefix+'date').innerText = new Date().toLocaleDateString();
+            if(document.getElementById(prefix+'age')) document.getElementById(prefix+'age').innerText = data.age;
+            if(document.getElementById(prefix+'w')) document.getElementById(prefix+'w').innerText = data.weight + " kg";
+            if(document.getElementById(prefix+'h')) document.getElementById(prefix+'h').innerText = data.height;
+            if(document.getElementById(prefix+'iw')) document.getElementById(prefix+'iw').innerText = iw.toFixed(1);
+            
+            if(document.getElementById(prefix+'bmi')) document.getElementById(prefix+'bmi').innerText = bmi;
+            if(document.getElementById(prefix+'wat')) document.getElementById(prefix+'wat').innerText = water + " Liters";
+            if(document.getElementById(prefix+'pro')) document.getElementById(prefix+'pro').innerText = pro + " gm";
+
+            if(!isCoachView) document.getElementById('dash-water-goal').innerText = water + " L";
         }
 
         window.updateProfile = async () => {
@@ -1048,7 +1118,7 @@
             if(document.getElementById('ep-c-b64').value) updates.currentPhysique = document.getElementById('ep-c-b64').value;
 
             try {
-                await setDoc(doc(db, 'artifacts', APP_ID, 'users', currentUser.uid), updates, {merge:true});
+                await setDoc(doc(COL_USERS, currentUser.uid), updates, {merge:true});
                 window.userProfile = {...window.userProfile, ...updates};
                 document.getElementById('edit-profile-form').classList.add('hidden');
                 handleDashboardAccess(); 
@@ -1057,17 +1127,15 @@
             finally { btn.innerText="Save Changes"; btn.disabled=false; }
         };
 
-        // --- PUBLIC TOOLS LOGIC (BMI, WATER, CALORIE) ---
+        // --- PUBLIC TOOLS LOGIC ---
         window.switchTool = (tool) => {
             document.querySelectorAll('.tool-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-brand', 'text-white', 'shadow-md'); 
-                btn.classList.add('text-gray-500');
+                btn.className = 'tab-btn px-6 py-2.5 rounded-full font-semibold text-gray-500 hover:bg-gray-50 transition';
             });
             
             document.getElementById('tool-'+tool).classList.add('active');
-            document.getElementById('btn-tool-'+tool).classList.remove('text-gray-500');
-            document.getElementById('btn-tool-'+tool).classList.add('bg-brand', 'text-white', 'shadow-md');
+            document.getElementById('btn-tool-'+tool).className = 'tab-btn px-6 py-2.5 rounded-full font-bold text-white bg-brand shadow-md';
         };
 
         window.calcBMI = () => {
@@ -1098,10 +1166,9 @@
             const a = document.getElementById('calc-cal-a').value;
             const g = document.getElementById('calc-cal-g').value;
             if(w>0 && h>0 && a>0) {
-                // Mifflin-St Jeor Equation
                 let bmr = (10 * w) + (6.25 * h) - (5 * a);
                 bmr = g === 'm' ? bmr + 5 : bmr - 161;
-                let tdee = bmr * 1.2; // Assuming sedentary base for tool
+                let tdee = bmr * 1.2; 
                 document.getElementById('res-cal').classList.remove('hidden');
                 document.getElementById('val-cal').innerText = Math.round(tdee) + " kcal";
             } else showToast("Enter all fields");
@@ -1112,15 +1179,12 @@
         window.checkCoachAccess = async () => {
             if(!currentUser) { showToast("Login required for Coach Panel"); toggleAuthModal(); return; }
             
-            // Security: Check if email is authorized
-            let isAuth = false;
-            if(currentUser.email === COACH_EMAIL) isAuth = true;
-            
-            if(isAuth) {
+            if(authorizedAdmins.includes(currentUser.email)) {
                 document.getElementById('public-views').classList.add('hidden');
                 document.getElementById('dashboard-view').classList.add('hidden');
                 document.getElementById('coach-view').classList.remove('hidden');
                 window.scrollTo(0,0);
+                loadAdminResults(); // load results when entering
             } else {
                 showToast("Please ask coach about coach panel. You are not authorized.");
             }
@@ -1129,15 +1193,15 @@
         window.switchAdminTab = (tab) => {
             document.getElementById('adm-content-settings').classList.add('hidden');
             document.getElementById('adm-content-members').classList.add('hidden');
-            document.querySelectorAll('.adm-tab').forEach(b => { b.classList.remove('bg-brand/10', 'text-brand'); b.classList.add('text-gray-600'); });
+            document.getElementById('adm-content-results').classList.add('hidden');
+            document.querySelectorAll('.adm-tab').forEach(b => { b.className = 'adm-tab w-full text-left p-3.5 hover:bg-gray-50 text-gray-600 font-bold rounded-xl mb-2 transition'; });
             
             document.getElementById(`adm-content-${tab}`).classList.remove('hidden');
-            document.getElementById(`adm-tab-${tab}`).classList.add('bg-brand/10', 'text-brand');
-            document.getElementById(`adm-tab-${tab}`).classList.remove('text-gray-600');
+            document.getElementById(`adm-tab-${tab}`).className = 'adm-tab w-full text-left p-3.5 bg-brand/10 text-brand font-bold rounded-xl mb-2 transition';
         };
 
         // Real-time Website Settings Sync
-        onSnapshot(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'website'), (docSnap) => {
+        onSnapshot(DOC_SETTINGS, (docSnap) => {
             if(docSnap.exists()) {
                 const d = docSnap.data();
                 // Apply to UI
@@ -1145,6 +1209,8 @@
                     document.getElementById('dyn-logo').src = d.logo;
                     document.getElementById('dyn-logo-mob').src = d.logo;
                     document.getElementById('dyn-logo-foot').src = d.logo;
+                    document.getElementById('site-logo').src = d.logo;
+                    document.getElementById('site-logo-mobile').src = d.logo;
                 }
                 if(d.hero) document.getElementById('dyn-hero-img').src = d.hero;
                 if(d.wa) document.getElementById('dyn-wa-book').href = d.wa;
@@ -1152,6 +1218,7 @@
                 if(d.fb) document.getElementById('dyn-fb').href = d.fb;
                 if(d.ig) document.getElementById('dyn-ig').href = d.ig;
                 if(d.yt) document.getElementById('dyn-yt').href = d.yt;
+                if(d.admins) authorizedAdmins = d.admins.split(',').map(s=>s.trim());
 
                 // Populate Admin Form
                 document.getElementById('set-logo').value = d.logo || '';
@@ -1161,6 +1228,7 @@
                 document.getElementById('set-fb').value = d.fb || '';
                 document.getElementById('set-ig').value = d.ig || '';
                 document.getElementById('set-yt').value = d.yt || '';
+                document.getElementById('set-admins').value = authorizedAdmins.join(', ') || 'befitindia1@gmail.com';
             }
         });
 
@@ -1169,49 +1237,191 @@
             const data = {
                 logo: document.getElementById('set-logo').value, hero: document.getElementById('set-hero').value,
                 phone: document.getElementById('set-phone').value, wa: document.getElementById('set-wa').value,
-                fb: document.getElementById('set-fb').value, ig: document.getElementById('set-ig').value, yt: document.getElementById('set-yt').value
+                fb: document.getElementById('set-fb').value, ig: document.getElementById('set-ig').value, yt: document.getElementById('set-yt').value,
+                admins: document.getElementById('set-admins').value
             };
             try {
-                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'website'), data);
+                await setDoc(DOC_SETTINGS, data);
                 showToast("Website Details Updated!");
             } catch(e) { showToast("Failed to save settings."); }
             finally { btn.innerHTML="<i class='fa-solid fa-cloud-arrow-up'></i> Update Website Live"; btn.disabled=false; }
         };
 
-        // Load Members List in Admin
+        // --- MANAGE RESULTS ---
+        window.saveNewResult = async () => {
+            const btn = document.getElementById('btn-save-result'); btn.innerText = "Saving..."; btn.disabled = true;
+            const beforeImg = document.getElementById('res-bef-b64').value || document.getElementById('res-bef-url').value;
+            const afterImg = document.getElementById('res-aft-b64').value || document.getElementById('res-aft-url').value;
+            
+            if(!beforeImg || !afterImg) { showToast("Please provide both images"); btn.innerText = "Save Result"; btn.disabled = false; return; }
+
+            const data = {
+                name: document.getElementById('res-name').value,
+                desc: document.getElementById('res-desc').value,
+                before: beforeImg, after: afterImg,
+                timestamp: new Date().getTime()
+            };
+
+            try {
+                await addDoc(COL_RESULTS, data);
+                showToast("Result Added Successfully!");
+                document.getElementById('res-name').value = ''; document.getElementById('res-desc').value = '';
+                document.getElementById('res-bef-preview').classList.add('hidden'); document.getElementById('res-aft-preview').classList.add('hidden');
+                document.getElementById('res-bef-b64').value = ''; document.getElementById('res-aft-b64').value = '';
+                loadAdminResults();
+            } catch(e) { showToast("Error saving result."); }
+            finally { btn.innerText = "Save Result"; btn.disabled = false; }
+        };
+
+        window.deleteResult = async (id) => {
+            try {
+                await deleteDoc(doc(COL_RESULTS, id));
+                showToast("Result deleted");
+                loadAdminResults();
+            } catch(e) { showToast("Error deleting"); }
+        };
+
+        window.loadAdminResults = async () => {
+            const container = document.getElementById('admin-results-list');
+            container.innerHTML = 'Loading...';
+            try {
+                const snap = await getDocs(COL_RESULTS);
+                container.innerHTML = '';
+                snap.forEach(doc => {
+                    const r = doc.data();
+                    container.innerHTML += `
+                        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex gap-3 items-center">
+                            <img src="${r.after}" class="w-16 h-16 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <p class="font-bold text-sm text-gray-800">${r.name}</p>
+                                <p class="text-xs text-gray-500 truncate">${r.desc}</p>
+                            </div>
+                            <button onclick="deleteResult('${doc.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    `;
+                });
+            } catch(e) { container.innerHTML = 'Error loading results'; }
+        };
+
+        // Realtime Main Page Results Sync
+        onSnapshot(COL_RESULTS, (snap) => {
+            const container = document.getElementById('dyn-results-container');
+            if(snap.empty) { container.innerHTML = '<p class="w-full text-center text-gray-400">No results found.</p>'; return; }
+            container.innerHTML = '';
+            snap.forEach(doc => {
+                const r = doc.data();
+                container.innerHTML += `
+                    <div class="min-w-[320px] md:min-w-[400px] snap-center bg-white p-4 rounded-3xl shadow-sm border border-gray-200">
+                        <div class="flex gap-2 mb-4">
+                            <div class="flex-1 relative">
+                                <img src="${r.before}" class="w-full h-48 object-cover rounded-2xl">
+                                <span class="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold uppercase">Before</span>
+                            </div>
+                            <div class="flex-1 relative">
+                                <img src="${r.after}" class="w-full h-48 object-cover rounded-2xl">
+                                <span class="absolute top-2 left-2 bg-brand text-white text-[10px] px-2 py-1 rounded font-bold uppercase">After</span>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg text-center">${r.name}</h3>
+                        <p class="text-xs text-gray-500 text-center mt-1">"${r.desc}"</p>
+                    </div>
+                `;
+            });
+        });
+
+        // --- MANAGE MEMBERS ---
         window.loadMembersList = async () => {
             const tbody = document.getElementById('members-table-body');
             tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8"><i class="fa-solid fa-spinner fa-spin text-brand text-2xl"></i></td></tr>';
-            
             try {
-                const querySnapshot = await getDocs(collection(db, 'artifacts', APP_ID, 'users'));
+                const querySnapshot = await getDocs(COL_USERS);
                 tbody.innerHTML = '';
-                
-                if(querySnapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-gray-500">No members found</td></tr>';
-                    return;
-                }
+                window.allMembersData = [];
+                if(querySnapshot.empty) { tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-gray-500">No members found</td></tr>'; return; }
 
                 querySnapshot.forEach((docSnap) => {
                     const u = docSnap.data();
+                    window.allMembersData.push(u); // Store for modal
                     if(u.name) {
                         tbody.innerHTML += `
-                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <tr class="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onclick="viewMemberDetails('${u.uid}')">
                                 <td class="p-3 flex items-center gap-3">
                                     <img src="${u.photo || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover">
                                     <div><p class="font-bold text-gray-800">${u.name}</p><p class="text-[10px] text-gray-500">${u.email || 'No email'}</p></div>
                                 </td>
                                 <td class="p-3 text-sm">${u.phone || '-'}</td>
                                 <td class="p-3 text-sm font-bold text-brand">${u.goal || '-'}</td>
-                                <td class="p-3 text-sm text-gray-600">${u.city || '-'}, ${u.state || '-'}</td>
+                                <td class="p-3 text-sm"><button class="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg hover:bg-gray-200">View</button></td>
                             </tr>
                         `;
                     }
                 });
-            } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-red-500">Error loading members. Check Firestore Rules.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" class="text-center p-8 text-red-500">Error loading members.</td></tr>`; }
+        };
+
+        window.viewMemberDetails = (uid) => {
+            const user = window.allMembersData.find(u => u.uid === uid);
+            if(!user) return;
+            
+            let contentHTML = `
+                <div class="flex flex-col md:flex-row gap-6 mb-8 border-b pb-6">
+                    <div class="flex gap-4">
+                        <img src="${user.photo}" class="w-24 h-24 rounded-full object-cover border-4 border-brand">
+                        <img src="${user.currentPhysique}" class="w-24 h-24 rounded-lg object-cover border border-gray-200" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">${user.name}</h3>
+                        <p class="text-sm text-gray-600 mb-2"><i class="fa-solid fa-envelope w-5"></i> ${user.email}</p>
+                        <p class="text-sm text-gray-600 mb-2"><i class="fa-solid fa-phone w-5"></i> ${user.phone}</p>
+                        <p class="text-sm text-gray-600"><i class="fa-solid fa-location-dot w-5"></i> ${user.address}, ${user.city}, ${user.state} - ${user.pin}</p>
+                        <span class="inline-block mt-3 bg-brand/10 text-brand px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Goal: ${user.goal}</span>
+                    </div>
+                </div>
+            `;
+
+            // If physical data exists, render the report
+            if(user.physicalData) {
+                contentHTML += `
+                    <div class="text-center border-b-2 border-blue-900 pb-4 mb-6 mt-4">
+                        <p class="font-bold text-sm">Wellness Coach</p>
+                        <h2 class="text-3xl font-extrabold uppercase tracking-wide my-1">HEALTH STATION 360</h2>
+                        <p class="text-sm font-bold">Nutrition • Wellness • Lifestyle</p>
+                        <p class="text-xs font-bold mt-2 absolute top-6 right-6 text-right">Contact<br>6289308561</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-2 text-sm font-bold mb-6">
+                        <div class="col-span-2">Name: <span class="border-b border-black font-normal inline-block min-w-[200px]" id="cm-name">--</span></div>
+                        <div class="col-span-2">Date: <span class="border-b border-black font-normal inline-block min-w-[150px]" id="cm-date">--</span></div>
+                        <div>Age: <span class="border-b border-black font-normal inline-block w-16 text-center" id="cm-age">--</span></div>
+                        <div>Weight: <span class="border-b border-black font-normal inline-block w-16 text-center" id="cm-w">--</span></div>
+                        <div class="col-span-2 text-right">Height: <span class="border-b border-black font-normal inline-block w-16 text-center" id="cm-h">--</span> cm</div>
+                    </div>
+                    <div class="mb-6 font-bold text-sm">
+                        Approx Ideal Weight: <span class="border-b border-black font-normal inline-block w-20 text-center text-brand" id="cm-iw">--</span> kg
+                    </div>
+
+                    <table class="w-full border-collapse border-2 border-blue-900 text-sm mb-8">
+                        <tr class="bg-blue-50 text-blue-900">
+                            <th class="border-2 border-blue-900 p-3 text-left w-1/3">Body Metrics</th>
+                            <th class="border-2 border-blue-900 p-3 text-left">Needs Daily</th>
+                        </tr>
+                        <tr><td class="border border-blue-900 p-3 font-bold bg-gray-50">Current BMI</td><td class="border border-blue-900 p-3 text-xl text-brand font-bold" id="cm-bmi">--</td></tr>
+                        <tr><td class="border border-blue-900 p-3 font-bold bg-gray-50">Protein (1g/1kg)</td><td class="border border-blue-900 p-3 font-semibold" id="cm-pro">--</td></tr>
+                        <tr><td class="border border-blue-900 p-3 font-bold bg-gray-50">Water (1L per 20kg)</td><td class="border border-blue-900 p-3 font-bold text-blue-600 text-lg" id="cm-wat">--</td></tr>
+                    </table>
+                `;
+            } else {
+                contentHTML += `<p class="text-center text-gray-500 italic py-10 border rounded-xl bg-gray-50">This member has not generated their Health Report yet.</p>`;
+            }
+
+            document.getElementById('coach-member-content').innerHTML = contentHTML;
+            document.getElementById('modal-coach-member').classList.remove('hidden');
+
+            if(user.physicalData) {
+                generateReportUI(user.physicalData, user, true); // Populate the report data
             }
         };
+
     </script>
 </body>
 </html>
