@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Health Station 360 - Nutrition & Wellness</title>
-    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Tailwind Config -->
+    <!-- html2pdf for Prescription Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -23,741 +23,444 @@
             }
         }
     </script>
-
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Adjust scroll position for fixed header/sidebar */
         section { scroll-margin-top: 80px; }
+        .toast-show { transform: translateY(0); opacity: 1; }
+        .toast-hide { transform: translateY(100%); opacity: 0; }
         
-        /* Toast notification */
-        #toast {
-            visibility: hidden; min-width: 250px; background-color: #333; color: #fff;
-            text-align: center; border-radius: 8px; padding: 16px; position: fixed;
-            z-index: 9999; left: 50%; bottom: 80px; transform: translateX(-50%);
-            opacity: 0; transition: opacity 0.3s, bottom 0.3s;
-        }
-        #toast.show { visibility: visible; opacity: 1; bottom: 100px; }
+        /* Loading Overlay */
+        #global-loader { transition: opacity 0.3s; }
+        .hidden-loader { opacity: 0; pointer-events: none; }
 
-        .ba-container { position: relative; overflow: hidden; }
-        .ba-container img { width: 100%; height: 100%; object-fit: cover; }
-        .ba-badge {
-            position: absolute; bottom: 10px; background: rgba(0,0,0,0.6); color: white;
-            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;
+        /* Prescription Print Style */
+        .print-only { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #prescription-container, #prescription-container * { visibility: visible; }
+            #prescription-container { position: absolute; left: 0; top: 0; width: 100%; }
         }
-        .ba-left { left: 10px; } .ba-right { right: 10px; }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <div id="app-container">
-        
-        <!-- ==================== DESKTOP SIDEBAR ==================== -->
-        <aside class="hidden lg:flex flex-col w-64 h-screen bg-white shadow-xl fixed top-0 left-0 z-50">
-            <div class="p-6 border-b border-gray-100 flex items-center justify-center">
-                <img id="site-logo" src="https://ui-avatars.com/api/?name=HS+360&background=1a8d1a&color=fff&rounded=true&size=100" alt="Logo" class="h-16 w-auto object-contain">
-            </div>
-            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-                <button onclick="navigateMain('home')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl text-brand bg-brand/10 font-semibold transition-colors" data-target="home">
+    <!-- Global Loading Overlay -->
+    <div id="global-loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-brand mb-4"></div>
+        <p class="text-gray-500 font-medium tracking-wide">Loading Health Station 360...</p>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl z-[100] transition-all duration-300 toast-hide font-medium text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-circle-info"></i> <span id="toast-msg">Message</span>
+    </div>
+
+    <!-- DESKTOP SIDEBAR -->
+    <aside class="hidden lg:flex flex-col w-64 h-screen bg-white shadow-xl fixed top-0 left-0 z-50 transition-transform">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-center bg-brand/5">
+            <div id="sidebar-logo-container" class="font-bold text-2xl text-brand italic">HS<span class="text-sm">360</span></div>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1" id="main-nav">
+            <!-- Normal User Links -->
+            <div id="nav-public">
+                <a href="#home" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-brand bg-brand/10 font-semibold transition-colors">
                     <i class="fa-solid fa-house w-5 text-center"></i> Home
-                </button>
-                <button onclick="navigateMain('results')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors" data-target="results">
-                    <i class="fa-solid fa-star w-5 text-center"></i> Real Results
-                </button>
-                <button onclick="navigateMain('programs')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors" data-target="programs">
+                </a>
+                <a href="#programs" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors">
                     <i class="fa-solid fa-dumbbell w-5 text-center"></i> Programs
-                </button>
-                <button onclick="navigateMain('tools')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors" data-target="tools">
+                </a>
+                <a href="#tools" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors">
                     <i class="fa-solid fa-calculator w-5 text-center"></i> Free Tools
-                </button>
-                <button onclick="navigateMain('booking')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors" data-target="booking">
+                </a>
+                <a href="#booking" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors">
                     <i class="fa-regular fa-calendar-check w-5 text-center"></i> Booking
-                </button>
-                
-                <div class="pt-6 pb-2 px-4 text-xs font-bold text-gray-400 uppercase">Members</div>
-                <button onclick="handleDashboardAccess()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium text-left transition-colors">
-                    <i class="fa-regular fa-user w-5 text-center"></i> Dashboard
-                </button>
-                
-                <div class="pt-6 pb-2 px-4 text-xs font-bold text-gray-400 uppercase">Admin</div>
-                <button onclick="handleCoachAccess()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 border border-red-100 font-bold text-left transition-colors">
-                    <i class="fa-solid fa-user-shield w-5 text-center"></i> Coach Panel
-                </button>
-                
-                <button id="btn-logout" onclick="logoutUser()" class="hidden w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium text-left transition-colors mt-2">
-                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i> Logout
-                </button>
-            </nav>
-        </aside>
-
-        <!-- ==================== MOBILE HEADER ==================== -->
-        <header class="lg:hidden bg-white shadow-sm sticky top-0 z-40 px-4 py-3 flex justify-between items-center">
-            <img id="site-logo-mobile" src="https://ui-avatars.com/api/?name=HS+360&background=1a8d1a&color=fff&rounded=true&size=100" alt="Logo" class="h-10">
-            <div class="flex gap-2">
-                <button class="text-gray-600 p-2 relative">
-                    <i class="fa-regular fa-bell text-xl"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                </a>
             </div>
-        </header>
-
-        <!-- ==================== MAIN SCROLLABLE VIEW ==================== -->
-        <main id="main-view" class="lg:ml-64 pb-24 lg:pb-0 block">
             
-            <!-- 1. HOME -->
-            <section id="home" class="scroll-section bg-white px-4 py-12 lg:p-16 relative overflow-hidden flex items-center">
-                <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10">
-                    <div class="flex-1 z-10">
+            <div class="pt-6 pb-2 px-4 text-xs font-bold text-gray-400 uppercase">Members</div>
+            <button onclick="handleDashboardAccess()" id="btn-sidebar-dash" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-brand/5 hover:text-brand font-medium text-left transition-colors">
+                <i class="fa-regular fa-user w-5 text-center"></i> <span id="sidebar-user-text">Login / Dashboard</span>
+            </button>
+            
+            <div class="pt-6 pb-2 px-4 text-xs font-bold text-gray-400 uppercase">Admin</div>
+            <button onclick="checkCoachAccess()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium text-left transition-colors">
+                <i class="fa-solid fa-user-shield w-5 text-center"></i> Coach Panel
+            </button>
+        </nav>
+        
+        <!-- User Mini Profile (Hidden by default) -->
+        <div id="sidebar-user-profile" class="hidden p-4 border-t border-gray-100 bg-gray-50">
+            <div class="flex items-center gap-3 mb-3">
+                <img id="sidebar-avatar" src="" class="w-10 h-10 rounded-full border border-gray-300">
+                <div class="overflow-hidden">
+                    <p id="sidebar-username" class="font-bold text-sm truncate">User</p>
+                    <p id="sidebar-useremail" class="text-xs text-gray-500 truncate">email@test.com</p>
+                </div>
+            </div>
+            <button onclick="logoutUser()" class="w-full text-xs text-red-500 font-bold bg-red-50 py-2 rounded-lg hover:bg-red-100">Logout</button>
+        </div>
+    </aside>
+
+    <!-- MOBILE HEADER -->
+    <header class="lg:hidden bg-white shadow-sm sticky top-0 z-40 px-4 py-3 flex justify-between items-center">
+        <div class="font-bold text-xl text-brand italic">HS<span class="text-sm">360</span></div>
+        <button onclick="handleDashboardAccess()" class="text-brand bg-brand/10 p-2 rounded-full h-10 w-10 flex items-center justify-center">
+            <i class="fa-regular fa-user"></i>
+        </button>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main id="main-content-wrapper" class="lg:ml-64 pb-24 lg:pb-0">
+        
+        <!-- ======================= PUBLIC VIEWS ======================= -->
+        <div id="public-views">
+            <!-- HOME SECTION -->
+            <section id="home" class="bg-white px-4 py-12 lg:p-16 relative overflow-hidden min-h-screen flex items-center">
+                <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10 w-full">
+                    <div class="flex-1 z-10 text-center lg:text-left">
                         <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
                             Transform Your <span class="text-brand">Health,</span> <br> Transform Your <span class="text-brand">Life.</span>
                         </h1>
-                        <p class="text-gray-600 lg:text-lg mb-8 max-w-md">Personalized nutrition guidance to help you look better, feel better and live better.</p>
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <button onclick="navigateMain('booking')" class="bg-brand text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-brand/30 hover:bg-brandDark transition text-center">
-                                Book Free Consultation
-                            </button>
-                            <a id="btn-hero-wa" href="#" target="_blank" class="border-2 border-brand text-brand bg-green-50 px-8 py-4 rounded-xl font-bold hover:bg-green-100 transition flex items-center justify-center gap-2">
-                                <i class="fa-brands fa-whatsapp text-xl"></i> Chat
-                            </a>
-                        </div>
+                        <p class="text-gray-600 lg:text-lg mb-8 max-w-md mx-auto lg:mx-0">Personalized nutrition guidance to help you look better, feel better and live better.</p>
+                        <a href="#booking" class="inline-block bg-brand text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-brand/30 hover:bg-brandDark transition">
+                            Book Free Consultation
+                        </a>
                     </div>
                     <div class="flex-1 relative w-full flex justify-center">
-                        <div class="absolute inset-0 bg-brand rounded-full opacity-20 blur-3xl transform scale-90"></div>
-                        <img id="hero-img" src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hero" class="relative z-10 w-full max-w-md rounded-3xl shadow-2xl object-cover h-[400px]">
+                        <img id="hero-img-display" src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hero" class="w-full max-w-md rounded-3xl shadow-2xl object-cover h-[400px]">
                     </div>
                 </div>
             </section>
 
-            <!-- 2. REAL RESULTS -->
-            <section id="results" class="scroll-section bg-gray-50 px-4 py-16">
+            <!-- PROGRAMS SECTION -->
+            <section id="programs" class="bg-gray-50 px-4 py-16">
                 <div class="max-w-6xl mx-auto">
-                    <div class="mb-10 text-center">
-                        <p class="text-brand font-bold text-sm uppercase tracking-wider mb-2">Success Stories</p>
-                        <h2 class="text-3xl font-extrabold text-gray-900">Real People, Real Results</h2>
-                    </div>
-                    <div id="results-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Dynamic Results injected here via JS -->
-                        <div class="text-center text-gray-500 w-full col-span-3 py-10">Loading results...</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 3. PROGRAMS (4 Cards) -->
-            <section id="programs" class="scroll-section bg-white px-4 py-16 border-t border-gray-100">
-                <div class="max-w-6xl mx-auto">
-                    <h2 class="text-3xl font-extrabold mb-8 text-center">Our Programs</h2>
+                    <h2 class="text-3xl font-bold mb-8 text-center">Our Programs</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-5 hover:shadow-md transition">
-                            <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500" class="w-full h-40 object-cover rounded-xl mb-4">
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-5">
+                            <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500" class="w-full h-40 object-cover rounded-xl mb-4" alt="Weight Loss">
                             <h3 class="font-bold text-lg mb-2">Weight Loss</h3>
-                            <p class="text-gray-500 text-sm mb-4">Healthy nutrition plan to lose weight naturally.</p>
+                            <p class="text-gray-500 text-sm">Healthy nutrition plan to lose weight naturally.</p>
                         </div>
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-5 hover:shadow-md transition">
-                            <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500" class="w-full h-40 object-cover rounded-xl mb-4">
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-5">
+                            <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500" class="w-full h-40 object-cover rounded-xl mb-4" alt="Weight Gain">
                             <h3 class="font-bold text-lg mb-2">Weight Gain</h3>
-                            <p class="text-gray-500 text-sm mb-4">Specialized plan to help you gain healthy weight.</p>
+                            <p class="text-gray-500 text-sm">Specialized plan to help you gain healthy weight.</p>
                         </div>
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-5 hover:shadow-md transition">
-                            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500" class="w-full h-40 object-cover rounded-xl mb-4">
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-5">
+                            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500" class="w-full h-40 object-cover rounded-xl mb-4" alt="Lifestyle">
                             <h3 class="font-bold text-lg mb-2">Healthy Lifestyle</h3>
-                            <p class="text-gray-500 text-sm mb-4">Daily habits for a better, healthier & happier you.</p>
+                            <p class="text-gray-500 text-sm">Daily habits for a better, healthier & happier you.</p>
                         </div>
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-5 hover:shadow-md transition">
-                            <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500" class="w-full h-40 object-cover rounded-xl mb-4">
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-5">
+                            <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500" class="w-full h-40 object-cover rounded-xl mb-4" alt="Energy">
                             <h3 class="font-bold text-lg mb-2">Energy & Wellness</h3>
-                            <p class="text-gray-500 text-sm mb-4">Boost your energy, immunity & overall wellness.</p>
+                            <p class="text-gray-500 text-sm">Boost your energy, immunity & overall wellness.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 4. FREE TOOLS (Tabs) -->
-            <section id="tools" class="scroll-section bg-gray-50 px-4 py-16">
-                <div class="max-w-5xl mx-auto">
-                    <h2 class="text-3xl font-extrabold mb-8 text-center">Free Tools</h2>
-                    
-                    <div class="flex overflow-x-auto hide-scrollbar gap-2 mb-8 bg-white p-2 rounded-2xl shadow-sm border border-gray-100 w-full max-w-2xl mx-auto">
-                        <button onclick="switchTool('bmi')" id="tab-bmi" class="tool-tab flex-1 whitespace-nowrap py-3 px-4 rounded-xl font-bold bg-brand text-white transition">BMI Calc</button>
-                        <button onclick="switchTool('water')" id="tab-water" class="tool-tab flex-1 whitespace-nowrap py-3 px-4 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition">Water Calc</button>
-                        <button onclick="switchTool('calorie')" id="tab-calorie" class="tool-tab flex-1 whitespace-nowrap py-3 px-4 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition">Calorie Calc</button>
-                    </div>
-
-                    <!-- BMI -->
-                    <div id="tool-bmi" class="tool-content bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center">
-                        <div class="w-full md:w-1/2 space-y-4">
-                            <input type="number" id="bmi-h" placeholder="Height (cm)" class="w-full p-4 rounded-xl border focus:border-brand outline-none">
-                            <input type="number" id="bmi-w" placeholder="Weight (kg)" class="w-full p-4 rounded-xl border focus:border-brand outline-none">
-                            <button onclick="calcBMI()" class="w-full bg-brand text-white py-4 rounded-xl font-bold">Calculate BMI</button>
+            <!-- TOOLS SECTION -->
+            <section id="tools" class="bg-white px-4 py-16">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 text-center">Free Health Tools</h2>
+                    <div class="bg-gray-50 rounded-3xl p-6 border border-gray-100">
+                        <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200 pb-2">
+                            <button class="px-4 py-2 font-bold text-brand border-b-2 border-brand">BMI Calculator</button>
+                            <button onclick="showToast('Water calculator coming soon!')" class="px-4 py-2 font-medium text-gray-500 hover:text-brand">Water Need</button>
+                            <button onclick="showToast('Calorie calculator coming soon!')" class="px-4 py-2 font-medium text-gray-500 hover:text-brand">Calorie Count</button>
                         </div>
-                        <div class="w-full md:w-1/2 bg-gray-50 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[200px]" id="bmi-res">
-                            <p class="text-gray-400 font-medium">Result will appear here</p>
-                        </div>
-                    </div>
-
-                    <!-- Water -->
-                    <div id="tool-water" class="tool-content hidden bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center">
-                        <div class="w-full md:w-1/2 space-y-4">
-                            <input type="number" id="wat-w" placeholder="Weight (kg)" class="w-full p-4 rounded-xl border focus:border-blue-400 outline-none">
-                            <input type="number" id="wat-e" placeholder="Exercise duration (mins) optional" class="w-full p-4 rounded-xl border focus:border-blue-400 outline-none">
-                            <button onclick="calcWater()" class="w-full bg-blue-500 text-white py-4 rounded-xl font-bold">Calculate Water Needs</button>
-                        </div>
-                        <div class="w-full md:w-1/2 bg-blue-50 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[200px]" id="wat-res">
-                            <p class="text-blue-300 font-medium">Result will appear here</p>
-                        </div>
-                    </div>
-
-                    <!-- Calorie -->
-                    <div id="tool-calorie" class="tool-content hidden bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center">
-                        <div class="w-full md:w-1/2 space-y-4">
-                            <div class="flex gap-4">
-                                <input type="number" id="cal-a" placeholder="Age" class="w-full p-4 rounded-xl border outline-none">
-                                <select id="cal-g" class="w-full p-4 rounded-xl border outline-none bg-white"><option value="m">Male</option><option value="f">Female</option></select>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div class="space-y-4">
+                                <div><label class="block text-sm font-bold mb-1">Height (cm)</label><input type="number" id="t-h" class="w-full p-3 rounded-xl border"></div>
+                                <div><label class="block text-sm font-bold mb-1">Weight (kg)</label><input type="number" id="t-w" class="w-full p-3 rounded-xl border"></div>
+                                <button onclick="calcPublicBMI()" class="w-full bg-brand text-white py-3 rounded-xl font-bold">Calculate BMI</button>
                             </div>
-                            <div class="flex gap-4">
-                                <input type="number" id="cal-w" placeholder="Weight(kg)" class="w-full p-4 rounded-xl border outline-none">
-                                <input type="number" id="cal-h" placeholder="Height(cm)" class="w-full p-4 rounded-xl border outline-none">
+                            <div class="bg-white p-6 rounded-2xl text-center border">
+                                <h3 class="text-gray-500 font-bold uppercase mb-2">Your BMI Score</h3>
+                                <div id="t-res-score" class="text-5xl font-extrabold text-gray-900 mb-2">--</div>
+                                <div id="t-res-cat" class="text-sm font-bold text-gray-400">Enter details</div>
                             </div>
-                            <button onclick="calcCalorie()" class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold">Calculate Calories</button>
-                        </div>
-                        <div class="w-full md:w-1/2 bg-orange-50 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[200px]" id="cal-res">
-                            <p class="text-orange-300 font-medium">Result will appear here</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 5. BOOKING (Restored Layout) -->
-            <section id="booking" class="scroll-section bg-white px-4 py-16">
-                <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-8">
-                    <!-- Left Green Box -->
-                    <div class="flex-1 bg-brand text-white rounded-3xl p-8 lg:p-10 shadow-lg flex flex-col justify-between">
-                        <div>
-                            <h2 class="text-3xl font-bold mb-4">Book Free Consultation</h2>
-                            <p class="mb-8 opacity-90 leading-relaxed">Take the first step towards a healthier you. Amader expert der sathe kotha bolun.</p>
-                            <ul class="space-y-4 font-medium mb-8">
-                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> Personalized Guidance</li>
-                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> 100% Free Consultation</li>
-                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> Expert Nutrition Advice</li>
-                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> Achieve Your Health Goals</li>
-                            </ul>
-                        </div>
-                        <div class="p-5 bg-white/10 rounded-2xl border border-white/20">
-                            <p class="text-sm font-bold mb-3">Quick Booking via WhatsApp</p>
-                            <button onclick="window.open(document.getElementById('btn-hero-wa').href, '_blank')" class="w-full bg-white text-brand py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-50">
+            <!-- BOOKING SECTION -->
+            <section id="booking" class="bg-gray-50 px-4 py-16">
+                <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-10">
+                    <div class="flex-1 bg-brand text-white rounded-3xl p-8 shadow-lg">
+                        <h2 class="text-3xl font-bold mb-4">Book Free Consultation</h2>
+                        <p class="mb-8 opacity-90">Take the first step towards a healthier you.</p>
+                        <ul class="space-y-4 font-medium mb-12">
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> Personalized Guidance</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> 100% Free Consultation</li>
+                        </ul>
+                        <div class="p-4 bg-white/10 rounded-2xl">
+                            <button onclick="showToast('Connecting to WhatsApp...')" class="w-full bg-white text-brand py-3 rounded-xl font-bold flex items-center justify-center gap-2">
                                 <i class="fa-brands fa-whatsapp text-xl"></i> Book on WhatsApp
                             </button>
                         </div>
                     </div>
-                    <!-- Right Form Box -->
-                    <div class="flex-1 bg-white p-8 lg:p-10 rounded-3xl border border-gray-100 shadow-md">
-                        <h3 class="text-xl font-bold mb-6 text-gray-800">Free Consultation Form</h3>
-                        <form onsubmit="event.preventDefault(); showToast('Request Sent! We will contact you soon.'); this.reset();" class="space-y-5">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-600 mb-1">Your Name</label>
-                                <input type="text" required placeholder="Enter your name" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50">
-                            </div>
-                            <div class="flex gap-4">
-                                <div class="flex-1">
-                                    <label class="block text-sm font-bold text-gray-600 mb-1">Mobile Number</label>
-                                    <input type="tel" required placeholder="Enter mobile number" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50">
-                                </div>
-                                <div class="w-1/3">
-                                    <label class="block text-sm font-bold text-gray-600 mb-1">Age</label>
-                                    <input type="number" required placeholder="Age" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-600 mb-1">Your Goal</label>
-                                <select class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50">
-                                    <option>Select your goal</option>
-                                    <option>Weight Loss</option>
-                                    <option>Weight Gain</option>
-                                    <option>Healthy Lifestyle</option>
-                                </select>
-                            </div>
-                            <div class="flex gap-4">
-                                <div class="flex-1">
-                                    <label class="block text-sm font-bold text-gray-600 mb-1">Select Date</label>
-                                    <input type="date" required class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50">
-                                </div>
-                                <div class="flex-1">
-                                    <label class="block text-sm font-bold text-gray-600 mb-1">Select Time</label>
-                                    <input type="time" required class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50">
-                                </div>
-                            </div>
-                            <button type="submit" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-4 hover:bg-brandDark transition">Book Appointment</button>
+                    <div class="flex-1 bg-white p-8 rounded-3xl border border-gray-100">
+                        <h3 class="text-xl font-bold mb-6">Consultation Form</h3>
+                        <form onsubmit="event.preventDefault(); showToast('Booking request sent!'); this.reset();" class="space-y-4">
+                            <input type="text" required placeholder="Name" class="w-full p-3 border rounded-xl">
+                            <input type="tel" required placeholder="Mobile" class="w-full p-3 border rounded-xl">
+                            <button type="submit" class="w-full bg-brand text-white py-4 rounded-xl font-bold">Book Now</button>
                         </form>
                     </div>
                 </div>
             </section>
 
-            <!-- 6. FOOTER -->
-            <footer class="bg-[#111827] text-white pt-16 pb-8 px-6 border-t-[8px] border-brand">
-                <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
-                    <div>
-                        <img id="site-logo-footer" src="" class="h-12 w-auto object-contain mb-4 filter brightness-0 invert">
-                        <p class="text-gray-400 text-sm">Transforming lives through balanced nutrition and healthy lifestyle.</p>
+            <!-- FOOTER -->
+            <footer class="bg-[#1a202c] text-white pt-16 pb-8 px-4">
+                <div class="max-w-6xl mx-auto text-center">
+                    <h3 class="text-2xl font-bold text-brand italic mb-2">Health Station 360</h3>
+                    <p class="text-gray-400 text-sm mb-6">Nutrition • Wellness • Lifestyle</p>
+                    <div class="border-t border-gray-700 pt-8 text-gray-500 text-sm">
+                        &copy; 2026 Health Station 360. All Rights Reserved.
                     </div>
-                    <div>
-                        <h4 class="font-bold mb-4 text-lg">Quick Links</h4>
-                        <ul class="space-y-2 text-gray-400 text-sm">
-                            <li><button onclick="navigateMain('home')" class="hover:text-brand">Home</button></li>
-                            <li><button onclick="navigateMain('programs')" class="hover:text-brand">Programs</button></li>
-                            <li><button onclick="handleDashboardAccess()" class="hover:text-brand">Dashboard</button></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-4 text-lg">Resources</h4>
-                        <ul class="space-y-2 text-gray-400 text-sm">
-                            <li><button onclick="navigateMain('tools'); switchTool('bmi')" class="hover:text-brand">BMI Calculator</button></li>
-                            <li><button onclick="navigateMain('tools'); switchTool('water')" class="hover:text-brand">Water Calculator</button></li>
-                            <li><button onclick="navigateMain('tools'); switchTool('calorie')" class="hover:text-brand">Calorie Calculator</button></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-4 text-lg">Follow Us</h4>
-                        <div class="flex gap-4 text-2xl">
-                            <a id="link-fb" href="#" class="text-gray-400 hover:text-blue-500 transition"><i class="fa-brands fa-facebook"></i></a>
-                            <a id="link-ig" href="#" class="text-gray-400 hover:text-pink-500 transition"><i class="fa-brands fa-instagram"></i></a>
-                            <a id="link-yt" href="#" class="text-gray-400 hover:text-red-500 transition"><i class="fa-brands fa-youtube"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="border-t border-gray-800 pt-6 text-center text-gray-500 text-sm">
-                    &copy; 2026 Health Station 360. All Rights Reserved.
                 </div>
             </footer>
-        </main>
-
-        <!-- ==================== DASHBOARD VIEW (Hidden by default) ==================== -->
-        <main id="dashboard-view" class="lg:ml-64 p-6 hidden bg-gray-50 min-h-screen">
-            <div class="max-w-5xl mx-auto">
-                <button onclick="closeViewsAndShowMain()" class="mb-6 flex items-center gap-2 text-gray-500 hover:text-gray-800 font-bold">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Website
-                </button>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-6 mb-8">
-                    <img id="dash-photo" src="https://via.placeholder.com/100" class="w-20 h-20 rounded-full object-cover border-4 border-gray-100">
-                    <div>
-                        <h2 class="text-2xl font-bold" id="dash-name">User Name</h2>
-                        <p class="text-gray-500" id="dash-goal">Goal: Weight Loss</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100"><p class="text-sm font-bold text-gray-500">Current Weight</p><p class="text-4xl font-extrabold text-brand mt-2">-- kg</p></div>
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100"><p class="text-sm font-bold text-gray-500">Target Weight</p><p class="text-4xl font-extrabold text-brand mt-2">-- kg</p></div>
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100"><p class="text-sm font-bold text-gray-500">Progress</p><p class="text-4xl font-extrabold text-blue-500 mt-2">-- %</p></div>
-                </div>
-            </div>
-        </main>
-
-        <!-- ==================== COACH PANEL VIEW (Hidden by default) ==================== -->
-        <main id="coach-view" class="lg:ml-64 bg-gray-100 min-h-screen hidden">
-            <div class="bg-[#1e293b] text-white p-4 flex justify-between items-center sticky top-0 z-40 shadow-md">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-user-shield text-2xl text-red-400"></i>
-                    <h1 class="text-xl font-bold">Coach Dashboard</h1>
-                </div>
-                <button onclick="closeViewsAndShowMain()" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-bold transition">
-                    Exit Admin
-                </button>
-            </div>
-            
-            <div class="max-w-6xl mx-auto p-6 flex flex-col md:flex-row gap-6">
-                <!-- Admin Tabs -->
-                <div class="w-full md:w-64 flex flex-col gap-2">
-                    <button onclick="switchAdminTab('settings')" id="adm-tab-settings" class="admin-tab text-left p-4 rounded-xl font-bold bg-white text-gray-800 shadow-sm transition">
-                        <i class="fa-solid fa-gear w-6"></i> Website Settings
-                    </button>
-                    <button onclick="switchAdminTab('members')" id="adm-tab-members" class="admin-tab text-left p-4 rounded-xl font-bold text-gray-500 hover:bg-white hover:text-gray-800 transition">
-                        <i class="fa-solid fa-users w-6"></i> All Members
-                    </button>
-                </div>
-
-                <!-- Admin Content -->
-                <div class="flex-1 bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
-                    
-                    <!-- Settings Tab -->
-                    <div id="adm-content-settings" class="admin-content block">
-                        <h2 class="text-2xl font-bold border-b pb-4 mb-6">General Settings</h2>
-                        
-                        <div class="space-y-6">
-                            <!-- Auth Emails -->
-                            <div class="bg-red-50 p-4 rounded-xl border border-red-100">
-                                <label class="block font-bold text-sm mb-1 text-red-800">Authorized Coach Emails (Comma separated)</label>
-                                <textarea id="inp-coach-emails" class="w-full p-3 border rounded-lg h-16 bg-white outline-none focus:border-red-400"></textarea>
-                                <p class="text-xs text-red-500 mt-1">Warning: Ensure your email is here, or you will lose access!</p>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <div>
-                                    <label class="block font-bold text-sm mb-2">Logo (URL / Base64)</label>
-                                    <input type="text" id="inp-logo" class="w-full p-3 border rounded-lg outline-none focus:border-brand mb-2" placeholder="Image URL">
-                                    <input type="file" accept="image/*" onchange="fileToInput(this, 'inp-logo')" class="text-sm">
-                                </div>
-                                <div>
-                                    <label class="block font-bold text-sm mb-2">Hero Image (URL / Base64)</label>
-                                    <input type="text" id="inp-hero" class="w-full p-3 border rounded-lg outline-none focus:border-brand mb-2" placeholder="Image URL">
-                                    <input type="file" accept="image/*" onchange="fileToInput(this, 'inp-hero')" class="text-sm">
-                                </div>
-                                <div><label class="block font-bold text-sm mb-1">WhatsApp Number</label><input type="text" id="inp-wa" class="w-full p-3 border rounded-lg outline-none focus:border-brand"></div>
-                                <div><label class="block font-bold text-sm mb-1">Facebook Link</label><input type="text" id="inp-fb" class="w-full p-3 border rounded-lg outline-none focus:border-brand"></div>
-                                <div><label class="block font-bold text-sm mb-1">Instagram Link</label><input type="text" id="inp-ig" class="w-full p-3 border rounded-lg outline-none focus:border-brand"></div>
-                                <div><label class="block font-bold text-sm mb-1">YouTube Link</label><input type="text" id="inp-yt" class="w-full p-3 border rounded-lg outline-none focus:border-brand"></div>
-                            </div>
-                            
-                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <h3 class="font-bold mb-4">Add Real Result</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                                    <div>
-                                        <input type="text" id="inp-res-b" placeholder="Before Image URL" class="w-full p-2 border rounded-lg mb-1 text-sm outline-none">
-                                        <input type="file" accept="image/*" onchange="fileToInput(this, 'inp-res-b')" class="text-xs">
-                                    </div>
-                                    <div>
-                                        <input type="text" id="inp-res-a" placeholder="After Image URL" class="w-full p-2 border rounded-lg mb-1 text-sm outline-none">
-                                        <input type="file" accept="image/*" onchange="fileToInput(this, 'inp-res-a')" class="text-xs">
-                                    </div>
-                                </div>
-                                <button onclick="addResultItem()" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Add Result</button>
-                            </div>
-
-                            <button onclick="saveAdminSettings()" class="bg-[#1e293b] text-white px-8 py-3 rounded-xl font-bold shadow-md hover:bg-black transition w-full md:w-auto">
-                                Save All Settings
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Members Tab -->
-                    <div id="adm-content-members" class="admin-content hidden">
-                        <h2 class="text-2xl font-bold border-b pb-4 mb-6">Registered Members</h2>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-gray-100 text-gray-600 text-sm">
-                                        <th class="p-3 border-b">Member</th>
-                                        <th class="p-3 border-b">Contact</th>
-                                        <th class="p-3 border-b">Goal</th>
-                                        <th class="p-3 border-b">Location</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="admin-members-list">
-                                    <tr><td colspan="4" class="p-4 text-center text-gray-500">Loading members...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </main>
-        
-        <!-- MOBILE BOTTOM NAV -->
-        <nav class="lg:hidden fixed bottom-0 w-full bg-white border-t border-gray-100 z-[60] flex justify-around items-center px-2 py-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]">
-            <button onclick="navigateMain('home')" class="nav-mobile-btn flex flex-col items-center p-2 text-brand" data-target="home">
-                <i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">Home</span>
-            </button>
-            <button onclick="navigateMain('programs')" class="nav-mobile-btn flex flex-col items-center p-2 text-gray-400" data-target="programs">
-                <i class="fa-solid fa-border-all text-xl mb-1"></i><span class="text-[10px]">Programs</span>
-            </button>
-            <button onclick="navigateMain('booking')" class="nav-mobile-btn flex flex-col items-center p-2 text-gray-400 relative" data-target="booking">
-                <div class="absolute -top-6 bg-brand text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg border-4 border-white"><i class="fa-solid fa-plus text-xl"></i></div>
-                <span class="text-[10px] mt-6">Booking</span>
-            </button>
-            <button onclick="handleDashboardAccess()" class="flex flex-col items-center p-2 text-gray-400 hover:text-gray-800">
-                <i class="fa-regular fa-user text-xl mb-1"></i><span class="text-[10px]">Profile</span>
-            </button>
-        </nav>
-    </div>
-
-    <!-- ==================== MODALS ==================== -->
-    
-    <!-- Auth Modal -->
-    <div id="modal-auth" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl relative">
-            <button onclick="closeModal('modal-auth')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h2 class="text-2xl font-bold mb-6 text-center">Login / Register</h2>
-            
-            <button id="btn-google" class="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-xl font-bold hover:bg-gray-50 transition mb-4">
-                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" class="w-5"> Google Login
-            </button>
-            
-            <div class="relative flex items-center py-2 mb-4">
-                <div class="flex-grow border-t border-gray-200"></div>
-                <span class="flex-shrink-0 mx-4 text-gray-400 text-sm font-medium">Or Phone Number</span>
-                <div class="flex-grow border-t border-gray-200"></div>
-            </div>
-
-            <div id="auth-phone-box">
-                <input type="tel" id="inp-auth-phone" value="+91" placeholder="+91 9876543210" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-brand mb-3 font-medium tracking-wide">
-                <!-- IMPORTANT: Recaptcha container must be visible when rendering -->
-                <div id="recaptcha-container" class="mb-3 flex justify-center w-full"></div>
-                <button id="btn-send-otp" class="w-full bg-brand text-white py-3 rounded-xl font-bold hover:bg-brandDark transition">Send OTP</button>
-            </div>
-
-            <div id="auth-otp-box" class="hidden">
-                <input type="text" id="inp-auth-otp" placeholder="Enter 6-digit OTP" class="w-full px-4 py-3 rounded-xl border outline-none focus:border-brand mb-3 text-center tracking-widest text-lg font-bold">
-                <button id="btn-verify-otp" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition">Verify OTP</button>
-            </div>
         </div>
-    </div>
 
-    <!-- Onboarding Modal -->
-    <div id="modal-onboard" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center backdrop-blur-sm p-4 overflow-y-auto">
-        <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-2xl shadow-2xl my-8 relative max-h-[90vh] overflow-y-auto hide-scrollbar">
-            <h2 class="text-2xl font-bold mb-2">Complete Your Profile</h2>
-            <p class="text-gray-500 text-sm mb-6">Welcome! Please fill in your details to create your personalized dashboard.</p>
+        <!-- ======================= USER DASHBOARD VIEW ======================= -->
+        <div id="dashboard-view" class="hidden min-h-screen bg-gray-50 p-4 lg:p-8 pt-20 lg:pt-8">
             
-            <form id="onboarding-form" onsubmit="event.preventDefault(); saveProfileData();" class="space-y-4">
-                
-                <!-- Images Upload Section -->
-                <div class="flex flex-col md:flex-row gap-6 mb-4 justify-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                    <div class="flex flex-col items-center text-center flex-1">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Profile Photo</label>
-                        <img id="ob-preview" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md mb-3">
-                        <input type="file" accept="image/*" onchange="fileToInput(this, 'ob-img-data', 'ob-preview')" class="text-xs w-48 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20">
-                        <input type="hidden" id="ob-img-data">
-                    </div>
-                    <div class="flex flex-col items-center text-center flex-1 border-t md:border-t-0 md:border-l border-gray-200 pt-4 md:pt-0">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Current Body Image</label>
-                        <img id="ob-current-preview" src="https://via.placeholder.com/100x120?text=Current+Look" class="w-20 h-24 rounded-xl object-cover border-4 border-white shadow-md mb-3">
-                        <input type="file" accept="image/*" onchange="fileToInput(this, 'ob-current-img-data', 'ob-current-preview')" class="text-xs w-48 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100">
-                        <input type="hidden" id="ob-current-img-data">
-                    </div>
+            <!-- Dashboard Header -->
+            <div class="max-w-4xl mx-auto flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">My Dashboard</h2>
+                    <p class="text-gray-500 text-sm">Track your progress and routine</p>
                 </div>
+                <button onclick="closeViewsAndShowMain()" class="text-gray-500 hover:text-brand bg-white p-2 rounded-xl shadow-sm"><i class="fa-solid fa-arrow-left"></i> Back to Site</button>
+            </div>
 
-                <!-- Personal Info Fields -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Full Name *</label><input type="text" id="ob-name" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Email *</label><input type="email" id="ob-email" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Mobile No *</label><input type="tel" id="ob-phone" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
+            <!-- Profile Info Edit Section -->
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-8">
+                <div class="flex items-center gap-4 mb-4">
+                    <h3 class="font-bold text-lg">My Profile</h3>
+                    <button onclick="document.getElementById('edit-profile-form').classList.toggle('hidden')" class="text-xs bg-brand/10 text-brand px-3 py-1 rounded-full"><i class="fa-solid fa-pen"></i> Edit</button>
+                </div>
+                
+                <form id="edit-profile-form" class="hidden space-y-4 border-t pt-4" onsubmit="event.preventDefault(); updateProfileDetails();">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="text-xs font-bold text-gray-500">Name</label><input type="text" id="ep-name" class="w-full p-2 border rounded-lg"></div>
+                        <div><label class="text-xs font-bold text-gray-500">Phone</label><input type="text" id="ep-phone" class="w-full p-2 border rounded-lg"></div>
+                        <div class="md:col-span-2"><label class="text-xs font-bold text-gray-500">Address</label><input type="text" id="ep-address" class="w-full p-2 border rounded-lg"></div>
+                    </div>
+                    <button type="submit" class="bg-brand text-white px-4 py-2 rounded-lg text-sm font-bold">Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Physical Data Missing Alert -->
+            <div id="dash-physical-req" class="max-w-4xl mx-auto bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-8 hidden">
+                <h3 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-triangle-exclamation"></i> Complete Your Profile</h3>
+                <p class="text-sm text-yellow-700 mb-4">Please provide your physical details to generate your diet chart and prescription.</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div><label class="text-xs font-bold">Age</label><input type="number" id="pd-age" class="w-full p-2 rounded border"></div>
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1">Your Goal *</label>
-                        <select id="ob-goal" required class="w-full p-3 rounded-xl border outline-none bg-white focus:border-brand transition-colors">
-                            <option value="Weight Loss">Weight Loss</option>
-                            <option value="Weight Gain">Weight Gain</option>
-                            <option value="Healthy Lifestyle">Healthy Lifestyle</option>
+                        <label class="text-xs font-bold">Gender</label>
+                        <select id="pd-gender" class="w-full p-2 rounded border">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
                         </select>
                     </div>
-                    <div class="md:col-span-2"><label class="block text-sm font-bold text-gray-700 mb-1">Address *</label><input type="text" id="ob-address" required placeholder="House/Flat No, Street, Landmark" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">PIN Code *</label><input type="text" id="ob-pin" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">City *</label><input type="text" id="ob-city" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">State *</label><input type="text" id="ob-state" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
+                    <div><label class="text-xs font-bold">Height (cm)</label><input type="number" id="pd-height" class="w-full p-2 rounded border"></div>
+                    <div><label class="text-xs font-bold">Weight (kg)</label><input type="number" id="pd-weight" class="w-full p-2 rounded border"></div>
+                </div>
+                <button onclick="savePhysicalData()" class="mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg font-bold">Generate My Report</button>
+            </div>
+
+            <!-- Prescription & Diet View -->
+            <div id="dash-report-view" class="max-w-4xl mx-auto hidden space-y-6">
+                <div class="flex justify-end">
+                    <button onclick="downloadPrescription()" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 shadow-md hover:bg-blue-700">
+                        <i class="fa-solid fa-download"></i> Download Report
+                    </button>
                 </div>
                 
-                <button type="submit" id="btn-save-profile" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-6 hover:bg-brandDark transition shadow-lg flex items-center justify-center gap-2">
-                    <span>Save Profile & Enter Dashboard</span>
+                <!-- The Report Container (Used for PDF generation) -->
+                <div id="prescription-container" class="bg-white rounded-sm shadow-xl p-8 lg:p-12 border border-gray-200 text-gray-800">
+                    
+                    <!-- Header -->
+                    <div class="text-center border-b-2 border-blue-800 pb-4 mb-6">
+                        <h1 class="text-2xl font-bold text-blue-900 uppercase tracking-widest mb-1">Health Station 360</h1>
+                        <p class="font-bold text-sm">Wellness Coach: SHANKAR & PUSPA</p>
+                        <p class="text-xs text-gray-600">Office & Checkup: Kona, Howrah | Mobile: 6289308561</p>
+                    </div>
+
+                    <!-- Patient Info -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm mb-6 bg-gray-50 p-4 rounded-lg">
+                        <div><span class="font-bold text-gray-500">Name:</span> <span id="rx-name">--</span></div>
+                        <div><span class="font-bold text-gray-500">Age:</span> <span id="rx-age">--</span></div>
+                        <div><span class="font-bold text-gray-500">Height:</span> <span id="rx-height">--</span> cm</div>
+                        <div><span class="font-bold text-gray-500">Present Weight:</span> <span id="rx-weight">--</span> kg</div>
+                        <div><span class="font-bold text-gray-500">BMI:</span> <span id="rx-bmi">--</span></div>
+                        <div><span class="font-bold text-gray-500">Ideal Weight:</span> <span id="rx-ideal">--</span> kg</div>
+                        <div class="col-span-2 text-right"><span class="font-bold text-gray-500">Date:</span> <span id="rx-date">--</span></div>
+                    </div>
+
+                    <!-- Daily Needs Table -->
+                    <div class="mb-6">
+                        <h3 class="font-bold text-blue-800 mb-2 border-b border-blue-200 pb-1">Your Body Needs Daily</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm bg-blue-50 p-4 rounded-lg">
+                            <div class="flex justify-between border-b border-blue-100 pb-1">
+                                <span class="font-semibold text-gray-600">Water (1L per 20kg):</span>
+                                <span id="rx-water" class="font-bold text-blue-700">-- L</span>
+                            </div>
+                            <div class="flex justify-between border-b border-blue-100 pb-1">
+                                <span class="font-semibold text-gray-600">Protein (1g per kg):</span>
+                                <span id="rx-protein" class="font-bold text-blue-700">-- gm</span>
+                            </div>
+                            <div class="flex justify-between border-b border-blue-100 pb-1">
+                                <span class="font-semibold text-gray-600">Fiber:</span>
+                                <span class="font-bold">30-35 gm</span>
+                            </div>
+                            <div class="flex justify-between border-b border-blue-100 pb-1">
+                                <span class="font-semibold text-gray-600">Oil:</span>
+                                <span class="font-bold">20 gm max</span>
+                            </div>
+                            <div class="col-span-1 md:col-span-2 text-xs text-gray-500 mt-2">
+                                * Requirements include Vitamins (39 types), Minerals, and Anti-Oxidant Amino Acids.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diet Routine Box -->
+                    <div class="mb-6">
+                        <h3 class="font-bold text-blue-800 mb-2 border-b border-blue-200 pb-1">Suggested Daily Routine</h3>
+                        <table class="w-full text-sm border-collapse border border-gray-300">
+                            <tr class="bg-gray-100 text-gray-700">
+                                <th class="border border-gray-300 p-2">Morning</th>
+                                <th class="border border-gray-300 p-2">Breakfast</th>
+                                <th class="border border-gray-300 p-2">Lunch</th>
+                                <th class="border border-gray-300 p-2">Dinner</th>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 p-3 text-center text-xs">Warm Water + Lemon<br>(Empty Stomach)</td>
+                                <td class="border border-gray-300 p-3 text-center text-xs">High Protein Shake<br>or Oats/Eggs</td>
+                                <td class="border border-gray-300 p-3 text-center text-xs">Normal Meal (Less rice/roti)<br>Plenty of Salad</td>
+                                <td class="border border-gray-300 p-3 text-center text-xs">Light Meal (Soup/Salad)<br>Before 8 PM</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Footer Note -->
+                    <div class="text-center text-xs text-gray-400 mt-10 pt-4 border-t border-gray-200 italic">
+                        "Good Health Depends on Good Cellular Nutrition" <br>
+                        Generated via Health Station 360 Portal.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= COACH PANEL VIEW ======================= -->
+        <div id="coach-view" class="hidden min-h-screen bg-green-50 p-4 lg:p-8 pt-20 lg:pt-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-brandDark"><i class="fa-solid fa-user-shield"></i> Coach Panel</h2>
+                        <p class="text-brand text-sm">Super Admin Dashboard</p>
+                    </div>
+                    <button onclick="closeViewsAndShowMain()" class="text-brandDark bg-white px-4 py-2 rounded-xl shadow-sm border border-brand/20 hover:bg-brand/10">Exit Panel</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Settings -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand/20">
+                        <h3 class="font-bold text-lg mb-4 text-brandDark"><i class="fa-solid fa-gear"></i> Portal Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">Authorized Coach Email</label>
+                                <input type="email" id="admin-add-email" placeholder="Add new admin email" class="w-full p-2 border border-brand/30 rounded mt-1 text-sm focus:outline-none focus:border-brand">
+                                <button onclick="addAdminEmail()" class="w-full mt-2 bg-brand text-white text-xs py-2 rounded font-bold">Add Admin Access</button>
+                                <p class="text-[10px] text-gray-400 mt-1">* Only these emails can access this panel.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member List -->
+                    <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-brand/20 flex flex-col h-[500px]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg text-brandDark"><i class="fa-solid fa-users"></i> Registered Members</h3>
+                            <button onclick="loadMembersList()" class="text-brand text-sm"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                        </div>
+                        <div class="overflow-y-auto flex-1 pr-2 space-y-3" id="admin-members-list">
+                            <div class="text-center text-gray-400 py-10">Loading members...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="lg:hidden fixed bottom-0 w-full bg-white border-t border-gray-100 z-50 flex justify-around items-center px-2 py-2 shadow-lg" id="mobile-nav">
+        <a href="#home" class="nav-link-mobile flex flex-col items-center p-2 text-brand font-bold"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px]">Home</span></a>
+        <a href="#programs" class="nav-link-mobile flex flex-col items-center p-2 text-gray-400"><i class="fa-solid fa-border-all text-xl mb-1"></i><span class="text-[10px]">Programs</span></a>
+        <a href="#booking" class="nav-link-mobile flex flex-col items-center p-2 text-gray-400 relative">
+            <div class="absolute -top-6 bg-brand text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg border-4 border-white"><i class="fa-solid fa-plus text-xl"></i></div>
+            <span class="text-[10px] mt-6">Booking</span>
+        </a>
+        <button onclick="handleDashboardAccess()" class="flex flex-col items-center p-2 text-gray-400"><i class="fa-regular fa-user text-xl mb-1"></i><span class="text-[10px]">Profile</span></button>
+    </nav>
+
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-md mx-4 shadow-2xl relative">
+            <button onclick="closeModal('auth-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
+                <p class="text-gray-500 text-sm">Login to access your dashboard</p>
+            </div>
+            
+            <div class="space-y-4">
+                <button id="btn-google-login" class="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-gray-50 transition">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" class="w-5"> Continue with Google
                 </button>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- Coach Claim Modal -->
-    <div id="modal-coach-claim" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl text-center relative">
-            <button onclick="closeModal('modal-coach-claim')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <i class="fa-solid fa-shield-halved text-5xl text-red-500 mb-4"></i>
-            <h2 class="text-2xl font-bold mb-2 text-gray-800">Admin Setup</h2>
-            <p class="text-gray-600 mb-6 text-sm">No authorized coach found. Do you want to claim admin access using your current email?</p>
-            <button onclick="claimAdminRights()" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition">Claim Admin Access</button>
+    <!-- ONBOARDING MODAL -->
+    <div id="modal-onboard" class="hidden fixed inset-0 bg-black/60 z-[110] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white p-6 lg:p-8 rounded-3xl w-full max-w-2xl mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold mb-2">Complete Your Profile</h2>
+            <p class="text-sm text-gray-500 mb-6">First time here? Please provide basic details.</p>
+            
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold mb-1">Full Name *</label><input type="text" id="ob-name" class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none"></div>
+                    <div><label class="block text-xs font-bold mb-1">Email *</label><input type="email" id="ob-email" class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none" readonly></div>
+                    <div><label class="block text-xs font-bold mb-1">Mobile No *</label><input type="tel" id="ob-phone" class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none"></div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">Primary Goal *</label>
+                        <select id="ob-goal" class="w-full p-3 rounded-xl border bg-white focus:border-brand outline-none">
+                            <option>Weight Loss</option>
+                            <option>Weight Gain</option>
+                            <option>Healthy Lifestyle</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="saveInitialProfile()" id="btn-save-ob" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-4 shadow-lg hover:bg-brandDark transition flex justify-center items-center gap-2">
+                    <span>Create Profile</span>
+                </button>
+            </div>
         </div>
     </div>
-
-    <div id="toast">Message</div>
-
-    <script>
-        // --- UI Globals & Helpers ---
-        window.appData = {
-            logo: 'https://ui-avatars.com/api/?name=HS+360&background=1a8d1a&color=fff&rounded=true&size=100',
-            heroImg: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-            whatsapp: '919231943300', fb: '#', ig: '#', yt: '#',
-            results: [
-                {b: 'https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400', a: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400'},
-                {b: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', a: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400'}
-            ]
-        };
-
-        const showToast = (msg) => {
-            const t = document.getElementById("toast");
-            t.innerText = msg; t.className = "show";
-            setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000);
-        };
-        window.showToast = showToast;
-
-        const openModal = (id) => document.getElementById(id).classList.remove('hidden');
-        const closeModal = (id) => document.getElementById(id).classList.add('hidden');
-        window.closeModal = closeModal;
-
-        // --- Base UI Update ---
-        const updateUIFromData = () => {
-            document.getElementById('site-logo').src = appData.logo;
-            document.getElementById('site-logo-mobile').src = appData.logo;
-            document.getElementById('site-logo-footer').src = appData.logo;
-            document.getElementById('hero-img').src = appData.heroImg;
-            
-            document.getElementById('btn-hero-wa').href = `https://wa.me/${appData.whatsapp}`;
-            document.getElementById('link-fb').href = appData.fb;
-            document.getElementById('link-ig').href = appData.ig;
-            document.getElementById('link-yt').href = appData.yt;
-
-            // Admin Inputs
-            document.getElementById('inp-logo').value = appData.logo;
-            document.getElementById('inp-hero').value = appData.heroImg;
-            document.getElementById('inp-wa').value = appData.whatsapp;
-            document.getElementById('inp-fb').value = appData.fb;
-            document.getElementById('inp-ig').value = appData.ig;
-            document.getElementById('inp-yt').value = appData.yt;
-
-            // Results UI
-            const rc = document.getElementById('results-container');
-            rc.innerHTML = '';
-            appData.results.forEach(r => {
-                rc.innerHTML += `
-                <div class="bg-white rounded-3xl p-3 shadow-sm border border-gray-100 flex gap-2 h-64 hover:shadow-md transition">
-                    <div class="ba-container w-1/2 rounded-2xl"><img src="${r.b}"><div class="ba-badge ba-left">Before</div></div>
-                    <div class="ba-container w-1/2 rounded-2xl"><img src="${r.a}"><div class="ba-badge ba-right">After</div></div>
-                </div>`;
-            });
-        };
-
-        // --- Navigation (Views & Spy) ---
-        window.navigateMain = (targetId) => {
-            closeViewsAndShowMain();
-            document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
-        };
-
-        window.closeViewsAndShowMain = () => {
-            document.getElementById('dashboard-view').classList.add('hidden');
-            document.getElementById('coach-view').classList.add('hidden');
-            document.getElementById('main-view').classList.remove('hidden');
-            document.querySelector('aside').classList.remove('hidden');
-            document.querySelector('header').classList.remove('hidden');
-        };
-
-        // Scroll Spy Setup using IntersectionObserver for better performance
-        document.addEventListener("DOMContentLoaded", () => {
-            const sections = document.querySelectorAll(".scroll-section");
-            const navLinks = document.querySelectorAll(".nav-link");
-            const navLinksMob = document.querySelectorAll(".nav-mobile-btn");
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.id;
-                        
-                        navLinks.forEach(link => {
-                            if (link.dataset.target === id) {
-                                link.classList.add("text-brand", "bg-brand/10", "font-semibold");
-                                link.classList.remove("text-gray-600", "font-medium");
-                            } else {
-                                link.classList.remove("text-brand", "bg-brand/10", "font-semibold");
-                                link.classList.add("text-gray-600", "font-medium");
-                            }
-                        });
-
-                        navLinksMob.forEach(link => {
-                            if (link.dataset.target === id) {
-                                link.classList.add("text-brand");
-                                link.classList.remove("text-gray-400");
-                                link.querySelector('span').classList.add("font-bold");
-                            } else {
-                                link.classList.remove("text-brand");
-                                link.classList.add("text-gray-400");
-                                link.querySelector('span').classList.remove("font-bold");
-                            }
-                        });
-                    }
-                });
-            }, { threshold: 0.3, rootMargin: "-10% 0px -50% 0px" });
-
-            sections.forEach(sec => observer.observe(sec));
-            
-            // Init default data
-            updateUIFromData();
-        });
-
-        // --- Tools Logic ---
-        window.switchTool = (t) => {
-            document.querySelectorAll('.tool-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tool-tab').forEach(el => { el.className = "tool-tab flex-1 whitespace-nowrap py-3 px-4 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition"; });
-            document.getElementById('tool-'+t).classList.remove('hidden');
-            document.getElementById('tab-'+t).className = "tool-tab flex-1 whitespace-nowrap py-3 px-4 rounded-xl font-bold bg-brand text-white transition";
-        };
-        window.calcBMI = () => {
-            const h=document.getElementById('bmi-h').value, w=document.getElementById('bmi-w').value;
-            if(!h||!w) return showToast("Enter details");
-            const bmi = (w / Math.pow(h/100, 2)).toFixed(1);
-            let c="Normal", col="text-green-500";
-            if(bmi<18.5){c="Underweight"; col="text-blue-500";} else if(bmi>25){c="Overweight"; col="text-orange-500";}
-            document.getElementById('bmi-res').innerHTML = `<p class="text-5xl font-extrabold ${col}">${bmi}</p><p class="mt-2 font-bold text-gray-600 uppercase text-sm">${c}</p>`;
-        };
-        window.calcWater = () => {
-            const w=document.getElementById('wat-w').value, e=document.getElementById('wat-e').value||0;
-            if(!w) return showToast("Enter weight");
-            const res = ((w * 0.033) + (e * 0.012)).toFixed(1);
-            document.getElementById('wat-res').innerHTML = `<p class="text-5xl font-extrabold text-blue-500">${res} L</p><p class="mt-2 text-sm text-gray-500 font-bold uppercase">Daily Goal</p>`;
-        };
-        window.calcCalorie = () => {
-            const a=document.getElementById('cal-a').value, w=document.getElementById('cal-w').value, h=document.getElementById('cal-h').value, g=document.getElementById('cal-g').value;
-            if(!a||!w||!h) return showToast("Enter all details");
-            const cals = g==='m' ? Math.round(10*w+6.25*h-5*a+5) : Math.round(10*w+6.25*h-5*a-161);
-            document.getElementById('cal-res').innerHTML = `<p class="text-5xl font-extrabold text-orange-500">${cals}</p><p class="mt-2 text-sm text-gray-500 font-bold uppercase">Base Calories / Day</p>`;
-        };
-
-        // File to Input helper (Base64)
-        window.fileToInput = (input, targetId, previewId) => {
-            const f = input.files[0];
-            if(!f) return;
-            
-            // Image Auto-Compression Logic (< 1MB for Firestore)
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    let w = img.width, h = img.height;
-                    const MAX_SIZE = 800; // Resize to max 800px
-                    
-                    if(w > h && w > MAX_SIZE) { h *= MAX_SIZE / w; w = MAX_SIZE; }
-                    else if(h > MAX_SIZE) { w *= MAX_SIZE / h; h = MAX_SIZE; }
-                    
-                    canvas.width = w; canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-                    
-                    // Compress as JPEG (0.7 quality)
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                    
-                    document.getElementById(targetId).value = compressedBase64;
-                    if(previewId) document.getElementById(previewId).src = compressedBase64;
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(f);
-        };
-
-        // Admin Base Functions
-        window.switchAdminTab = (t) => {
-            document.querySelectorAll('.admin-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.admin-tab').forEach(el => { el.className = "admin-tab text-left p-4 rounded-xl font-bold text-gray-500 hover:bg-white hover:text-gray-800 transition"; });
-            document.getElementById('adm-content-'+t).classList.remove('hidden');
-            document.getElementById('adm-tab-'+t).className = "admin-tab text-left p-4 rounded-xl font-bold bg-white text-gray-800 shadow-sm transition";
-        };
-        window.addResultItem = () => {
-            const b = document.getElementById('inp-res-b').value, a = document.getElementById('inp-res-a').value;
-            if(!b||!a) return showToast("Both images required");
-            appData.results.push({b, a});
-            updateUIFromData();
-            showToast("Added! Click Save All Settings to finalize.");
-            document.getElementById('inp-res-b').value = ''; document.getElementById('inp-res-a').value = '';
-        };
-    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyB1k5DPETIoN97uQC_lF3zllSTqw0EbNHI",
             authDomain: "health-station-360.firebaseapp.com",
@@ -771,251 +474,352 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Global State
+        // GLOBAL STATE
         window.currentUser = null;
         window.userProfile = null;
-        let adminSettings = { emails: [] };
-        
-        // Paths (Updated for strict security and stability)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hs360-app';
-        const DOC_DATA = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'app_data');
-        const DOC_ADMIN = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'admin_settings');
-        const COL_USERS = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+        const MASTER_ADMIN = "befitindia1@gmail.com";
 
-        // 1. Initial Data Fetch
-        const fetchInitialData = async () => {
-            try {
-                const snap = await getDoc(DOC_DATA);
-                if(snap.exists()) {
-                    window.appData = { ...window.appData, ...snap.data() };
-                    updateUIFromData();
-                }
-                const admSnap = await getDoc(DOC_ADMIN);
-                if(admSnap.exists()) adminSettings = admSnap.data();
-            } catch(e) { console.log("DB Fetch Error (Running on defaults)", e); }
+        // UI Helpers
+        window.showToast = (msg) => {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.remove('toast-hide'); t.classList.add('toast-show');
+            setTimeout(() => { t.classList.remove('toast-show'); t.classList.add('toast-hide'); }, 3000);
         };
-        fetchInitialData();
+        window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+        window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
 
-        // 2. Auth State Observer
+        // Auth State Observer
         onAuthStateChanged(auth, async (user) => {
+            document.getElementById('global-loader').classList.add('hidden-loader');
             window.currentUser = user;
-            if(user) {
-                document.getElementById('btn-logout').classList.remove('hidden');
-                closeModal('modal-auth');
-                
-                // Fetch Profile
-                const pSnap = await getDoc(doc(COL_USERS, user.uid));
-                if(pSnap.exists()) {
-                    window.userProfile = pSnap.data();
-                    showToast(`Welcome back, ${window.userProfile.name}!`);
-                } else {
-                    // Force Onboarding
-                    openModal('modal-onboard');
-                    if(user.email) document.getElementById('ob-email').value = user.email;
-                    if(user.phoneNumber) document.getElementById('ob-phone').value = user.phoneNumber;
-                    if(user.displayName) document.getElementById('ob-name').value = user.displayName;
+            if (user) {
+                // User logged in
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    window.userProfile = userDoc.data();
+                    updateSidebarUI();
                 }
             } else {
-                document.getElementById('btn-logout').classList.add('hidden');
+                // Logged out
                 window.userProfile = null;
+                resetSidebarUI();
+                closeViewsAndShowMain();
             }
         });
 
-        // 3. Login Flow
-        document.getElementById('btn-google').onclick = () => {
-            signInWithPopup(auth, new GoogleAuthProvider()).catch(e => showToast("Google Login Failed"));
-        };
-
-        // Phone Login Fixes: Initialize Recaptcha ONCE
-        let confResult = null;
-        document.getElementById('btn-send-otp').onclick = () => {
-            const p = document.getElementById('inp-auth-phone').value;
-            if(p.length < 10) return showToast("Enter valid phone number");
-            
-            if(!window.recaptchaVerifier) {
-                try {
-                    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'normal' });
-                    window.recaptchaVerifier.render();
-                } catch(e) {
-                    showToast("Error loading verification. Are you on localhost/live domain?");
-                    console.error(e);
-                    return;
-                }
-            }
-
-            signInWithPhoneNumber(auth, p, window.recaptchaVerifier)
-                .then(res => {
-                    confResult = res;
-                    document.getElementById('auth-phone-box').classList.add('hidden');
-                    document.getElementById('auth-otp-box').classList.remove('hidden');
-                    showToast("OTP Sent via SMS");
-                }).catch(e => {
-                    showToast("Failed to send OTP. Ensure domain is authorized.");
-                    console.error(e);
-                });
-        };
-
-        document.getElementById('btn-verify-otp').onclick = () => {
-            const code = document.getElementById('inp-auth-otp').value;
-            confResult.confirm(code).catch(e => showToast("Invalid OTP!"));
-        };
-
-        window.logoutUser = () => signOut(auth).then(() => { showToast("Logged out"); closeViewsAndShowMain(); });
-
-        // 4. Onboarding Save
-        window.saveProfileData = async () => {
-            if(!currentUser) {
-                showToast("User not logged in!");
-                return;
-            }
-
-            // Client-side quick check
-            if (!document.getElementById('ob-name').value || !document.getElementById('ob-email').value || !document.getElementById('ob-address').value) {
-                showToast("Please fill all required fields marked with *");
-                return;
-            }
-
-            // Show Loading state on button
-            const submitBtn = document.getElementById('btn-save-profile');
-            const originalHTML = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Saving Profile...</span>';
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
-
-            const p = {
-                name: document.getElementById('ob-name').value, 
-                email: document.getElementById('ob-email').value,
-                phone: document.getElementById('ob-phone').value, 
-                goal: document.getElementById('ob-goal').value,
-                address: document.getElementById('ob-address').value, 
-                pin: document.getElementById('ob-pin').value,
-                city: document.getElementById('ob-city').value, 
-                state: document.getElementById('ob-state').value,
-                photo: document.getElementById('ob-img-data').value || 'https://ui-avatars.com/api/?name=' + document.getElementById('ob-name').value.replace(/ /g, '+') + '&background=random',
-                currentBodyImage: document.getElementById('ob-current-img-data').value || '',
-                uid: currentUser.uid,
-                updatedAt: new Date().toISOString()
-            };
-            
+        // Google Login
+        document.getElementById('btn-google-login').addEventListener('click', async () => {
             try {
-                console.log("Attempting to save profile data to Firestore...", p);
-                // Save to users collection
-                await setDoc(doc(COL_USERS, currentUser.uid), p);
-                console.log("Successfully saved!");
-                
-                window.userProfile = p;
-                closeModal('modal-onboard');
-                showToast("Profile Saved Successfully!");
-                window.handleDashboardAccess();
-            } catch(e) { 
-                console.error("Firestore Error Detailed:", e);
-                let errMsg = "Failed to save.";
-                if (e.code === 'permission-denied') {
-                    errMsg = "Permission Denied. Please check Firestore Rules.";
-                } else if (e.code === 'resource-exhausted' || e.message.includes('payload too large')) {
-                    errMsg = "Images are still too large. Try smaller images.";
-                } else {
-                     errMsg = e.message;
-                }
-                showToast(errMsg); 
-            } finally {
-                // Reset button state
-                submitBtn.innerHTML = originalHTML;
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                const provider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, provider);
+                closeModal('auth-modal');
+                showToast("Login Successful!");
+                handleDashboardAccess(); // Check routing
+            } catch(e) {
+                showToast("Login failed: " + e.message);
+            }
+        });
+
+        // Logout
+        window.logoutUser = () => {
+            signOut(auth).then(() => { showToast("Logged Out Successfully"); });
+        };
+
+        // Main Routing Logic (Where to go when clicked "Dashboard")
+        window.handleDashboardAccess = async () => {
+            if (!window.currentUser) {
+                openModal('auth-modal');
+                return;
+            }
+            // Check if profile exists
+            const docRef = doc(db, "users", window.currentUser.uid);
+            document.getElementById('global-loader').classList.remove('hidden-loader');
+            const docSnap = await getDoc(docRef);
+            document.getElementById('global-loader').classList.add('hidden-loader');
+
+            if (docSnap.exists()) {
+                window.userProfile = docSnap.data();
+                showDashboardView();
+            } else {
+                // Show Onboarding
+                document.getElementById('ob-email').value = window.currentUser.email || '';
+                document.getElementById('ob-name').value = window.currentUser.displayName || '';
+                openModal('modal-onboard');
             }
         };
 
-        // 5. Views Logic (Dashboard & Admin)
-        window.handleDashboardAccess = () => {
-            if(!userProfile) return openModal('modal-auth');
+        window.saveInitialProfile = async () => {
+            const name = document.getElementById('ob-name').value;
+            const email = document.getElementById('ob-email').value;
+            const phone = document.getElementById('ob-phone').value;
+            const goal = document.getElementById('ob-goal').value;
+
+            if(!name || !phone) return showToast("Name and Phone are required.");
+
+            const btn = document.getElementById('btn-save-ob');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
             
-            // Populate Dashboard
-            document.getElementById('dash-photo').src = userProfile.photo;
-            document.getElementById('dash-name').innerText = userProfile.name;
-            document.getElementById('dash-goal').innerText = `Goal: ${userProfile.goal}`;
-            
-            document.getElementById('main-view').classList.add('hidden');
+            const data = {
+                uid: window.currentUser.uid, name, email, phone, goal, 
+                createdAt: new Date().toISOString(),
+                physicalData: null // empty initially
+            };
+
+            try {
+                await setDoc(doc(db, "users", window.currentUser.uid), data);
+                window.userProfile = data;
+                closeModal('modal-onboard');
+                showToast("Profile Created!");
+                updateSidebarUI();
+                showDashboardView();
+            } catch(e) {
+                showToast("Error saving profile. " + e.message);
+            } finally {
+                btn.innerHTML = 'Create Profile';
+            }
+        };
+
+        // View Switchers
+        function showDashboardView() {
+            document.getElementById('public-views').classList.add('hidden');
             document.getElementById('coach-view').classList.add('hidden');
             document.getElementById('dashboard-view').classList.remove('hidden');
-            document.querySelector('aside').classList.add('hidden');
-            document.querySelector('header').classList.add('hidden');
-            window.scrollTo(0,0);
-        };
-
-        window.handleCoachAccess = async () => {
-            if(!currentUser || !currentUser.email) {
-                showToast("Login with an email account to access Admin.");
-                return openModal('modal-auth');
-            }
-
-            // Check Authorization
-            if(!adminSettings.emails || adminSettings.emails.length === 0) {
-                openModal('modal-coach-claim');
-            } else if (adminSettings.emails.includes(currentUser.email)) {
-                // Authorized!
-                document.getElementById('inp-coach-emails').value = adminSettings.emails.join(', ');
-                loadAdminMembers();
-                
-                document.getElementById('main-view').classList.add('hidden');
-                document.getElementById('dashboard-view').classList.add('hidden');
-                document.getElementById('coach-view').classList.remove('hidden');
-                document.querySelector('aside').classList.add('hidden');
-                document.querySelector('header').classList.add('hidden');
-                window.scrollTo(0,0);
+            
+            // Populate Edit Form
+            document.getElementById('ep-name').value = window.userProfile.name || '';
+            document.getElementById('ep-phone').value = window.userProfile.phone || '';
+            
+            // Check Physical Data
+            if(!window.userProfile.physicalData) {
+                document.getElementById('dash-physical-req').classList.remove('hidden');
+                document.getElementById('dash-report-view').classList.add('hidden');
             } else {
-                showToast("Access Denied. You are not an authorized coach.");
+                document.getElementById('dash-physical-req').classList.add('hidden');
+                generateReport(window.userProfile.physicalData);
             }
+        }
+
+        window.closeViewsAndShowMain = () => {
+            document.getElementById('public-views').classList.remove('hidden');
+            document.getElementById('coach-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.add('hidden');
         };
 
-        window.claimAdminRights = async () => {
+        // Profile Update
+        window.updateProfileDetails = async () => {
+            const name = document.getElementById('ep-name').value;
+            const phone = document.getElementById('ep-phone').value;
             try {
-                adminSettings.emails = [currentUser.email];
-                await setDoc(DOC_ADMIN, adminSettings);
-                closeModal('modal-coach-claim');
-                showToast("Admin claimed successfully!");
-                handleCoachAccess();
-            } catch(e) { showToast("Error claiming admin."); }
+                await updateDoc(doc(db, "users", window.currentUser.uid), { name, phone });
+                window.userProfile.name = name; window.userProfile.phone = phone;
+                showToast("Profile Updated!");
+                document.getElementById('edit-profile-form').classList.add('hidden');
+                updateSidebarUI();
+                if(window.userProfile.physicalData) generateReport(window.userProfile.physicalData); // refresh report name
+            } catch(e) { showToast("Error updating."); }
         };
 
-        window.saveAdminSettings = async () => {
-            const emailsStr = document.getElementById('inp-coach-emails').value;
-            adminSettings.emails = emailsStr.split(',').map(e => e.trim()).filter(e => e);
+        // Save Physical Data & Calc Logic
+        window.savePhysicalData = async () => {
+            const age = parseInt(document.getElementById('pd-age').value);
+            const gender = document.getElementById('pd-gender').value;
+            const height = parseInt(document.getElementById('pd-height').value);
+            const weight = parseFloat(document.getElementById('pd-weight').value);
 
-            window.appData = {
-                ...window.appData,
-                logo: document.getElementById('inp-logo').value || window.appData.logo,
-                heroImg: document.getElementById('inp-hero').value || window.appData.heroImg,
-                whatsapp: document.getElementById('inp-wa').value, fb: document.getElementById('inp-fb').value,
-                ig: document.getElementById('inp-ig').value, yt: document.getElementById('inp-yt').value,
-            };
+            if(!age || !height || !weight) return showToast("Enter all details");
+
+            const pData = { age, gender, height, weight };
             
             try {
-                await setDoc(DOC_ADMIN, adminSettings);
-                await setDoc(DOC_DATA, window.appData);
-                updateUIFromData();
-                showToast("Website Settings Live Updated!");
-            } catch(e) { showToast("Error saving to Firebase."); }
+                await updateDoc(doc(db, "users", window.currentUser.uid), { physicalData: pData });
+                window.userProfile.physicalData = pData;
+                showToast("Data saved! Generating report...");
+                document.getElementById('dash-physical-req').classList.add('hidden');
+                generateReport(pData);
+            } catch(e) { showToast("Error saving data."); }
         };
 
-        const loadAdminMembers = async () => {
+        function generateReport(data) {
+            document.getElementById('dash-report-view').classList.remove('hidden');
+            
+            const bmi = (data.weight / Math.pow(data.height/100, 2)).toFixed(1);
+            
+            // Basic Ideal Weight Logic (Based on image chart approx)
+            // Men: 50kg + 2.3kg per inch over 5 feet
+            // Women: 45.5kg + 2.3kg per inch over 5 feet
+            let idealWt = 0;
+            const inchesOver5Ft = (data.height / 2.54) - 60;
+            if(data.gender === 'Male') {
+                idealWt = (inchesOver5Ft > 0) ? (50 + (2.3 * inchesOver5Ft)) : 50;
+            } else {
+                idealWt = (inchesOver5Ft > 0) ? (45.5 + (2.3 * inchesOver5Ft)) : 45.5;
+            }
+            
+            const water = (data.weight / 20).toFixed(1); // 1L per 20kg
+            const protein = data.weight.toFixed(0); // 1gm per kg
+
+            // Update DOM
+            document.getElementById('rx-name').innerText = window.userProfile.name;
+            document.getElementById('rx-age').innerText = data.age;
+            document.getElementById('rx-height').innerText = data.height;
+            document.getElementById('rx-weight').innerText = data.weight;
+            document.getElementById('rx-bmi').innerText = bmi;
+            document.getElementById('rx-ideal').innerText = idealWt.toFixed(1);
+            document.getElementById('rx-date').innerText = new Date().toLocaleDateString('en-GB');
+            
+            document.getElementById('rx-water').innerText = water + " L";
+            document.getElementById('rx-protein').innerText = protein + " gm";
+        }
+
+        // PDF Download
+        window.downloadPrescription = () => {
+            const element = document.getElementById('prescription-container');
+            const opt = {
+                margin:       10,
+                filename:     `HS360_Report_${window.userProfile.name}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            showToast("Generating PDF...");
+            html2pdf().set(opt).from(element).save();
+        };
+
+        // Coach Panel Access Control
+        window.checkCoachAccess = async () => {
+            if(!window.currentUser) return showToast("Login first to access panel.");
+            
+            const email = window.currentUser.email;
+            document.getElementById('global-loader').classList.remove('hidden-loader');
+            
+            let isAuthorized = false;
+            
+            if(email === MASTER_ADMIN) {
+                isAuthorized = true;
+            } else {
+                // Check if added in settings document
+                try {
+                    const docSnap = await getDoc(doc(db, "settings", "admins"));
+                    if(docSnap.exists() && docSnap.data().emails.includes(email)) {
+                        isAuthorized = true;
+                    }
+                } catch(e) { console.log("Admin check failed", e); }
+            }
+            
+            document.getElementById('global-loader').classList.add('hidden-loader');
+
+            if(isAuthorized) {
+                document.getElementById('public-views').classList.add('hidden');
+                document.getElementById('dashboard-view').classList.add('hidden');
+                document.getElementById('coach-view').classList.remove('hidden');
+                loadMembersList();
+            } else {
+                showToast("Please ask coach about coach panel. You are not authorized.");
+            }
+        };
+
+        window.addAdminEmail = async () => {
+            const emailToAdd = document.getElementById('admin-add-email').value;
+            if(!emailToAdd) return;
             try {
-                const snap = await getDocs(COL_USERS);
-                const list = document.getElementById('admin-members-list');
-                list.innerHTML = '';
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    list.innerHTML += `
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3 font-medium flex items-center gap-2"><img src="${d.photo}" class="w-8 h-8 rounded-full object-cover"> ${d.name}</td>
-                            <td class="p-3 text-sm">${d.email}<br><span class="text-xs text-gray-400">${d.phone}</span></td>
-                            <td class="p-3 text-sm">${d.goal}</td>
-                            <td class="p-3 text-sm">${d.city}, ${d.state}</td>
-                        </tr>`;
-                });
-            } catch(e) { console.log(e); }
+                const adminRef = doc(db, "settings", "admins");
+                const docSnap = await getDoc(adminRef);
+                if(docSnap.exists()) {
+                    await updateDoc(adminRef, { emails: arrayUnion(emailToAdd) });
+                } else {
+                    await setDoc(adminRef, { emails: [emailToAdd] });
+                }
+                showToast("Admin access granted to: " + emailToAdd);
+                document.getElementById('admin-add-email').value = '';
+            } catch(e) { showToast("Failed to add admin. " + e.message); }
         };
 
+        window.loadMembersList = async () => {
+            const container = document.getElementById('admin-members-list');
+            container.innerHTML = '<div class="text-center text-gray-500 py-4"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                container.innerHTML = '';
+                if(querySnapshot.empty) {
+                    container.innerHTML = '<div class="text-center text-gray-500 py-4">No members found.</div>';
+                    return;
+                }
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    let detailsHTML = `<p class="text-xs text-gray-500">No physical data</p>`;
+                    if(data.physicalData) {
+                        detailsHTML = `<p class="text-xs text-brand font-medium">Wt: ${data.physicalData.weight}kg | Ht: ${data.physicalData.height}cm</p>`;
+                    }
+                    
+                    const html = `
+                        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">${data.name}</h4>
+                                <p class="text-xs text-gray-500">${data.email} | ${data.phone}</p>
+                                ${detailsHTML}
+                            </div>
+                            <div class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold">${data.goal}</div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+            } catch(e) {
+                container.innerHTML = '<div class="text-red-500 text-sm py-4">Error loading members. Check Firestore Rules.</div>';
+            }
+        };
+
+        // UI Helpers for Sidebar
+        function updateSidebarUI() {
+            if(window.userProfile) {
+                document.getElementById('btn-sidebar-dash').classList.add('hidden');
+                const p = document.getElementById('sidebar-user-profile');
+                p.classList.remove('hidden');
+                document.getElementById('sidebar-username').innerText = window.userProfile.name;
+                document.getElementById('sidebar-useremail').innerText = window.userProfile.email;
+                document.getElementById('sidebar-avatar').src = `https://ui-avatars.com/api/?name=${window.userProfile.name.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
+            }
+        }
+        function resetSidebarUI() {
+            document.getElementById('btn-sidebar-dash').classList.remove('hidden');
+            document.getElementById('sidebar-user-profile').classList.add('hidden');
+        }
+
+        // Public BMI Calc Logic
+        window.calcPublicBMI = () => {
+            const h = document.getElementById('t-h').value;
+            const w = document.getElementById('t-w').value;
+            if(!h || !w) return showToast("Enter height and weight");
+            const bmi = (w / Math.pow(h/100, 2)).toFixed(1);
+            document.getElementById('t-res-score').innerText = bmi;
+            let cat = "Normal"; let col = "text-green-500";
+            if(bmi < 18.5) { cat = "Underweight"; col = "text-blue-500"; }
+            else if(bmi >= 25 && bmi < 30) { cat = "Overweight"; col = "text-yellow-500"; }
+            else if(bmi >= 30) { cat = "Obese"; col = "text-red-500"; }
+            document.getElementById('t-res-cat').innerHTML = `<span class="${col}">${cat}</span>`;
+            document.getElementById('t-res-score').className = `text-5xl font-extrabold mb-2 ${col}`;
+        };
+        
+        // Scroll Spy (Basic logic for UI)
+        const sections = document.querySelectorAll("#public-views section");
+        window.onscroll = () => {
+            if(document.getElementById('public-views').classList.contains('hidden')) return;
+            let current = "";
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 150) current = section.getAttribute("id");
+            });
+            document.querySelectorAll(".nav-link").forEach((a) => {
+                a.classList.remove("text-brand", "bg-brand/10", "font-semibold");
+                a.classList.add("text-gray-600", "font-medium");
+                if (a.getAttribute("href").includes(current)) {
+                    a.classList.add("text-brand", "bg-brand/10", "font-semibold");
+                    a.classList.remove("text-gray-600", "font-medium");
+                }
+            });
+        };
     </script>
 </body>
 </html>
