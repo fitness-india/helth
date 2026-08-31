@@ -504,32 +504,48 @@
 
     <!-- Onboarding Modal -->
     <div id="modal-onboard" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center backdrop-blur-sm p-4 overflow-y-auto">
-        <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-2xl shadow-2xl my-8 relative">
-            <h2 class="text-2xl font-bold mb-2">Complete Profile</h2>
-            <p class="text-gray-500 text-sm mb-6">Welcome! Fill this out to access your dashboard.</p>
+        <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-2xl shadow-2xl my-8 relative max-h-[90vh] overflow-y-auto hide-scrollbar">
+            <h2 class="text-2xl font-bold mb-2">Complete Your Profile</h2>
+            <p class="text-gray-500 text-sm mb-6">Welcome! Please fill in your details to create your personalized dashboard.</p>
             
             <form onsubmit="event.preventDefault(); saveProfileData();" class="space-y-4">
-                <div class="flex flex-col items-center mb-4">
-                    <img id="ob-preview" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full object-cover border-4 border-brand/20 mb-2">
-                    <input type="file" accept="image/*" onchange="fileToInput(this, 'ob-img-data', 'ob-preview')" class="text-sm">
-                    <input type="hidden" id="ob-img-data">
+                
+                <!-- Images Upload Section -->
+                <div class="flex flex-col md:flex-row gap-6 mb-4 justify-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Profile Photo</label>
+                        <img id="ob-preview" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md mb-3">
+                        <input type="file" accept="image/*" onchange="fileToInput(this, 'ob-img-data', 'ob-preview')" class="text-xs w-48 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20">
+                        <input type="hidden" id="ob-img-data">
+                    </div>
+                    <div class="flex flex-col items-center text-center flex-1 border-t md:border-t-0 md:border-l border-gray-200 pt-4 md:pt-0">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Current Body Image</label>
+                        <img id="ob-current-preview" src="https://via.placeholder.com/100x120?text=Current+Look" class="w-20 h-24 rounded-xl object-cover border-4 border-white shadow-md mb-3">
+                        <input type="file" accept="image/*" onchange="fileToInput(this, 'ob-current-img-data', 'ob-current-preview')" class="text-xs w-48 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100">
+                        <input type="hidden" id="ob-current-img-data">
+                    </div>
                 </div>
+
+                <!-- Personal Info Fields -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Name</label><input type="text" id="ob-name" required class="w-full p-3 rounded-xl border outline-none"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Email</label><input type="email" id="ob-email" required class="w-full p-3 rounded-xl border outline-none"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Phone</label><input type="tel" id="ob-phone" required class="w-full p-3 rounded-xl border outline-none"></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Full Name</label><input type="text" id="ob-name" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Email</label><input type="email" id="ob-email" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Mobile No</label><input type="tel" id="ob-phone" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1">Goal</label>
-                        <select id="ob-goal" required class="w-full p-3 rounded-xl border outline-none bg-white">
-                            <option value="Weight Loss">Weight Loss</option><option value="Weight Gain">Weight Gain</option><option value="Healthy Lifestyle">Healthy Lifestyle</option>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Your Goal</label>
+                        <select id="ob-goal" required class="w-full p-3 rounded-xl border outline-none bg-white focus:border-brand transition-colors">
+                            <option value="Weight Loss">Weight Loss</option>
+                            <option value="Weight Gain">Weight Gain</option>
+                            <option value="Healthy Lifestyle">Healthy Lifestyle</option>
                         </select>
                     </div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Address</label><input type="text" id="ob-address" required class="w-full p-3 rounded-xl border outline-none"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">PIN Code</label><input type="text" id="ob-pin" required class="w-full p-3 rounded-xl border outline-none"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">City</label><input type="text" id="ob-city" required class="w-full p-3 rounded-xl border outline-none"></div>
-                    <div><label class="block text-sm font-bold text-gray-700 mb-1">State</label><input type="text" id="ob-state" required class="w-full p-3 rounded-xl border outline-none"></div>
+                    <div class="md:col-span-2"><label class="block text-sm font-bold text-gray-700 mb-1">Address</label><input type="text" id="ob-address" required placeholder="House/Flat No, Street, Landmark" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">PIN Code</label><input type="text" id="ob-pin" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">City</label><input type="text" id="ob-city" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">State</label><input type="text" id="ob-state" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand focus:bg-white transition-colors"></div>
                 </div>
-                <button type="submit" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-4">Save & Enter Dashboard</button>
+                
+                <button type="submit" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-6 hover:bg-brandDark transition shadow-lg">Save Profile & Enter Dashboard</button>
             </form>
         </div>
     </div>
@@ -739,10 +755,11 @@
         window.userProfile = null;
         let adminSettings = { emails: [] };
         
-        // Paths
-        const DOC_DATA = doc(db, 'hs360_db', 'app_data');
-        const DOC_ADMIN = doc(db, 'hs360_db', 'admin_settings');
-        const COL_USERS = collection(db, 'hs360_users');
+        // Paths (Updated for strict security and stability)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hs360-app';
+        const DOC_DATA = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'app_data');
+        const DOC_ADMIN = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'admin_settings');
+        const COL_USERS = collection(db, 'artifacts', appId, 'public', 'data', 'users');
 
         // 1. Initial Data Fetch
         const fetchInitialData = async () => {
@@ -828,20 +845,28 @@
         window.saveProfileData = async () => {
             if(!currentUser) return;
             const p = {
-                name: document.getElementById('ob-name').value, email: document.getElementById('ob-email').value,
-                phone: document.getElementById('ob-phone').value, goal: document.getElementById('ob-goal').value,
-                address: document.getElementById('ob-address').value, pin: document.getElementById('ob-pin').value,
-                city: document.getElementById('ob-city').value, state: document.getElementById('ob-state').value,
-                photo: document.getElementById('ob-img-data').value || 'https://via.placeholder.com/100',
+                name: document.getElementById('ob-name').value, 
+                email: document.getElementById('ob-email').value,
+                phone: document.getElementById('ob-phone').value, 
+                goal: document.getElementById('ob-goal').value,
+                address: document.getElementById('ob-address').value, 
+                pin: document.getElementById('ob-pin').value,
+                city: document.getElementById('ob-city').value, 
+                state: document.getElementById('ob-state').value,
+                photo: document.getElementById('ob-img-data').value || 'https://ui-avatars.com/api/?name=' + document.getElementById('ob-name').value + '&background=random',
+                currentBodyImage: document.getElementById('ob-current-img-data').value || '',
                 uid: currentUser.uid
             };
             try {
                 await setDoc(doc(COL_USERS, currentUser.uid), p);
                 window.userProfile = p;
                 closeModal('modal-onboard');
-                showToast("Profile Saved!");
+                showToast("Profile Saved Successfully!");
                 window.handleDashboardAccess();
-            } catch(e) { showToast("Error saving profile"); }
+            } catch(e) { 
+                showToast("Database Error: Firebase Rules check korun!"); 
+                console.error("Firestore Error:", e);
+            }
         };
 
         // 5. Views Logic (Dashboard & Admin)
