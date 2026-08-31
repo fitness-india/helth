@@ -91,15 +91,16 @@
         </nav>
         
         <!-- User Mini Profile (Hidden by default) -->
-        <div id="sidebar-user-profile" class="hidden p-4 border-t border-gray-100 bg-gray-50">
+        <div id="sidebar-user-profile" class="hidden p-4 border-t border-gray-100 bg-gray-50 mt-auto">
             <div class="flex items-center gap-3 mb-3">
-                <img id="sidebar-avatar" src="" class="w-10 h-10 rounded-full border border-gray-300">
+                <img id="sidebar-avatar" src="" class="w-10 h-10 rounded-full border border-gray-300 object-cover">
                 <div class="overflow-hidden">
                     <p id="sidebar-username" class="font-bold text-sm truncate">User</p>
                     <p id="sidebar-useremail" class="text-xs text-gray-500 truncate">email@test.com</p>
                 </div>
             </div>
-            <button onclick="logoutUser()" class="w-full text-xs text-red-500 font-bold bg-red-50 py-2 rounded-lg hover:bg-red-100">Logout</button>
+            <button onclick="handleDashboardAccess()" class="w-full text-xs text-brand font-bold bg-brand/10 py-2 rounded-lg hover:bg-brand/20 mb-2 transition-colors">Go to Dashboard</button>
+            <button onclick="logoutUser()" class="w-full text-xs text-red-500 font-bold bg-red-50 py-2 rounded-lg hover:bg-red-100 transition-colors">Logout</button>
         </div>
     </aside>
 
@@ -117,7 +118,7 @@
         <!-- ======================= PUBLIC VIEWS ======================= -->
         <div id="public-views">
             <!-- HOME SECTION -->
-            <section id="home" class="bg-white px-4 py-12 lg:p-16 relative overflow-hidden min-h-screen flex items-center">
+            <section id="home" class="bg-white px-4 py-12 lg:p-16 relative overflow-hidden min-h-[90vh] flex items-center">
                 <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10 w-full">
                     <div class="flex-1 z-10 text-center lg:text-left">
                         <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
@@ -217,13 +218,38 @@
             </section>
 
             <!-- FOOTER -->
-            <footer class="bg-[#1a202c] text-white pt-16 pb-8 px-4">
-                <div class="max-w-6xl mx-auto text-center">
-                    <h3 class="text-2xl font-bold text-brand italic mb-2">Health Station 360</h3>
-                    <p class="text-gray-400 text-sm mb-6">Nutrition • Wellness • Lifestyle</p>
-                    <div class="border-t border-gray-700 pt-8 text-gray-500 text-sm">
-                        &copy; 2026 Health Station 360. All Rights Reserved.
+            <footer class="bg-[#1a202c] text-white pt-16 pb-20 lg:pb-8 px-4 mt-auto">
+                <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-center md:text-left">
+                    <div>
+                        <h3 class="text-xl font-bold text-brand italic mb-4">HS360</h3>
+                        <p class="text-gray-400 text-sm">Nutrition • Wellness • Lifestyle<br>Transforming lives through balanced nutrition.</p>
                     </div>
+                    <div>
+                        <h4 class="font-bold mb-4">Quick Links</h4>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li><a href="#home" class="hover:text-brand">Home</a></li>
+                            <li><a href="#programs" class="hover:text-brand">Programs</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-4">Resources</h4>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li><a href="#tools" class="hover:text-brand">BMI Calculator</a></li>
+                            <li><a href="#booking" class="hover:text-brand">Consultation</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-4">Connect</h4>
+                        <div class="flex justify-center md:justify-start gap-4 text-xl">
+                            <a href="#" id="social-fb" target="_blank" class="text-blue-500 hover:text-white transition"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="#" id="social-ig" target="_blank" class="text-pink-500 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" id="social-yt" target="_blank" class="text-red-500 hover:text-white transition"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="#" id="social-wa" target="_blank" class="text-green-500 hover:text-white transition"><i class="fa-brands fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 pt-8 text-center text-gray-500 text-sm">
+                    &copy; 2026 Health Station 360. All Rights Reserved.
                 </div>
             </footer>
         </div>
@@ -367,45 +393,45 @@
                         <h2 class="text-3xl font-bold text-brandDark"><i class="fa-solid fa-user-shield"></i> Coach Panel</h2>
                         <p class="text-brand text-sm">Super Admin Dashboard</p>
                     </div>
-                    <button onclick="closeViewsAndShowMain()" class="text-brandDark bg-white px-4 py-2 rounded-xl shadow-sm border border-brand/20 hover:bg-brand/10">Exit Panel</button>
+                    <button onclick="closeViewsAndShowMain()" class="text-brandDark bg-white px-4 py-2 rounded-xl shadow-sm border border-brand/20 hover:bg-brand/10 transition-colors">Exit Panel</button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Settings -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand/20">
-                        <h3 class="font-bold text-lg mb-4 text-brandDark"><i class="fa-solid fa-gear"></i> Portal Settings</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="text-xs font-bold text-gray-500">Authorized Coach Email</label>
-                                <input type="email" id="admin-add-email" placeholder="Add new admin email" class="w-full p-2 border border-brand/30 rounded mt-1 text-sm focus:outline-none focus:border-brand">
-                                <button onclick="addAdminEmail()" class="w-full mt-2 bg-brand text-white text-xs py-2 rounded font-bold">Add Admin Access</button>
-                                <p class="text-[10px] text-gray-400 mt-1">* Only these emails can access this panel.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Left Column: Settings -->
+                    <div class="space-y-6">
+                        <!-- Portal Settings -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand/20">
+                            <h3 class="font-bold text-lg mb-4 text-brandDark"><i class="fa-solid fa-gear"></i> Portal Settings</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-xs font-bold text-gray-500">Authorized Coach Email</label>
+                                    <input type="email" id="admin-add-email" placeholder="Add new admin email" class="w-full p-2 border border-brand/30 rounded mt-1 text-sm focus:outline-none focus:border-brand">
+                                    <button onclick="addAdminEmail()" class="w-full mt-2 bg-brand text-white text-xs py-2 rounded font-bold hover:bg-brandDark transition">Add Admin Access</button>
+                                    <p class="text-[10px] text-gray-400 mt-1">* Only these emails can access this panel.</p>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Website Content Settings -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand/20">
+                            <h3 class="font-bold text-lg mb-4 text-brandDark"><i class="fa-solid fa-globe"></i> Website Content</h3>
+                            <form onsubmit="event.preventDefault(); saveWebsiteSettings();" class="space-y-3">
+                                <div><label class="text-xs font-bold text-gray-500">Logo Image URL</label><input type="text" id="set-logo" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="text-xs font-bold text-gray-500">Hero Image URL</label><input type="text" id="set-hero" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="text-xs font-bold text-gray-500">Contact Number</label><input type="text" id="set-phone" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="text-xs font-bold text-gray-500">WhatsApp Link</label><input type="text" id="set-wa" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="text-xs font-bold text-gray-500">Facebook Link</label><input type="text" id="set-fb" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="text-xs font-bold text-gray-500">Instagram Link</label><input type="text" id="set-ig" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="text-xs font-bold text-gray-500">YouTube Link</label><input type="text" id="set-yt" class="w-full p-2 border rounded text-sm"></div>
+                                
+                                <button type="submit" id="btn-save-settings" class="w-full bg-blue-600 text-white px-4 py-2 rounded text-sm font-bold shadow-md hover:bg-blue-700 transition">Save Settings</button>
+                            </form>
+                        </div>
                     </div>
 
-                    <!-- Member List -->
-                    <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-brand/20 flex flex-col h-[500px]">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-lg text-brandDark"><i class="fa-solid fa-users"></i> Registered Members</h3>
-                            <button onclick="loadMembersList()" class="text-brand text-sm"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
-                        </div>
-                        <div class="overflow-y-auto flex-1 pr-2 space-y-3" id="admin-members-list">
-                            <div class="text-center text-gray-400 py-10">Loading members...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- MOBILE BOTTOM NAV -->
-    <nav class="lg:hidden fixed bottom-0 w-full bg-white border-t border-gray-100 z-50 flex justify-around items-center px-2 py-2 shadow-lg" id="mobile-nav">
-        <a href="#home" class="nav-link-mobile flex flex-col items-center p-2 text-brand font-bold"><i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px]">Home</span></a>
-        <a href="#programs" class="nav-link-mobile flex flex-col items-center p-2 text-gray-400"><i class="fa-solid fa-border-all text-xl mb-1"></i><span class="text-[10px]">Programs</span></a>
-        <a href="#booking" class="nav-link-mobile flex flex-col items-center p-2 text-gray-400 relative">
-            <div class="absolute -top-6 bg-brand text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg border-4 border-white"><i class="fa-solid fa-plus text-xl"></i></div>
+                    <!-- Right Column: Member List -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-brand/20 flex flex-col h-[600px]">
             <span class="text-[10px] mt-6">Booking</span>
         </a>
         <button onclick="handleDashboardAccess()" class="flex flex-col items-center p-2 text-gray-400"><i class="fa-regular fa-user text-xl mb-1"></i><span class="text-[10px]">Profile</span></button>
@@ -429,36 +455,63 @@
     </div>
 
     <!-- ONBOARDING MODAL -->
-    <div id="modal-onboard" class="hidden fixed inset-0 bg-black/60 z-[110] flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white p-6 lg:p-8 rounded-3xl w-full max-w-2xl mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div id="modal-onboard" class="hidden fixed inset-0 bg-black/60 z-[110] flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white p-6 lg:p-8 rounded-3xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <h2 class="text-2xl font-bold mb-2">Complete Your Profile</h2>
-            <p class="text-sm text-gray-500 mb-6">First time here? Please provide basic details.</p>
+            <p class="text-sm text-gray-500 mb-6">First time here? Please provide your details to continue.</p>
             
-            <div class="space-y-4">
+            <form onsubmit="event.preventDefault(); saveInitialProfile();" class="space-y-4">
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-bold mb-1">Full Name *</label><input type="text" id="ob-name" class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none"></div>
-                    <div><label class="block text-xs font-bold mb-1">Email *</label><input type="email" id="ob-email" class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none" readonly></div>
-                    <div><label class="block text-xs font-bold mb-1">Mobile No *</label><input type="tel" id="ob-phone" class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none"></div>
+                    <!-- Image Uploads -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center">
+                        <label class="block text-xs font-bold mb-2 text-gray-700">Profile Photo (Optional)</label>
+                        <input type="file" id="ob-photo-file" accept="image/*" class="text-xs w-full mb-2" onchange="previewImage(this, 'ob-photo-preview', 'ob-photo-base64')">
+                        <img id="ob-photo-preview" src="" class="hidden w-16 h-16 mx-auto rounded-full object-cover">
+                        <input type="hidden" id="ob-photo-base64">
+                    </div>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center">
+                        <label class="block text-xs font-bold mb-2 text-gray-700">Current Physique Photo (Optional)</label>
+                        <input type="file" id="ob-physique-file" accept="image/*" class="text-xs w-full mb-2" onchange="previewImage(this, 'ob-physique-preview', 'ob-physique-base64')">
+                        <img id="ob-physique-preview" src="" class="hidden w-24 h-16 mx-auto rounded-lg object-cover">
+                        <input type="hidden" id="ob-physique-base64">
+                    </div>
+
+                    <!-- Personal Details -->
+                    <div><label class="block text-xs font-bold mb-1 text-gray-700">Full Name *</label><input type="text" id="ob-name" required class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none transition-colors"></div>
+                    <div><label class="block text-xs font-bold mb-1 text-gray-700">Email *</label><input type="email" id="ob-email" required class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none transition-colors"></div>
+                    <div><label class="block text-xs font-bold mb-1 text-gray-700">Mobile No *</label><input type="tel" id="ob-phone" required class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none transition-colors"></div>
                     <div>
-                        <label class="block text-xs font-bold mb-1">Primary Goal *</label>
-                        <select id="ob-goal" class="w-full p-3 rounded-xl border bg-white focus:border-brand outline-none">
-                            <option>Weight Loss</option>
-                            <option>Weight Gain</option>
-                            <option>Healthy Lifestyle</option>
+                        <label class="block text-xs font-bold mb-1 text-gray-700">Primary Goal *</label>
+                        <select id="ob-goal" required class="w-full p-3 rounded-xl border bg-white focus:border-brand outline-none transition-colors">
+                            <option value="">Select...</option>
+                            <option value="Weight Loss">Weight Loss</option>
+                            <option value="Weight Gain">Weight Gain</option>
+                            <option value="Healthy Lifestyle">Healthy Lifestyle</option>
                         </select>
                     </div>
+                    
+                    <!-- Address Details -->
+                    <div class="md:col-span-2 border-t pt-4 mt-2">
+                        <h3 class="text-sm font-bold mb-3 text-gray-700">Address Details</h3>
+                    </div>
+                    <div class="md:col-span-2"><label class="block text-xs font-bold mb-1 text-gray-700">Address (Street/House/Area) *</label><input type="text" id="ob-address" required class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none transition-colors"></div>
+                    <div><label class="block text-xs font-bold mb-1 text-gray-700">PIN Code *</label><input type="text" id="ob-pin" required class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none transition-colors"></div>
+                    <div><label class="block text-xs font-bold mb-1 text-gray-700">City *</label><input type="text" id="ob-city" required class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none transition-colors"></div>
+                    <div><label class="block text-xs font-bold mb-1 text-gray-700">State *</label><input type="text" id="ob-state" required class="w-full p-3 rounded-xl border bg-gray-50 focus:border-brand outline-none transition-colors"></div>
                 </div>
-                <button onclick="saveInitialProfile()" id="btn-save-ob" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-4 shadow-lg hover:bg-brandDark transition flex justify-center items-center gap-2">
-                    <span>Create Profile</span>
+
+                <button type="submit" id="btn-save-ob" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-6 shadow-lg hover:bg-brandDark transition flex justify-center items-center gap-2">
+                    <span>Create Profile & Enter Dashboard</span>
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // FIREBASE CONFIG
         const firebaseConfig = {
@@ -478,6 +531,59 @@
         window.currentUser = null;
         window.userProfile = null;
         const MASTER_ADMIN = "befitindia1@gmail.com";
+        window.siteSettings = {};
+
+        // Helper: Image Preview & Base64 Converter
+        window.previewImage = (inputElement, previewImgId, base64InputId) => {
+            const file = inputElement.files[0];
+            if (file) {
+                // Check size (e.g., limit to 2MB before compression for safety)
+                if(file.size > 2 * 1024 * 1024) {
+                    showToast("Image too large. Please select under 2MB.");
+                    inputElement.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgPreview = document.getElementById(previewImgId);
+                    imgPreview.src = e.target.result;
+                    imgPreview.classList.remove('hidden');
+                    
+                    // Simple compression via canvas
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800;
+                        const MAX_HEIGHT = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Output compressed base64 (quality 0.7)
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        document.getElementById(base64InputId).value = compressedBase64;
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        };
 
         // UI Helpers
         window.showToast = (msg) => {
@@ -535,17 +641,33 @@
             // Check if profile exists
             const docRef = doc(db, "users", window.currentUser.uid);
             document.getElementById('global-loader').classList.remove('hidden-loader');
-            const docSnap = await getDoc(docRef);
-            document.getElementById('global-loader').classList.add('hidden-loader');
+            
+            try {
+                const docSnap = await getDoc(docRef);
+                document.getElementById('global-loader').classList.add('hidden-loader');
 
-            if (docSnap.exists()) {
-                window.userProfile = docSnap.data();
-                showDashboardView();
-            } else {
-                // Show Onboarding
-                document.getElementById('ob-email').value = window.currentUser.email || '';
-                document.getElementById('ob-name').value = window.currentUser.displayName || '';
-                openModal('modal-onboard');
+                if (docSnap.exists()) {
+                    window.userProfile = docSnap.data();
+                    showDashboardView();
+                } else {
+                    // Show Onboarding
+                    document.getElementById('ob-email').value = window.currentUser.email || '';
+                    document.getElementById('ob-name').value = window.currentUser.displayName || '';
+                    
+                    // Pre-fill user photo from Google if available and no file uploaded
+                    if(window.currentUser.photoURL) {
+                        const photoPreview = document.getElementById('ob-photo-preview');
+                        photoPreview.src = window.currentUser.photoURL;
+                        photoPreview.classList.remove('hidden');
+                        document.getElementById('ob-photo-base64').value = window.currentUser.photoURL;
+                    }
+
+                    openModal('modal-onboard');
+                }
+            } catch(e) {
+                document.getElementById('global-loader').classList.add('hidden-loader');
+                showToast("Error loading profile: " + e.message);
+                console.error(e);
             }
         };
 
@@ -554,29 +676,44 @@
             const email = document.getElementById('ob-email').value;
             const phone = document.getElementById('ob-phone').value;
             const goal = document.getElementById('ob-goal').value;
-
-            if(!name || !phone) return showToast("Name and Phone are required.");
+            const address = document.getElementById('ob-address').value;
+            const pin = document.getElementById('ob-pin').value;
+            const city = document.getElementById('ob-city').value;
+            const state = document.getElementById('ob-state').value;
+            
+            const photoData = document.getElementById('ob-photo-base64').value || `https://ui-avatars.com/api/?name=${name.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
+            const physiqueData = document.getElementById('ob-physique-base64').value || '';
 
             const btn = document.getElementById('btn-save-ob');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
             
             const data = {
-                uid: window.currentUser.uid, name, email, phone, goal, 
+                uid: window.currentUser.uid, 
+                name, email, phone, goal, 
+                address, pin, city, state,
+                photoUrl: photoData,
+                physiqueUrl: physiqueData,
                 createdAt: new Date().toISOString(),
-                physicalData: null // empty initially
+                physicalData: null // empty initially for dashboard setup
             };
 
             try {
                 await setDoc(doc(db, "users", window.currentUser.uid), data);
                 window.userProfile = data;
                 closeModal('modal-onboard');
-                showToast("Profile Created!");
+                showToast("Profile Created Successfully!");
                 updateSidebarUI();
                 showDashboardView();
             } catch(e) {
-                showToast("Error saving profile. " + e.message);
+                console.error(e);
+                let msg = "Error saving profile.";
+                if(e.code === 'permission-denied') msg = "Permission Denied. Check Firestore Rules.";
+                if(e.code === 'resource-exhausted') msg = "Images are too large to save.";
+                showToast(msg);
             } finally {
-                btn.innerHTML = 'Create Profile';
+                btn.innerHTML = 'Create Profile & Enter Dashboard';
+                btn.disabled = false;
             }
         };
 
@@ -688,9 +825,11 @@
 
         // Coach Panel Access Control
         window.checkCoachAccess = async () => {
-            if(!window.currentUser) return showToast("Login first to access panel.");
+            if(!window.currentUser) return showToast("Login first to access admin panel.");
             
             const email = window.currentUser.email;
+            if(!email) return showToast("Email required for admin access.");
+
             document.getElementById('global-loader').classList.remove('hidden-loader');
             
             let isAuthorized = false;
@@ -698,13 +837,12 @@
             if(email === MASTER_ADMIN) {
                 isAuthorized = true;
             } else {
-                // Check if added in settings document
                 try {
                     const docSnap = await getDoc(doc(db, "settings", "admins"));
-                    if(docSnap.exists() && docSnap.data().emails.includes(email)) {
+                    if(docSnap.exists() && docSnap.data().emails && docSnap.data().emails.includes(email)) {
                         isAuthorized = true;
                     }
-                } catch(e) { console.log("Admin check failed", e); }
+                } catch(e) { console.error("Admin check failed", e); }
             }
             
             document.getElementById('global-loader').classList.add('hidden-loader');
@@ -714,8 +852,78 @@
                 document.getElementById('dashboard-view').classList.add('hidden');
                 document.getElementById('coach-view').classList.remove('hidden');
                 loadMembersList();
+                loadWebsiteSettingsIntoForm();
             } else {
                 showToast("Please ask coach about coach panel. You are not authorized.");
+            }
+        };
+
+        // --- Website Settings Management ---
+
+        // Listen for settings changes globally
+        onSnapshot(doc(db, "settings", "public"), (doc) => {
+            if(doc.exists()) {
+                window.siteSettings = doc.data();
+                applyWebsiteSettings();
+            }
+        });
+
+        function applyWebsiteSettings() {
+            const s = window.siteSettings;
+            if(!s) return;
+
+            // Logos
+            if(s.logoUrl) {
+                const els = [document.getElementById('sidebar-logo-container'), document.getElementById('sidebar-logo-mobile')];
+                els.forEach(el => {
+                    if(el) el.innerHTML = `<img src="${s.logoUrl}" alt="HS360 Logo" class="h-10 object-contain">`;
+                });
+            }
+            // Hero
+            if(s.heroUrl && document.getElementById('hero-img-display')) {
+                document.getElementById('hero-img-display').src = s.heroUrl;
+            }
+            // Social Links
+            if(s.waLink && document.getElementById('social-wa')) document.getElementById('social-wa').href = s.waLink;
+            if(s.fbLink && document.getElementById('social-fb')) document.getElementById('social-fb').href = s.fbLink;
+            if(s.igLink && document.getElementById('social-ig')) document.getElementById('social-ig').href = s.igLink;
+            if(s.ytLink && document.getElementById('social-yt')) document.getElementById('social-yt').href = s.ytLink;
+        }
+
+        function loadWebsiteSettingsIntoForm() {
+            const s = window.siteSettings || {};
+            document.getElementById('set-logo').value = s.logoUrl || '';
+            document.getElementById('set-hero').value = s.heroUrl || '';
+            document.getElementById('set-phone').value = s.phone || '';
+            document.getElementById('set-wa').value = s.waLink || '';
+            document.getElementById('set-fb').value = s.fbLink || '';
+            document.getElementById('set-ig').value = s.igLink || '';
+            document.getElementById('set-yt').value = s.ytLink || '';
+        }
+
+        window.saveWebsiteSettings = async () => {
+            const btn = document.getElementById('btn-save-settings');
+            btn.innerText = 'Saving...';
+            
+            const data = {
+                logoUrl: document.getElementById('set-logo').value,
+                heroUrl: document.getElementById('set-hero').value,
+                phone: document.getElementById('set-phone').value,
+                waLink: document.getElementById('set-wa').value,
+                fbLink: document.getElementById('set-fb').value,
+                igLink: document.getElementById('set-ig').value,
+                ytLink: document.getElementById('set-yt').value,
+                updatedAt: new Date().toISOString()
+            };
+
+            try {
+                await setDoc(doc(db, "settings", "public"), data, { merge: true });
+                showToast("Settings updated successfully!");
+            } catch(e) {
+                console.error(e);
+                showToast("Failed to update settings.");
+            } finally {
+                btn.innerText = 'Save Settings';
             }
         };
 
@@ -779,7 +987,7 @@
                 p.classList.remove('hidden');
                 document.getElementById('sidebar-username').innerText = window.userProfile.name;
                 document.getElementById('sidebar-useremail').innerText = window.userProfile.email;
-                document.getElementById('sidebar-avatar').src = `https://ui-avatars.com/api/?name=${window.userProfile.name.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
+                document.getElementById('sidebar-avatar').src = window.userProfile.photoUrl || `https://ui-avatars.com/api/?name=${window.userProfile.name.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
             }
         }
         function resetSidebarUI() {
