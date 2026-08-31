@@ -499,6 +499,7 @@
                     <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-700 mb-1">Full Address *</label><input type="text" id="ob-address" required placeholder="House No, Street, Area" class="w-full p-2.5 rounded-lg border outline-none bg-gray-50 focus:border-brand focus:bg-white text-sm"></div>
                     <div><label class="block text-xs font-bold text-gray-700 mb-1">PIN Code *</label><input type="text" id="ob-pin" required class="w-full p-2.5 rounded-lg border outline-none bg-gray-50 focus:border-brand focus:bg-white text-sm"></div>
                     <div><label class="block text-xs font-bold text-gray-700 mb-1">City *</label><input type="text" id="ob-city" required class="w-full p-2.5 rounded-lg border outline-none bg-gray-50 focus:border-brand focus:bg-white text-sm"></div>
+                    <div><label class="block text-xs font-bold text-gray-700 mb-1">State *</label><input type="text" id="ob-state" required class="w-full p-2.5 rounded-lg border outline-none bg-gray-50 focus:border-brand focus:bg-white text-sm"></div>
                 </div>
                 
                 <button type="submit" id="btn-save-profile" class="w-full bg-brand text-white py-3.5 rounded-xl font-bold mt-6 shadow-md hover:bg-brandDark transition flex items-center justify-center gap-2">
@@ -934,57 +935,29 @@
             document.getElementById('btn-sidebar-login').classList.remove('hidden');
         });
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                window.currentUser = user;
-                closeModal('modal-auth');
-                
-                try {
-                    const snap = await getDoc(doc(COL_USERS, user.uid));
-                    if(snap.exists()) {
-                        window.userProfile = snap.data();
-                        updateSidebarUI();
-                        document.getElementById('ep-name').value = userProfile.name;
-                        document.getElementById('ep-phone').value = userProfile.phone;
-                        document.getElementById('ep-address').value = userProfile.address;
-                    } else {
-                        // First time login - Needs Onboarding
-                        document.getElementById('ob-name').value = user.displayName || '';
-                        document.getElementById('ob-email').value = user.email || '';
-                        document.getElementById('ob-phone').value = user.phoneNumber || '';
-                        document.getElementById('modal-onboard').classList.remove('hidden');
-                    }
-                } catch(e) { console.error("Error: ", e); }
-            } else {
-                window.currentUser = null;
-                window.userProfile = null;
-            }
-            setTimeout(() => document.getElementById('global-loader').classList.add('hidden-loader'), 1000);
-        });
-
         window.saveProfileData = async () => {
             if(!currentUser) return showToast("User not logged in!");
             const btn = document.getElementById('btn-save-profile');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...'; btn.disabled = true;
 
-            const photoData = document.getElementById('ob-img-data').value || `https://ui-avatars.com/api/?name=${document.getElementById('ob-name').value.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
-            
-            const p = {
-                name: document.getElementById('ob-name').value, 
-                email: document.getElementById('ob-email').value,
-                phone: document.getElementById('ob-phone').value, 
-                goal: document.getElementById('ob-goal').value,
-                address: document.getElementById('ob-address').value, 
-                pin: document.getElementById('ob-pin').value,
-                city: document.getElementById('ob-city').value, 
-                state: document.getElementById('ob-state').value,
-                photo: photoData, 
-                currentPhysique: document.getElementById('ob-current-img-data').value || '', 
-                uid: currentUser.uid
-            };
-
             try {
+                const photoData = document.getElementById('ob-img-data')?.value || `https://ui-avatars.com/api/?name=${document.getElementById('ob-name')?.value.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
+                
+                const p = {
+                    name: document.getElementById('ob-name')?.value || '', 
+                    email: document.getElementById('ob-email')?.value || '',
+                    phone: document.getElementById('ob-phone')?.value || '', 
+                    goal: document.getElementById('ob-goal')?.value || '',
+                    address: document.getElementById('ob-address')?.value || '', 
+                    pin: document.getElementById('ob-pin')?.value || '',
+                    city: document.getElementById('ob-city')?.value || '', 
+                    state: document.getElementById('ob-state')?.value || '',
+                    photo: photoData, 
+                    currentPhysique: document.getElementById('ob-current-img-data')?.value || '', 
+                    uid: currentUser.uid
+                };
+
                 await setDoc(doc(COL_USERS, currentUser.uid), p);
                 window.userProfile = p;
                 closeModal('modal-onboard');
@@ -992,8 +965,12 @@
                 updateSidebarUI();
                 handleDashboardAccess();
             } catch(e) { 
-                showToast("Error: Images may be too large. Upload smaller images."); 
-            } finally { btn.innerHTML = originalText; btn.disabled = false; }
+                console.error(e);
+                showToast("Error: " + e.message); 
+            } finally { 
+                btn.innerHTML = originalText; 
+                btn.disabled = false; 
+            }
         };
 
         function updateSidebarUI() {
