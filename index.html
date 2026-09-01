@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1a8d1a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -16,7 +15,6 @@
     <!-- Razorpay Payment Gateway Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <!-- Google Translate Script -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -109,7 +107,6 @@
     <!-- ======================= PUBLIC WEBSITE VIEW ======================= -->
     <div id="public-views" class="block">
         
-        <!-- Desktop Sidebar -->
         <aside class="hidden lg:flex flex-col w-64 h-screen bg-white shadow-xl fixed top-0 left-0 z-50">
             <div class="p-6 border-b border-gray-100 flex items-center justify-center h-24">
                 <img id="dyn-logo" src="https://ui-avatars.com/api/?name=HS+360&background=1a8d1a&color=fff&rounded=true&size=100" alt="Logo" class="max-h-full max-w-full object-contain">
@@ -151,7 +148,6 @@
             </nav>
         </aside>
 
-        <!-- Mobile Header -->
         <header class="lg:hidden bg-white shadow-sm sticky top-0 z-40 px-4 py-3 flex justify-between items-center h-16">
             <div class="flex items-center gap-3">
                 <button onclick="document.getElementById('mobile-sidebar').classList.remove('-translate-x-full')" class="text-gray-600 p-2 hover:text-brand transition -ml-2">
@@ -172,7 +168,6 @@
             </div>
         </header>
 
-        <!-- Main Content Area -->
         <main class="lg:ml-64 pb-24 lg:pb-0">
             <section id="home" class="bg-white px-4 py-12 lg:p-16 relative overflow-hidden min-h-[90vh] flex items-center">
                 <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10">
@@ -224,7 +219,6 @@
                 </div>
             </section>
 
-            <!-- PREMIUM PACKAGES SECTION -->
             <section id="packages" class="bg-brand/5 px-4 py-16 border-y border-gray-100 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none"></div>
                 <div class="max-w-6xl mx-auto relative z-10">
@@ -264,6 +258,7 @@
 
                     <div class="bg-white p-6 md:p-10 rounded-3xl shadow-lg border border-gray-100 max-w-2xl mx-auto text-left relative overflow-hidden">
                         
+                        <!-- BMI Tool -->
                         <div id="tool-bmi" class="tool-content active animate-[fadeIn_0.3s_ease-in-out]">
                             <h3 class="font-bold text-xl mb-4 border-b pb-2">Body Mass Index</h3>
                             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -281,6 +276,7 @@
                             </div>
                         </div>
 
+                        <!-- Water Tool -->
                         <div id="tool-water" class="tool-content animate-[fadeIn_0.3s_ease-in-out]">
                             <h3 class="font-bold text-xl mb-4 border-b pb-2">Daily Water Requirement</h3>
                             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -304,6 +300,7 @@
                             </div>
                         </div>
 
+                        <!-- Calorie Tool -->
                         <div id="tool-calorie" class="tool-content animate-[fadeIn_0.3s_ease-in-out]">
                             <h3 class="font-bold text-xl mb-4 border-b pb-2">TDEE Calorie Calculator</h3>
                             <div class="grid grid-cols-3 gap-4 mb-4">
@@ -405,7 +402,6 @@
             </footer>
         </main>
 
-        <!-- Mobile Bottom Nav -->
         <nav class="lg:hidden fixed bottom-0 w-full bg-white border-t border-gray-100 z-50 flex justify-around items-center px-1 py-2 shadow-lg pb-safe">
             <a href="#home" class="nav-link-mobile flex flex-col items-center p-2 text-brand font-bold transition w-1/5 text-center">
                 <i class="fa-solid fa-house text-lg mb-1"></i><span class="text-[9px]">Home</span>
@@ -584,7 +580,7 @@
                 <button onclick="switchDashTab('report')" id="btn-dash-report" class="flex-1 py-3 px-4 font-bold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition whitespace-nowrap">My Report</button>
             </div>
 
-            <!-- TAB 1: Progress / Daily Tasks (Dynamic) -->
+            <!-- TAB 1: Progress / Daily Tasks -->
             <div id="dash-tab-progress" class="block animate-[fadeIn_0.3s_ease-in-out]">
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-6 relative overflow-hidden">
                     <div class="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-brand/10 to-transparent pointer-events-none"></div>
@@ -598,7 +594,7 @@
                 </div>
             </div>
 
-            <!-- TAB 1.5: Coach Resources (Dynamic) -->
+            <!-- TAB 1.5: Coach Resources -->
             <div id="dash-tab-resources" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-6">
                     <h3 class="font-bold text-lg mb-1 flex items-center gap-2"><i class="fa-solid fa-folder-open text-blue-500"></i> Coach Materials</h3>
@@ -863,155 +859,134 @@
         </div>
     </div>
 
-
-                    <!--    <!-- COACH MEMBER DETAILS MODAL -->
-    <div id="modal-coach-member" class="hidden fixed inset-0 bg-black/60 z-[120] flex items-center justify-center p-4 backdrop-blur-sm no-print">
-        <div class="bg-white rounded-3xl w-full max-w-5xl shadow-2xl max-h-[95vh] flex flex-col overflow-hidden relative">
-            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-100 bg-gray-50">
-                <h2 class="text-xl font-bold text-gray-800">Member Details & Controls</h2>
-                <button onclick="document.getElementById('modal-coach-member').classList.add('hidden')" class="text-gray-400 hover:text-red-500 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-sm border"><i class="fa-solid fa-xmark"></i></button>
+    <!-- COACH MEMBER DETAILS MODAL -->
+    <div id="modal-coach-member" class="hidden fixed inset-0 bg-black/60 z-[150] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col relative">
+            <!-- Header -->
+            <div class="p-4 md:p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+                <h3 class="font-bold text-xl text-gray-800"><i class="fa-solid fa-user-gear mr-2 text-brand"></i>Member Management</h3>
+                <button onclick="document.getElementById('modal-coach-member').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-500 hover:bg-red-50 hover:text-red-500 transition shadow-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            
-            <div class="overflow-y-auto flex-1 bg-white p-4 md:p-6 flex flex-col lg:flex-row gap-6">
-                <!-- Left: Profile & Report (EXACT COPY OF USER REPORT) -->
-                <div class="lg:w-7/12 flex flex-col border-r border-gray-100 lg:pr-6" id="coach-member-print">
+
+            <!-- Scrollable Content Body -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6 bg-white">
+                
+                <!-- LEFT PANEL: User Info & Health Report -->
+                <div class="w-full lg:w-7/12 flex flex-col gap-6 lg:border-r border-gray-100 lg:pr-6">
                     
-                    <!-- Basic Info Header -->
-                    <div class="flex gap-4 items-start mb-6 border-b pb-4">
-                        <div class="text-center">
-                            <img id="cm-avatar" src="" class="w-20 h-20 rounded-2xl object-cover border border-gray-200 shadow-sm bg-gray-100">
+                    <!-- Basic Info -->
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <img id="cm-avatar" src="https://ui-avatars.com/api/?name=User&background=E8F5E9&color=2E7D32" class="w-20 h-20 rounded-full object-cover shadow-sm border-2 border-white">
+                        <div>
+                            <h4 id="cm-name" class="font-extrabold text-xl text-gray-800">User Name</h4>
+                            <span id="cm-goal" class="inline-block px-2 py-0.5 bg-brand/10 text-brand text-[10px] font-bold rounded uppercase mt-1">Goal</span>
+                            <p class="text-sm text-gray-600 mt-2"><i class="fa-solid fa-phone mr-1 w-4 text-center"></i> <span id="cm-phone">--</span></p>
+                            <p class="text-sm text-gray-600"><i class="fa-regular fa-envelope mr-1 w-4 text-center"></i> <span id="cm-email">--</span></p>
                         </div>
-                        <div class="flex-1">
-                            <h2 id="cm-name" class="text-xl font-extrabold text-gray-900 mb-1">--</h2>
-                            <span id="cm-goal" class="inline-block px-2 py-0.5 bg-brand/10 text-brand text-[10px] font-bold rounded mb-2 uppercase">--</span>
-                            <p class="text-xs text-gray-600 mb-1"><i class="fa-solid fa-phone w-4"></i> <span id="cm-phone">--</span></p>
-                            <p class="text-xs text-gray-600"><i class="fa-regular fa-envelope w-4"></i> <span id="cm-email">--</span></p>
-                        </div>
+                        <a id="cm-btn-wa" href="#" target="_blank" class="ml-auto bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-green-600 shadow-md transition" title="Chat on WhatsApp">
+                            <i class="fa-brands fa-whatsapp text-xl"></i>
+                        </a>
                     </div>
                     
-                    <!-- Exact User Report Clone -->
-                    <div class="mb-6 flex-1">
-                        <h3 class="font-bold text-sm mb-3 text-gray-800 flex items-center gap-2 border-b pb-1"><i class="fa-solid fa-file-medical text-brand"></i> Detailed Physical Report</h3>
-                        <div id="cm-rx-empty" class="text-center text-gray-400 py-8 text-sm italic block bg-gray-50 rounded-xl border border-dashed border-gray-200">No health report generated by user yet.</div>
+                    <!-- Detailed Physical Report (Clone of User's Report) -->
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fa-solid fa-file-medical text-brand"></i> Physical Assessment Report</h4>
                         
-                        <div id="cm-rx-data" class="hidden bg-white border border-gray-200 rounded-xl p-4 shadow-sm relative font-sans text-gray-800">
-                            
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-xs border-b border-dashed border-gray-300 pb-3">
-                                <div><span class="text-gray-500 block mb-1">Age/Gender:</span><strong id="cm-out-age" class="text-sm">--</strong></div>
-                                <div><span class="text-gray-500 block mb-1">Date:</span><strong id="cm-out-date" class="text-sm">--</strong></div>
+                        <div id="cm-rx-empty" class="text-center text-gray-400 py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200 text-sm italic">
+                            No physical report generated by this user yet.
+                        </div>
+                        
+                        <div id="cm-rx-data" class="hidden bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                            <div class="grid grid-cols-2 gap-3 mb-4 text-sm border-b border-dashed border-gray-200 pb-4">
+                                <div><span class="text-gray-500 block text-xs mb-1">Age/Gender</span><strong id="cm-out-age">--</strong></div>
+                                <div><span class="text-gray-500 block text-xs mb-1">Report Date</span><strong id="cm-out-date">--</strong></div>
                             </div>
 
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 bg-gray-50 p-3 rounded-xl border border-gray-100 text-sm">
-                                <div class="text-center border-r border-gray-200"><span class="text-gray-500 block text-[10px] uppercase mb-1">Height</span> <strong id="cm-out-height" class="text-base text-gray-800">--</strong></div>
-                                <div class="text-center border-r border-gray-200"><span class="text-gray-500 block text-[10px] uppercase mb-1">Weight</span> <strong id="cm-out-weight" class="text-base text-gray-800">--</strong></div>
-                                <div class="text-center border-r border-gray-200"><span class="text-gray-500 block text-[10px] uppercase mb-1">Ideal Weight</span> <strong id="cm-out-ideal" class="text-base text-brand">--</strong></div>
-                                <div class="text-center"><span class="text-gray-500 block text-[10px] uppercase mb-1">Target</span> <strong id="cm-out-diff" class="text-base text-orange-500">--</strong></div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <div class="text-center border-r border-gray-200"><span class="text-gray-500 block text-[10px] uppercase mb-1">Height</span> <strong id="cm-out-height" class="text-lg text-gray-800">--</strong></div>
+                                <div class="text-center border-r border-gray-200"><span class="text-gray-500 block text-[10px] uppercase mb-1">Current</span> <strong id="cm-out-weight" class="text-lg text-gray-800">--</strong></div>
+                                <div class="text-center border-r border-gray-200"><span class="text-gray-500 block text-[10px] uppercase mb-1">Ideal</span> <strong id="cm-out-ideal" class="text-lg text-brand">--</strong></div>
+                                <div class="text-center"><span class="text-gray-500 block text-[10px] uppercase mb-1">Target</span> <strong id="cm-out-diff" class="text-lg text-orange-500">--</strong></div>
                             </div>
 
-                            <div class="mb-2">
-                                <h4 class="font-bold text-xs mb-2 text-brand bg-brand/10 inline-block px-2 py-1 rounded">Daily Body Needs</h4>
-                                <table class="w-full text-xs border-collapse border border-gray-200">
+                            <div>
+                                <h5 class="font-bold text-xs mb-2 text-brand bg-brand/10 inline-block px-2 py-1 rounded">Daily Biological Needs</h5>
+                                <table class="w-full text-sm border-collapse border border-gray-100 rounded-lg overflow-hidden">
                                     <tbody>
-                                        <tr class="border-b border-gray-200"><td class="p-2 font-bold bg-gray-50 w-1/3 border-r border-gray-200">Protein</td><td class="p-2" id="cm-out-protein">-- gm (1g/kg)</td></tr>
-                                        <tr class="border-b border-gray-200"><td class="p-2 font-bold bg-gray-50 border-r border-gray-200">Water</td><td class="p-2 font-bold text-blue-600" id="cm-out-water">-- Liters</td></tr>
-                                        <tr class="border-b border-gray-200"><td class="p-2 font-bold bg-gray-50 border-r border-gray-200">Fiber</td><td class="p-2">30-35 gm</td></tr>
-                                        <tr><td class="p-2 font-bold bg-gray-50 border-r border-gray-200">Vitamins & Minerals</td><td class="p-2">Required Daily</td></tr>
+                                        <tr class="border-b border-gray-100"><td class="p-2.5 font-bold bg-gray-50 w-1/3">Protein</td><td class="p-2.5" id="cm-out-protein">--</td></tr>
+                                        <tr class="border-b border-gray-100"><td class="p-2.5 font-bold bg-gray-50">Water</td><td class="p-2.5 font-bold text-blue-600" id="cm-out-water">--</td></tr>
+                                        <tr class="border-b border-gray-100"><td class="p-2.5 font-bold bg-gray-50">Fiber</td><td class="p-2.5">30-35 gm</td></tr>
+                                        <tr><td class="p-2.5 font-bold bg-gray-50">Vitamins</td><td class="p-2.5">Required Daily</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                     Chat Action -->
-                    <div class="flex gap-2 mt-auto pt-4 border-t border-gray-100">
-                        <a id="cm-btn-wa" href="#" target="_blank" class="flex-1 text-center py-3 bg-green-500 text-white text-sm font-bold rounded-xl hover:bg-green-600 transition shadow-md"><i class="fa-brands fa-whatsapp text-lg mr-1"></i> Chat on WhatsApp</a>
-                    </div>
                 </div>
 
-                <!-- Right: Coach Controls (Tasks & Resources) -->
-                <div class="lg:w-5/12 flex flex-col gap-6">
-                            <div class="text-center text-gray-400 text-xs italic py-2">Loading tasks...</div>
+                <!-- RIGHT PANEL: Coach Tasks & Resources -->
+                <div class="w-full lg:w-5/12 flex flex-col gap-6">
+                    
+                    <!-- Assigned Tasks -->
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-bold text-sm text-gray-800"><i class="fa-solid fa-list-check text-brand mr-2"></i>Daily Tasks</h4>
+                            <button onclick="document.getElementById('form-add-task').classList.toggle('hidden')" class="bg-brand text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brandDark transition shadow-sm"><i class="fa-solid fa-plus mr-1"></i> Add Goal</button>
+                        </div>
+                        
+                        <!-- Add Task Form -->
+                        <form id="form-add-task" class="hidden bg-white p-4 rounded-xl border border-gray-200 mb-4 shadow-sm" onsubmit="event.preventDefault(); saveUserTask();">
+                            <div class="space-y-3">
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Task Title</label><input type="text" id="task-title" required placeholder="e.g. Drink Water" class="w-full text-sm p-2.5 border border-gray-200 rounded-lg outline-none focus:border-brand bg-gray-50"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Target</label><input type="text" id="task-desc" required placeholder="e.g. 2.5 Liters" class="w-full text-sm p-2.5 border border-gray-200 rounded-lg outline-none focus:border-brand bg-gray-50"></div>
+                                <label class="flex items-center gap-2 text-sm text-gray-700 font-medium cursor-pointer"><input type="checkbox" id="task-daily" class="w-4 h-4 rounded text-brand accent-brand"> Set as Daily Automatic Routine</label>
+                                <button type="submit" class="w-full bg-brand text-white text-sm py-2.5 rounded-lg font-bold hover:bg-brandDark transition">Assign Task</button>
+                            </div>
+                        </form>
+                        
+                        <!-- Task List -->
+                        <div id="cm-task-list" class="space-y-2 max-h-60 overflow-y-auto pr-1 hide-scrollbar">
+                            <div class="text-center text-gray-400 text-sm italic py-4">Loading tasks...</div>
                         </div>
                     </div>
 
-                    <!-- Resource Management -->
+                    <!-- Shared Resources -->
                     <div class="bg-blue-50 rounded-2xl p-4 border border-blue-100">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="font-bold text-sm text-blue-800"><i class="fa-solid fa-folder-open mr-1"></i> Shared Resources</h3>
-                            <button onclick="document.getElementById('form-add-resource').classList.toggle('hidden')" class="bg-white text-blue-600 border border-blue-600 px-2 py-1 rounded text-xs font-bold hover:bg-blue-600 hover:text-white transition"><i class="fa-solid fa-plus"></i> Add Info</button>
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-bold text-sm text-blue-800"><i class="fa-solid fa-folder-open mr-2"></i>Shared Info & Links</h4>
+                            <button onclick="document.getElementById('form-add-resource').classList.toggle('hidden')" class="bg-white text-blue-600 border border-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-600 hover:text-white transition shadow-sm"><i class="fa-solid fa-plus mr-1"></i> Add Info</button>
                         </div>
-                        <!-- COACH MEMBER DETAILS MODAL -->
-<div id="coach-member-modal" class="hidden fixed inset-0 bg-black/60 z-[150] flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
-        <!-- Modal Header -->
-        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-            <h3 class="font-bold text-xl text-gray-800">Member Details & Controls</h3>
-            <button onclick="closeCoachMemberModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-500 hover:bg-gray-100">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <!-- Modal Body -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6 bg-white">
-            
-            <!-- Left Side: Profile & Report -->
-            <div class="w-full lg:w-1/2 flex flex-col gap-6 border-r-0 lg:border-r border-gray-100 lg:pr-6">
-                <!-- User Basic Info -->
-                <div class="flex items-center gap-4">
-                    <img id="admin-modal-user-img" src="https://ui-avatars.com/api/?name=User&background=E8F5E9&color=2E7D32" class="w-20 h-20 rounded-full object-cover shadow-sm">
-                    <div>
-                        <h4 id="admin-modal-user-name" class="font-bold text-xl text-gray-800">Name</h4>
-                        <span id="admin-modal-user-goal" class="inline-block px-2 py-1 bg-brand/10 text-brand text-xs font-bold rounded mt-1">GOAL</span>
-                        <p id="admin-modal-user-phone" class="text-sm text-gray-500 mt-1"><i class="fa-solid fa-phone mr-1"></i> Phone</p>
-                        <p id="admin-modal-user-email" class="text-sm text-gray-500"><i class="fa-regular fa-envelope mr-1"></i> Email</p>
+                        
+                        <!-- Add Resource Form -->
+                        <form id="form-add-resource" class="hidden bg-white p-4 rounded-xl border border-blue-200 mb-4 shadow-sm" onsubmit="event.preventDefault(); saveUserResource();">
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Content Type</label>
+                                    <select id="res-type" class="w-full text-sm p-2.5 border border-gray-200 rounded-lg outline-none focus:border-blue-500 bg-gray-50">
+                                        <option value="youtube">YouTube Video</option>
+                                        <option value="link">Website Link</option>
+                                        <option value="text">Diet Text / Note</option>
+                                    </select>
+                                </div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Title</label><input type="text" id="res-title" required placeholder="e.g. Abs Workout Video" class="w-full text-sm p-2.5 border border-gray-200 rounded-lg outline-none focus:border-blue-500 bg-gray-50"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Content / Link</label><textarea id="res-content" required placeholder="Paste the link or type here..." class="w-full text-sm p-2.5 border border-gray-200 rounded-lg outline-none focus:border-blue-500 bg-gray-50 h-20"></textarea></div>
+                                <button type="submit" class="w-full bg-blue-600 text-white text-sm py-2.5 rounded-lg font-bold hover:bg-blue-700 transition">Share to Member Dashboard</button>
+                            </div>
+                        </form>
+                        
+                        <!-- Resource List -->
+                        <div id="cm-resource-list" class="space-y-2 max-h-60 overflow-y-auto pr-1 hide-scrollbar">
+                            <div class="text-center text-blue-400 text-sm italic py-4">Loading resources...</div>
+                        </div>
                     </div>
+                    
                 </div>
-                
-                <!-- Detailed Physical Report -->
-                <div>
-                    <h4 class="font-bold text-gray-800 mb-3"><i class="fa-solid fa-file-medical text-brand mr-2"></i>Detailed Physical Report</h4>
-                    <div id="admin-modal-report-container" class="border border-gray-100 rounded-xl p-4 bg-gray-50">
-                        <p class="text-sm text-gray-500 italic text-center">Loading report...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Tasks & Resources -->
-            <div class="w-full lg:w-1/2 flex flex-col gap-6">
-                
-                <!-- Assigned Tasks Section -->
-                <div class="border border-gray-100 rounded-xl overflow-hidden shadow-sm">
-                    <div class="bg-gray-50 p-4 border-b border-gray-100 flex justify-between items-center">
-                        <h4 class="font-bold text-gray-800"><i class="fa-solid fa-list-check text-brand mr-2"></i>Assigned Tasks</h4>
-                        <button onclick="openAddTaskModal()" class="text-xs bg-brand text-white px-3 py-1.5 rounded-lg font-bold hover:bg-brandDark transition-colors">
-                            <i class="fa-solid fa-plus mr-1"></i> Add Goal
-                        </button>
-                    </div>
-                    <div class="p-4 bg-white min-h-[150px]">
-                        <ul id="admin-modal-tasks-list" class="space-y-3">
-                            <li class="text-sm text-gray-400 italic text-center py-4">No tasks assigned yet.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Shared Resources Section -->
-                <div class="border border-gray-100 rounded-xl overflow-hidden shadow-sm">
-                    <div class="bg-blue-50 p-4 border-b border-blue-100 flex justify-between items-center">
-                        <h4 class="font-bold text-blue-800"><i class="fa-solid fa-folder-open mr-2"></i>Shared Resources</h4>
-                        <button onclick="openAddResourceModal()" class="text-xs border border-blue-600 text-blue-600 bg-white px-3 py-1.5 rounded-lg font-bold hover:bg-blue-600 hover:text-white transition-colors">
-                            <i class="fa-solid fa-plus mr-1"></i> Add Info
-                        </button>
-                    </div>
-                    <div class="p-4 bg-white min-h-[150px]">
-                        <ul id="admin-modal-resources-list" class="space-y-3">
-                            <li class="text-sm text-gray-400 italic text-center py-4">No resources shared yet.</li>
-                        </ul>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
-</div>
+
     <!-- ======================= JAVASCRIPT & LOGIC ======================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -1242,7 +1217,7 @@
                 container.innerHTML += `
                     <label class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border ${t.isCompleted ? 'border-green-300 bg-green-50' : 'border-gray-100'} cursor-pointer hover:bg-gray-100 transition group">
                         <div class="flex items-center gap-4 opacity-${t.isCompleted ? '50' : '100'} transition-opacity">
-                            <div class="w-10 h-10 rounded-full ${t.isCompleted ? 'bg-green-200 text-green-600' : 'bg-white border text-brand'} flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-full ${t.isCompleted ? 'bg-green-200 text-green-600' : 'bg-white border text-brand'} flex items-center justify-center shadow-sm">
                                 ${t.isDaily ? '<i class="fa-solid fa-rotate text-xs"></i>' : '<i class="fa-solid fa-thumbtack text-xs"></i>'}
                             </div>
                             <div>
@@ -1411,12 +1386,12 @@
                 
                 querySnapshot.forEach((docSnap) => {
                     const u = docSnap.data(); const isVIP = u.isVIP || false;
-                    const tr = document.createElement('tr'); tr.className = 'hover:bg-green-50/50 transition';
+                    const tr = document.createElement('tr'); tr.className = 'hover:bg-green-50/50 transition cursor-pointer';
                     tr.innerHTML = `
-                        <td class="px-6 py-4 cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')"><div class="flex items-center gap-3"><img src="${u.photo || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full border"><div class="font-bold text-gray-800">${u.name}</div></div></td>
-                        <td class="px-6 py-4 text-gray-500 cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">${u.phone}<br><span class="text-xs">${u.email}</span></td>
-                        <td class="px-6 py-4 text-brand font-medium text-xs cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">${u.goal}</td>
-                        <td class="px-6 py-4">${isVIP ? '<span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded-full">VIP</span>' : '<span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-full">Free</span>'}</td>
+                        <td class="px-6 py-4" onclick="viewMemberDetails('${docSnap.id}')"><div class="flex items-center gap-3"><img src="${u.photo || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full border"><div class="font-bold text-gray-800">${u.name}</div></div></td>
+                        <td class="px-6 py-4 text-gray-500" onclick="viewMemberDetails('${docSnap.id}')">${u.phone}<br><span class="text-xs">${u.email}</span></td>
+                        <td class="px-6 py-4 text-brand font-medium text-xs" onclick="viewMemberDetails('${docSnap.id}')">${u.goal}</td>
+                        <td class="px-6 py-4" onclick="viewMemberDetails('${docSnap.id}')">${isVIP ? '<span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded-full">VIP</span>' : '<span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-full">Free</span>'}</td>
                         <td class="px-6 py-4 text-center">
                             <button onclick="toggleVIPStatus('${docSnap.id}', ${isVIP})" class="${isVIP ? 'bg-red-50 text-red-500' : 'bg-yellow-50 text-yellow-600'} px-3 py-1.5 rounded text-xs font-bold transition shadow-sm border ${isVIP ? 'border-red-200 hover:bg-red-100' : 'border-yellow-200 hover:bg-yellow-100'}">
                                 ${isVIP ? 'Revoke VIP' : 'Make VIP'}
@@ -1440,12 +1415,18 @@
             activeMemberId = uid; 
             openModal('modal-coach-member');
             
+            // Clear old task/resource forms if open
+            document.getElementById('form-add-task').classList.add('hidden');
+            document.getElementById('form-add-resource').classList.add('hidden');
+
             const userSnap = await getDoc(doc(db, COL_USERS, uid));
             if(!userSnap.exists()) return;
             const u = userSnap.data();
             
-            document.getElementById('cm-name').innerText = u.name; document.getElementById('cm-goal').innerText = u.goal;
-            document.getElementById('cm-phone').innerText = u.phone; document.getElementById('cm-email').innerText = u.email;
+            document.getElementById('cm-name').innerText = u.name; 
+            document.getElementById('cm-goal').innerText = u.goal;
+            document.getElementById('cm-phone').innerText = u.phone; 
+            document.getElementById('cm-email').innerText = u.email;
             document.getElementById('cm-avatar').src = u.photo || 'https://via.placeholder.com/150';
             document.getElementById('cm-btn-wa').href = `https://wa.me/91${u.phone.replace(/\D/g,'')}?text=Hello%20${encodeURIComponent(u.name)},%20`;
 
@@ -1467,7 +1448,7 @@
                 else if(r.diff < 0) dElem.innerText = `Gain ${Math.abs(r.diff)}kg`; 
                 else dElem.innerText = `Perfect`;
                 
-                document.getElementById('cm-out-protein').innerText = `${r.protein} gm`; 
+                document.getElementById('cm-out-protein').innerText = `${r.protein} gm (1g/kg)`; 
                 document.getElementById('cm-out-water').innerText = `${r.water} Liters`;
             } else {
                 document.getElementById('cm-rx-empty').classList.remove('hidden'); 
@@ -1494,7 +1475,7 @@
                 tasks.push(newTask);
                 await updateDoc(docRef, { tasks });
                 showToast("Task Assigned!");
-                document.getElementById('task-title').value = ''; document.getElementById('task-desc').value = '';
+                document.getElementById('form-add-task').reset();
                 document.getElementById('form-add-task').classList.add('hidden');
                 renderCoachTaskList(tasks);
             } catch(e) { showToast("Error assigning task."); }
@@ -1502,17 +1483,17 @@
 
         window.renderCoachTaskList = (tasks) => {
             const list = document.getElementById('cm-task-list');
-            if(tasks.length === 0) { list.innerHTML = '<div class="text-xs text-gray-400 italic">No tasks assigned.</div>'; return; }
+            if(tasks.length === 0) { list.innerHTML = '<div class="text-sm text-gray-400 italic text-center py-4">No tasks assigned.</div>'; return; }
             list.innerHTML = '';
             tasks.forEach(t => {
                 list.innerHTML += `
-                    <div class="flex justify-between items-center bg-white p-2 rounded border border-gray-100 text-xs">
+                    <div class="flex justify-between items-center bg-white p-3 rounded-lg border border-gray-100">
                         <div>
-                            <span class="font-bold text-gray-800 ${t.isCompleted ? 'line-through text-gray-400' : ''}">${t.title}</span>
-                            <span class="text-gray-500 ml-1">(${t.desc})</span>
-                            ${t.isDaily ? '<span class="bg-blue-100 text-blue-800 px-1 rounded text-[9px] ml-1">Daily</span>' : ''}
+                            <span class="font-bold text-sm text-gray-800 ${t.isCompleted ? 'line-through text-gray-400' : ''}">${t.title}</span>
+                            <span class="text-gray-500 text-xs ml-1">(${t.desc})</span>
+                            ${t.isDaily ? '<span class="bg-blue-50 border border-blue-100 text-blue-600 px-2 py-0.5 rounded text-[10px] ml-2 font-bold uppercase">Daily</span>' : ''}
                         </div>
-                        <button onclick="deleteUserTask('${t.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="deleteUserTask('${t.id}')" class="text-red-400 hover:text-red-600 bg-red-50 p-2 rounded-md"><i class="fa-solid fa-trash"></i></button>
                     </div>`;
             });
         };
@@ -1543,7 +1524,7 @@
                 resources.push(newRes);
                 await updateDoc(docRef, { resources });
                 showToast("Resource Shared!");
-                document.getElementById('res-title').value = ''; document.getElementById('res-content').value = '';
+                document.getElementById('form-add-resource').reset();
                 document.getElementById('form-add-resource').classList.add('hidden');
                 renderCoachResourceList(resources);
             } catch(e) { showToast("Error sharing resource."); }
@@ -1551,14 +1532,14 @@
 
         window.renderCoachResourceList = (resources) => {
             const list = document.getElementById('cm-resource-list');
-            if(resources.length === 0) { list.innerHTML = '<div class="text-xs text-blue-400 italic">No resources shared.</div>'; return; }
+            if(resources.length === 0) { list.innerHTML = '<div class="text-sm text-blue-400 italic text-center py-4">No resources shared.</div>'; return; }
             list.innerHTML = '';
             resources.forEach(r => {
                 let icon = r.type === 'youtube' ? 'fa-youtube text-red-500' : (r.type === 'link' ? 'fa-link text-blue-500' : 'fa-file-lines text-gray-500');
                 list.innerHTML += `
-                    <div class="flex justify-between items-center bg-white p-2 rounded border border-blue-100 text-xs">
-                        <div class="truncate pr-2"><i class="fa-brands ${icon} mr-1"></i> <span class="font-bold">${r.title}</span></div>
-                        <button onclick="deleteUserResource('${r.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                    <div class="flex justify-between items-center bg-white p-3 rounded-lg border border-blue-100">
+                        <div class="truncate pr-2 flex items-center gap-2"><i class="fa-brands ${icon} text-lg"></i> <span class="font-bold text-sm text-gray-800">${r.title}</span></div>
+                        <button onclick="deleteUserResource('${r.id}')" class="text-red-400 hover:text-red-600 bg-red-50 p-2 rounded-md"><i class="fa-solid fa-trash"></i></button>
                     </div>`;
             });
         };
