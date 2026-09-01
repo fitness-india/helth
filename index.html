@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Razorpay Payment Gateway Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <!-- Google Translate Script -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
@@ -47,7 +50,6 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         section { scroll-margin-top: 70px; } 
 
-        /* Custom Toast Notification */
         .toast-box {
             position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
             background: #333; color: white; padding: 12px 24px; border-radius: 30px;
@@ -56,7 +58,6 @@
         }
         .toast-box.show { bottom: 80px; }
 
-        /* Prescription Print Area */
         @media print {
             body * { visibility: hidden; }
             #rx-print-area, #rx-print-area * { visibility: visible; }
@@ -72,43 +73,33 @@
         .tool-content { display: none; }
         .tool-content.active { display: block; }
         
-        /* Fix Google Translate styling */
         .goog-te-gadget-simple { border-radius: 8px !important; padding: 4px !important; border: 1px solid #e5e7eb !important; }
         .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none; }
 
-        /* Loader Animation */
         @keyframes fadeOut {
             0% { opacity: 1; display: flex; }
             99% { opacity: 0; display: flex; }
             100% { opacity: 0; display: none; visibility: hidden; }
         }
-        #global-loader {
-            animation: fadeOut 0.5s ease-in-out 1.5s forwards;
-        }
+        #global-loader { animation: fadeOut 0.5s ease-in-out 1.5s forwards; }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Global Loading Screen -->
     <div id="global-loader" class="fixed inset-0 bg-white z-[99999] flex flex-col items-center justify-center transition-opacity duration-500">
         <i class="fa-solid fa-leaf text-6xl text-brand mb-4 animate-bounce"></i>
         <h1 class="text-2xl font-extrabold text-gray-800">Health Station 360</h1>
         <p class="text-sm text-gray-500 mt-2 font-medium">Loading your wellness journey...</p>
     </div>
 
-    <!-- Fail-safe script: Hides loader safely -->
     <script>
         function hideLoader() {
             const loader = document.getElementById('global-loader');
             if (loader && loader.style.display !== 'none') {
                 loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    loader.style.visibility = 'hidden';
-                }, 500);
+                setTimeout(() => { loader.style.display = 'none'; loader.style.visibility = 'hidden'; }, 500);
             }
         }
-        // Force hide after 2 seconds (safeguard against file:// protocol hangs)
         setTimeout(hideLoader, 2000);
         window.addEventListener('load', hideLoader);
     </script>
@@ -124,8 +115,7 @@
                 <img id="dyn-logo" src="https://ui-avatars.com/api/?name=HS+360&background=1a8d1a&color=fff&rounded=true&size=100" alt="Logo" class="max-h-full max-w-full object-contain">
             </div>
             
-            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-                <!-- Translation Tool -->
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1 hide-scrollbar">
                 <div id="google_translate_element" class="px-4 mb-4 mt-2"></div>
 
                 <a href="#home" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-brand bg-brand/10 font-semibold transition-colors"><i class="fa-solid fa-house w-5 text-center"></i> Home</a>
@@ -137,12 +127,10 @@
                 
                 <div class="pt-6 pb-2 px-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Members</div>
                 
-                <!-- Login Button -->
                 <button onclick="handleDashboardAccess()" id="btn-sidebar-login" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium text-left transition-colors">
                     <i class="fa-regular fa-user w-5 text-center"></i> <span>Login / Register</span>
                 </button>
                 
-                <!-- Profile Widget (Shows when logged in) -->
                 <div id="sidebar-user-widget" class="hidden mt-2 p-3 bg-gray-50 rounded-xl mx-2 border border-gray-100 shadow-inner relative">
                     <div id="sidebar-vip-badge" class="hidden absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-1 rounded-full shadow-md border border-yellow-200 z-10"><i class="fa-solid fa-crown"></i> VIP</div>
                     <div class="flex items-center gap-3 mb-3">
@@ -173,13 +161,12 @@
             </div>
             
             <div class="flex items-center gap-4">
-                <button onclick="document.getElementById('mobile-lang-menu').classList.toggle('hidden')" class="text-gray-600 relative p-2 -mr-2">
+                <button onclick="document.getElementById('mobile-lang-menu').classList.toggle('hidden')" class="text-gray-600 relative p-3 -mr-2 bg-gray-50 rounded-full">
                     <i class="fa-solid fa-globe text-xl pointer-events-none"></i>
                 </button>
             </div>
             
-            <!-- Mobile Language Dropdown -->
-            <div id="mobile-lang-menu" class="hidden absolute top-14 right-4 bg-white shadow-2xl rounded-xl border border-gray-200 p-3 z-[100] min-w-[150px]">
+            <div id="mobile-lang-menu" class="hidden absolute top-16 right-4 bg-white shadow-2xl rounded-xl border border-gray-200 p-3 z-[100] min-w-[150px]">
                 <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pb-1 border-b">Select Language</div>
                 <div id="google_translate_element_mob" class="text-sm min-h-[40px] flex items-center justify-center"></div>
             </div>
@@ -213,25 +200,21 @@
                 <div class="max-w-6xl mx-auto">
                     <h2 class="text-3xl font-bold mb-10 text-center">Our Focus Areas</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <!-- Program 1 -->
                         <div class="bg-gray-50 rounded-3xl overflow-hidden p-5 border border-gray-100 hover:shadow-lg transition duration-300">
                             <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500" class="w-full h-44 object-cover rounded-2xl mb-5 shadow-sm">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">Weight Loss</h3>
                             <p class="text-gray-500 text-sm mb-4">Healthy, balanced nutrition plan to lose weight naturally without starving.</p>
                         </div>
-                        <!-- Program 2 -->
                         <div class="bg-gray-50 rounded-3xl overflow-hidden p-5 border border-gray-100 hover:shadow-lg transition duration-300">
                             <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500" class="w-full h-44 object-cover rounded-2xl mb-5 shadow-sm">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">Weight Gain</h3>
                             <p class="text-gray-500 text-sm mb-4">Specialized protein-rich plan to help you gain healthy muscle mass and weight.</p>
                         </div>
-                        <!-- Program 3 -->
                         <div class="bg-gray-50 rounded-3xl overflow-hidden p-5 border border-gray-100 hover:shadow-lg transition duration-300">
                             <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500" class="w-full h-44 object-cover rounded-2xl mb-5 shadow-sm">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">Healthy Lifestyle</h3>
                             <p class="text-gray-500 text-sm mb-4">Daily habits and balanced meals for a better, healthier, and happier life.</p>
                         </div>
-                        <!-- Program 4 -->
                         <div class="bg-gray-50 rounded-3xl overflow-hidden p-5 border border-gray-100 hover:shadow-lg transition duration-300">
                             <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500" class="w-full h-44 object-cover rounded-2xl mb-5 shadow-sm">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">Energy & Wellness</h3>
@@ -241,18 +224,17 @@
                 </div>
             </section>
 
-            <!-- PREMIUM PACKAGES SECTION (NEW) -->
+            <!-- PREMIUM PACKAGES SECTION -->
             <section id="packages" class="bg-brand/5 px-4 py-16 border-y border-gray-100 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none"></div>
                 <div class="max-w-6xl mx-auto relative z-10">
                     <div class="text-center mb-12">
                         <span class="bg-yellow-100 text-yellow-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block border border-yellow-300"><i class="fa-solid fa-crown mr-1"></i> VIP Club</span>
                         <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Premium Nutrition Packages</h2>
-                        <p class="text-gray-600 max-w-2xl mx-auto">Get personalized guidance, premium supplements, and join our exclusive community to achieve your goals faster.</p>
+                        <p class="text-gray-600 max-w-2xl mx-auto">Get personalized guidance, premium products, and join our exclusive community to achieve your goals faster.</p>
                     </div>
 
                     <div id="dyn-packages-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- Dynamic Packages Loaded Here -->
                         <div class="col-span-full text-center text-gray-400 py-10 italic">Loading premium packages...</div>
                     </div>
                 </div>
@@ -264,7 +246,6 @@
                     <p class="text-center text-gray-500 mb-10">See how we transformed lives with balanced nutrition.</p>
                     
                     <div id="dyn-results-container" class="flex gap-6 overflow-x-auto pb-6 hide-scrollbar snap-x snap-mandatory">
-                        <!-- Dynamic Results Loaded Here -->
                         <div class="w-full text-center text-gray-400 py-8 italic">Loading results...</div>
                     </div>
                 </div>
@@ -275,17 +256,14 @@
                     <h2 class="text-3xl font-bold mb-2">Free Health Tools</h2>
                     <p class="text-gray-500 mb-8">Calculate your daily needs instantly.</p>
                     
-                    <!-- Tools Navigation Tabs -->
                     <div class="flex justify-center gap-2 mb-8 bg-white p-2 rounded-full shadow-sm inline-flex border border-gray-200 overflow-x-auto max-w-full hide-scrollbar relative">
                         <button onclick="switchTool('bmi', this)" class="tool-btn px-6 py-2.5 rounded-full font-bold bg-brand text-white shadow-md transition-colors duration-300">BMI Calculator</button>
                         <button onclick="switchTool('water', this)" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 transition-colors duration-300 hover:bg-gray-50">Water Intake</button>
                         <button onclick="switchTool('calorie', this)" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 transition-colors duration-300 hover:bg-gray-50">Calorie Need</button>
                     </div>
 
-                    <!-- Tools Container -->
                     <div class="bg-white p-6 md:p-10 rounded-3xl shadow-lg border border-gray-100 max-w-2xl mx-auto text-left relative overflow-hidden">
                         
-                        <!-- Tool 1: BMI -->
                         <div id="tool-bmi" class="tool-content active animate-[fadeIn_0.3s_ease-in-out]">
                             <h3 class="font-bold text-xl mb-4 border-b pb-2">Body Mass Index</h3>
                             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -297,14 +275,12 @@
                                 <p class="text-sm text-gray-500">Your BMI Score</p>
                                 <p id="val-bmi" class="text-4xl font-extrabold text-brand my-1">0.0</p>
                                 <p id="cat-bmi" class="font-bold text-gray-700 mb-4">Category</p>
-                                <!-- Call To Action (Sales Funnel) -->
-                                <a href="#packages" class="inline-block w-full py-2 bg-yellow-400 text-yellow-900 font-bold rounded-lg hover:bg-yellow-500 transition shadow-sm text-sm border border-yellow-500">
+                                <a href="#packages" class="inline-block w-full py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 font-extrabold rounded-xl hover:shadow-lg transition shadow-sm text-sm border border-yellow-500">
                                     <i class="fa-solid fa-fire text-orange-500 mr-1"></i> Get Custom Diet Plan to Fix This
                                 </a>
                             </div>
                         </div>
 
-                        <!-- Tool 2: Water -->
                         <div id="tool-water" class="tool-content animate-[fadeIn_0.3s_ease-in-out]">
                             <h3 class="font-bold text-xl mb-4 border-b pb-2">Daily Water Requirement</h3>
                             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -322,13 +298,12 @@
                                 <p class="text-sm text-blue-600 font-bold">You should drink</p>
                                 <p id="val-water" class="text-4xl font-extrabold text-blue-700 my-1">0 L</p>
                                 <p class="text-xs text-blue-500 mb-4">Per day to stay hydrated based on 20kg = 1L logic.</p>
-                                <a href="#booking" class="inline-block w-full py-2 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-50 transition shadow-sm text-sm border border-blue-200">
-                                    Book Free Consultation for Full Plan
+                                <a href="#packages" class="inline-block w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm text-sm border border-blue-700">
+                                    Join Premium Plan for Full Chart
                                 </a>
                             </div>
                         </div>
 
-                        <!-- Tool 3: Calorie -->
                         <div id="tool-calorie" class="tool-content animate-[fadeIn_0.3s_ease-in-out]">
                             <h3 class="font-bold text-xl mb-4 border-b pb-2">TDEE Calorie Calculator</h3>
                             <div class="grid grid-cols-3 gap-4 mb-4">
@@ -345,7 +320,7 @@
                                 <p class="text-sm text-orange-600 font-bold">To maintain weight you need</p>
                                 <p id="val-cal" class="text-4xl font-extrabold text-orange-700 my-1">0 kcal</p>
                                 <p class="text-xs text-orange-500 mb-4">To lose weight, eat 500 kcal less. To gain, eat 500 kcal more.</p>
-                                <a href="#packages" class="inline-block w-full py-2 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition shadow-sm text-sm">
+                                <a href="#packages" class="inline-block w-full py-3 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition shadow-sm text-sm">
                                     Check Premium Weight Loss Packages
                                 </a>
                             </div>
@@ -491,10 +466,7 @@
             <p class="text-gray-500 text-sm mb-6 pb-4 border-b border-gray-100">Please provide your details to start your wellness journey.</p>
             
             <form id="onboarding-form" onsubmit="event.preventDefault(); saveProfileData();" class="space-y-4">
-                
-                <!-- Images Upload Section -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                    <!-- Profile Photo -->
                     <div class="flex flex-col items-center">
                         <label class="block text-sm font-bold text-gray-700 mb-2 text-center">Profile Photo *</label>
                         <div class="relative group cursor-pointer w-24 h-24 mb-2">
@@ -508,7 +480,6 @@
                         <p class="text-[10px] text-gray-500 text-center">Clear face photo</p>
                     </div>
 
-                    <!-- Physique Photo -->
                     <div class="flex flex-col items-center">
                         <label class="block text-sm font-bold text-gray-700 mb-2 text-center">Current Body Image *</label>
                         <div class="relative group cursor-pointer w-24 h-32 mb-2">
@@ -548,6 +519,23 @@
         </div>
     </div>
 
+    <!-- TERMS & CONDITIONS MODAL (For Purchase) -->
+    <div id="modal-tnc" class="hidden fixed inset-0 bg-black/60 z-[150] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white p-6 md:p-8 rounded-3xl w-full max-w-lg shadow-2xl relative">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Terms & Conditions</h2>
+            <div class="h-48 overflow-y-auto text-sm text-gray-600 space-y-3 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <p><strong>1. Nutrition Club Membership:</strong> By purchasing this package, you agree to become a member of Health Station 360 online club.</p>
+                <p><strong>2. Results Vary:</strong> Individual weight loss/gain results may vary based on metabolism, adherence to the diet plan, and physical activity.</p>
+                <p><strong>3. Consultation:</strong> These products are dietary supplements and not intended to diagnose, treat, cure, or prevent any disease. Please consult your physician if you have any medical condition.</p>
+                <p><strong>4. No Refund Policy:</strong> Once the customized plan is created and products are dispatched, no refunds will be issued.</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="document.getElementById('modal-tnc').classList.add('hidden')" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition">Cancel</button>
+                <button id="btn-accept-tnc" class="flex-1 bg-brand text-white py-3 rounded-xl font-bold hover:bg-brandDark transition shadow-md">I Accept & Pay</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ======================= DASHBOARD VIEW ======================= -->
     <div id="dashboard-view" class="hidden min-h-screen bg-gray-50">
         <!-- Dashboard Header -->
@@ -564,7 +552,6 @@
 
         <div class="max-w-4xl mx-auto p-4 md:p-6 pb-24">
             
-            <!-- User Profile Summary (Card) -->
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-6 items-center md:items-start no-print relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-bl-full -z-0"></div>
                 
@@ -584,7 +571,6 @@
                     <button onclick="document.getElementById('modal-onboard').classList.remove('hidden')" class="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-200 transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-pen text-xs"></i> Edit Profile
                     </button>
-                    <!-- VIP Upsell button (shows if not VIP) -->
                     <button id="btn-dash-upgrade" onclick="closeViewsAndShowMain(); window.location.hash='packages'" class="bg-yellow-400 text-yellow-900 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-yellow-500 transition flex items-center justify-center gap-2 shadow-sm border border-yellow-500">
                         <i class="fa-solid fa-crown text-xs"></i> Upgrade to VIP
                     </button>
@@ -592,56 +578,41 @@
             </div>
 
             <!-- Dashboard Tabs -->
-            <div class="flex border-b border-gray-200 mb-6 no-print">
-                <button onclick="switchDashTab('progress')" id="btn-dash-progress" class="flex-1 py-3 font-bold text-brand border-b-2 border-brand transition">Today's Progress</button>
-                <button onclick="switchDashTab('report')" id="btn-dash-report" class="flex-1 py-3 font-bold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition">My Report</button>
+            <div class="flex border-b border-gray-200 mb-6 no-print overflow-x-auto hide-scrollbar">
+                <button onclick="switchDashTab('progress')" id="btn-dash-progress" class="flex-1 py-3 px-4 font-bold text-brand border-b-2 border-brand transition whitespace-nowrap">Daily Tasks</button>
+                <button onclick="switchDashTab('resources')" id="btn-dash-resources" class="flex-1 py-3 px-4 font-bold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition whitespace-nowrap">Coach Resources</button>
+                <button onclick="switchDashTab('report')" id="btn-dash-report" class="flex-1 py-3 px-4 font-bold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition whitespace-nowrap">My Report</button>
             </div>
 
-            <!-- TAB 1: Progress / Checklist -->
+            <!-- TAB 1: Progress / Daily Tasks (Dynamic) -->
             <div id="dash-tab-progress" class="block animate-[fadeIn_0.3s_ease-in-out]">
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-6 relative overflow-hidden">
                     <div class="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-brand/10 to-transparent pointer-events-none"></div>
-                    <h3 class="font-bold text-lg mb-1 flex items-center gap-2"><i class="fa-solid fa-list-check text-brand"></i> Daily Routine</h3>
-                    <p class="text-sm text-gray-500 mb-6">Complete your tasks to stay on track.</p>
+                    <h3 class="font-bold text-lg mb-1 flex items-center gap-2"><i class="fa-solid fa-list-check text-brand"></i> Your Daily Routine</h3>
+                    <p class="text-sm text-gray-500 mb-6">Complete the tasks assigned by your coach.</p>
                     
-                    <div class="space-y-3 relative z-10">
-                        <label class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer hover:bg-gray-100 transition group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-glass-water"></i></div>
-                                <div>
-                                    <p class="font-bold text-gray-800">Drink Water</p>
-                                    <p class="text-xs text-gray-500">Goal: <span id="dash-water-goal" class="font-bold">3 Liters</span></p>
-                                </div>
-                            </div>
-                            <input type="checkbox" class="w-6 h-6 rounded text-brand focus:ring-brand accent-brand cursor-pointer">
-                        </label>
-                        <label class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer hover:bg-gray-100 transition group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-person-running"></i></div>
-                                <div>
-                                    <p class="font-bold text-gray-800">Morning Exercise</p>
-                                    <p class="text-xs text-gray-500">Goal: 30 Mins Walk</p>
-                                </div>
-                            </div>
-                            <input type="checkbox" class="w-6 h-6 rounded text-brand focus:ring-brand accent-brand cursor-pointer">
-                        </label>
-                        <label class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer hover:bg-gray-100 transition group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-green-100 text-green-500 flex items-center justify-center"><i class="fa-solid fa-bowl-food"></i></div>
-                                <div>
-                                    <p class="font-bold text-gray-800">Healthy Meals & Shake</p>
-                                    <p class="text-xs text-gray-500">Follow coach plan</p>
-                                </div>
-                            </div>
-                            <input type="checkbox" class="w-6 h-6 rounded text-brand focus:ring-brand accent-brand cursor-pointer">
-                        </label>
+                    <div id="dyn-user-tasks" class="space-y-3 relative z-10">
+                        <!-- Dynamic Tasks Loaded Here -->
+                        <div class="text-center text-gray-400 italic py-4">No tasks assigned for today.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 1.5: Coach Resources (Dynamic) -->
+            <div id="dash-tab-resources" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-6">
+                    <h3 class="font-bold text-lg mb-1 flex items-center gap-2"><i class="fa-solid fa-folder-open text-blue-500"></i> Coach Materials</h3>
+                    <p class="text-sm text-gray-500 mb-6">Videos, links, and notes shared by your coach.</p>
+                    
+                    <div id="dyn-user-resources" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Dynamic Resources Loaded Here -->
+                        <div class="col-span-full text-center text-gray-400 italic py-4">No resources shared yet.</div>
                     </div>
                 </div>
             </div>
 
             <!-- TAB 2: Report & Prescription -->
             <div id="dash-tab-report" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
-                <!-- Data Entry Form (Only shows if no data exists) -->
                 <div id="rx-data-entry" class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-6 no-print block">
                     <h3 class="font-bold text-lg mb-4 text-gray-800 border-b pb-2">Generate Your Health Report</h3>
                     <p class="text-sm text-gray-500 mb-6">Enter your physical details to generate a personalized wellness prescription.</p>
@@ -657,12 +628,11 @@
                     </button>
                 </div>
 
-                <!-- Generated Report View -->
                 <div id="rx-print-area" class="hidden bg-white p-8 border border-gray-200 rounded-sm shadow-lg mb-6 relative font-sans text-gray-800 mx-auto max-w-[800px]">
                     <div class="text-center border-b-2 border-brand pb-6 mb-6">
                         <h1 class="text-3xl font-extrabold text-brand uppercase tracking-wider">Health Station 360</h1>
                         <p class="font-bold text-gray-600 mt-1">Wellness & Nutrition Center</p>
-                        <p class="text-sm text-gray-500 mt-1"><i class="fa-brands fa-whatsapp text-green-500"></i> +91 6289308561</p>
+                        <p class="text-sm text-gray-500 mt-1"><i class="fa-brands fa-whatsapp text-green-500"></i> <span id="dyn-rx-phone">+91 0000000000</span></p>
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm border-b border-dashed border-gray-300 pb-4">
@@ -714,7 +684,6 @@
         </header>
 
         <div class="max-w-7xl mx-auto p-4 md:p-6 no-print">
-            <!-- Scrollable tab container -->
             <div class="flex overflow-x-auto mb-6 bg-white p-2 rounded-xl shadow-sm border border-green-100 hide-scrollbar whitespace-nowrap">
                 <button onclick="switchCoachTab('members')" id="btn-coach-members" class="coach-tab active px-5 py-2.5 rounded-lg font-bold text-white bg-brand transition">Manage Members</button>
                 <button onclick="switchCoachTab('packages')" id="btn-coach-packages" class="coach-tab px-5 py-2.5 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">Manage Packages</button>
@@ -749,7 +718,7 @@
                 </div>
             </div>
 
-            <!-- COACH TAB: Manage Packages (NEW) -->
+            <!-- COACH TAB: Manage Packages -->
             <div id="coach-tab-packages" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-1 bg-white rounded-2xl p-6 shadow-sm border border-green-100">
@@ -768,7 +737,7 @@
                                 <input type="hidden" id="pkg-img-data">
                             </div>
                             <div><label class="block text-sm font-bold text-gray-700 mb-1">Package Name *</label><input type="text" id="pkg-title" required placeholder="e.g. 30-Day Weight Loss" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand"></div>
-                            <div><label class="block text-sm font-bold text-gray-700 mb-1">Price (₹) *</label><input type="text" id="pkg-price" required placeholder="e.g. 2999" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand"></div>
+                            <div><label class="block text-sm font-bold text-gray-700 mb-1">Price (₹) *</label><input type="number" id="pkg-price" required placeholder="e.g. 2999" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand"></div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1">Features (Comma separated) *</label>
                                 <textarea id="pkg-desc" rows="3" required placeholder="Diet chart, Daily Follow-up, Supplements included" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand text-sm"></textarea>
@@ -802,8 +771,6 @@
                                     <input type="file" id="res-file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="compressAndPreview(this, 'res-img-preview', 'res-img-data', false); document.getElementById('res-img-preview').classList.remove('hidden'); document.getElementById('res-img-placeholder').classList.add('hidden');">
                                 </div>
                                 <input type="hidden" id="res-img-data">
-                                <div class="flex items-center my-3"><div class="flex-grow border-t"></div><span class="px-3 text-xs text-gray-400 font-bold uppercase">OR</span><div class="flex-grow border-t"></div></div>
-                                <input type="url" id="res-url" placeholder="Paste Image URL instead" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand text-sm" onchange="if(this.value) { document.getElementById('res-img-preview').src = this.value; document.getElementById('res-img-preview').classList.remove('hidden'); document.getElementById('res-img-placeholder').classList.add('hidden'); document.getElementById('res-img-data').value = this.value; }">
                             </div>
                             <div><label class="block text-sm font-bold text-gray-700 mb-1">Name</label><input type="text" id="res-name" required class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand"></div>
                             <div><label class="block text-sm font-bold text-gray-700 mb-1">Result / Title</label><input type="text" id="res-title" required placeholder="e.g. Lost 10 Kg in 2 Months" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand"></div>
@@ -865,11 +832,16 @@
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">WhatsApp Number (For Booking)</label>
                             <input type="text" id="set-wa" placeholder="e.g. 916289308561" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand">
-                            <p class="text-xs text-gray-400 mt-1">Include country code without +</p>
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">Call Number</label>
                             <input type="text" id="set-call" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand">
+                        </div>
+                        <div class="pt-4 border-t border-gray-100">
+                            <h4 class="font-bold text-sm text-gray-800 mb-3">Payment Gateway (Razorpay)</h4>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Razorpay Key ID (Public API Key)</label>
+                            <input type="text" id="set-rzp" placeholder="rzp_live_xxxxxxxxx" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand font-mono text-sm">
+                            <p class="text-[10px] text-gray-400 mt-1">Required for automated premium package checkout & VIP activation.</p>
                         </div>
                         <div class="pt-4 border-t border-gray-100">
                             <h4 class="font-bold text-sm text-gray-800 mb-3">Social Links</h4>
@@ -883,7 +855,6 @@
                             <h4 class="font-bold text-sm text-gray-800 mb-3">Admin Access</h4>
                             <label class="block text-sm font-bold text-gray-700 mb-1">Authorized Coach Emails (Comma separated)</label>
                             <textarea id="set-admins" rows="2" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand text-sm" placeholder="befitindia1@gmail.com, coach2@gmail.com"></textarea>
-                            <p class="text-xs text-red-400 mt-1 font-bold">Warning: Do not remove your own email, or you will lose access!</p>
                         </div>
                         <button type="submit" id="btn-save-settings" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-4 hover:bg-brandDark transition shadow-lg">Save Settings</button>
                     </form>
@@ -894,68 +865,99 @@
 
     <!-- COACH MEMBER DETAILS MODAL -->
     <div id="modal-coach-member" class="hidden fixed inset-0 bg-black/60 z-[120] flex items-center justify-center p-4 backdrop-blur-sm no-print">
-        <div class="bg-white rounded-3xl w-full max-w-3xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden relative">
-            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50">
-                <h2 class="text-xl font-bold text-gray-800">Member Details</h2>
-                <button onclick="document.getElementById('modal-coach-member').classList.add('hidden')" class="text-gray-400 hover:text-red-500 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-sm"><i class="fa-solid fa-xmark"></i></button>
+        <div class="bg-white rounded-3xl w-full max-w-4xl shadow-2xl max-h-[95vh] flex flex-col overflow-hidden relative">
+            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-100 bg-gray-50">
+                <h2 class="text-xl font-bold text-gray-800">Member Details & Controls</h2>
+                <button onclick="document.getElementById('modal-coach-member').classList.add('hidden')" class="text-gray-400 hover:text-red-500 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-sm border"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="overflow-y-auto p-6 flex-1 bg-white" id="coach-member-print">
-                <div class="hidden print-block text-center border-b-2 border-brand pb-4 mb-6">
-                    <h1 class="text-2xl font-extrabold text-brand uppercase">Health Station 360</h1>
-                    <p class="text-sm text-gray-600 font-bold">Member Report & Details</p>
-                </div>
-                <div class="flex flex-col md:flex-row gap-8 mb-8 border-b border-gray-100 pb-8">
-                    <div class="flex gap-4 items-start">
+            <div class="overflow-y-auto flex-1 bg-white p-4 md:p-6 flex flex-col lg:flex-row gap-6">
+                <!-- Left: Profile & Report -->
+                <div class="lg:w-1/2 flex flex-col border-r border-gray-100 lg:pr-6" id="coach-member-print">
+                    <div class="flex gap-4 items-start mb-6">
                         <div class="text-center">
-                            <p class="text-xs font-bold text-gray-400 uppercase mb-2">Profile</p>
-                            <img id="cm-avatar" src="" class="w-24 h-24 rounded-2xl object-cover border border-gray-200 shadow-sm bg-gray-100">
+                            <img id="cm-avatar" src="" class="w-20 h-20 rounded-2xl object-cover border border-gray-200 shadow-sm bg-gray-100">
                         </div>
-                        <div class="text-center">
-                            <p class="text-xs font-bold text-gray-400 uppercase mb-2">Physique</p>
-                            <img id="cm-body" src="" class="w-24 h-32 rounded-2xl object-cover border border-gray-200 shadow-sm bg-gray-100 cursor-pointer hover:opacity-80" onclick="if(this.src && !this.src.includes('placeholder')) window.open(this.src, '_blank')">
+                        <div class="flex-1">
+                            <h2 id="cm-name" class="text-xl font-extrabold text-gray-900 mb-1">--</h2>
+                            <span id="cm-goal" class="inline-block px-2 py-0.5 bg-brand/10 text-brand text-[10px] font-bold rounded mb-2 uppercase">--</span>
+                            <p class="text-xs text-gray-600 mb-1"><i class="fa-solid fa-phone w-4"></i> <span id="cm-phone">--</span></p>
+                            <p class="text-xs text-gray-600"><i class="fa-regular fa-envelope w-4"></i> <span id="cm-email">--</span></p>
                         </div>
                     </div>
-                    <div class="flex-1">
-                        <h2 id="cm-name" class="text-2xl font-extrabold text-gray-900 mb-1">--</h2>
-                        <span id="cm-goal" class="inline-block px-3 py-1 bg-brand/10 text-brand text-xs font-bold rounded-md mb-4 uppercase">--</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
-                            <p><i class="fa-solid fa-phone text-gray-400 w-5"></i> <span id="cm-phone" class="font-medium text-gray-700">--</span></p>
-                            <p><i class="fa-regular fa-envelope text-gray-400 w-5"></i> <span id="cm-email" class="font-medium text-gray-700">--</span></p>
-                            <p class="sm:col-span-2 flex items-start"><i class="fa-solid fa-location-dot text-gray-400 w-5 mt-0.5"></i> <span id="cm-address" class="font-medium text-gray-700">--</span></p>
+                    
+                    <div class="mb-6">
+                        <h3 class="font-bold text-sm mb-3 text-gray-800 flex items-center gap-2 border-b pb-1"><i class="fa-solid fa-file-medical text-brand"></i> Physical Report</h3>
+                        <div id="cm-rx-empty" class="text-center text-gray-400 py-4 text-xs italic block bg-gray-50 rounded-lg">No report generated yet.</div>
+                        <div id="cm-rx-data" class="hidden bg-gray-50 rounded-lg p-3 text-sm">
+                            <div class="grid grid-cols-2 gap-2 mb-3 border-b pb-2">
+                                <div><span class="text-gray-500 text-[10px] block">Age/Gender</span> <strong id="cm-out-age">--</strong></div>
+                                <div><span class="text-gray-500 text-[10px] block">Height/Weight</span> <strong id="cm-out-hw">--</strong></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><span class="text-gray-500 text-[10px] block">Protein / Water</span> <strong><span id="cm-out-protein">--</span> / <span id="cm-out-water" class="text-blue-500">--</span></strong></div>
+                                <div><span class="text-gray-500 text-[10px] block">Target</span> <strong id="cm-out-diff" class="text-orange-500">--</strong></div>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <!-- Chat & Print Action -->
+                    <div class="flex gap-2 mt-auto pt-4 border-t border-gray-100">
+                        <a id="cm-btn-wa" href="#" target="_blank" class="flex-1 text-center py-2 bg-green-500 text-white text-sm font-bold rounded-lg hover:bg-green-600 transition"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
                     </div>
                 </div>
 
-                <div>
-                    <h3 class="font-bold text-lg mb-4 text-gray-800 flex items-center gap-2"><i class="fa-solid fa-file-medical text-brand"></i> Physical Report</h3>
-                    <div id="cm-rx-area" class="bg-gray-50 rounded-2xl p-6 border border-gray-200 relative">
-                        <div id="cm-rx-empty" class="text-center text-gray-400 py-6 italic block">
-                            Member has not generated a report yet.
+                <!-- Right: Coach Controls (Tasks & Resources) -->
+                <div class="lg:w-1/2 flex flex-col gap-6">
+                    
+                    <!-- Task Management -->
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-sm text-gray-800"><i class="fa-solid fa-list-check text-brand mr-1"></i> User Tasks</h3>
+                            <button onclick="document.getElementById('form-add-task').classList.toggle('hidden')" class="bg-white text-brand border border-brand px-2 py-1 rounded text-xs font-bold hover:bg-brand hover:text-white transition"><i class="fa-solid fa-plus"></i> Add Goal</button>
                         </div>
-                        <div id="cm-rx-data" class="hidden">
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm border-b border-gray-200 pb-4">
-                                <div><span class="text-gray-500 block text-xs">Age/Gender</span> <strong id="cm-out-age" class="text-base text-gray-800">--</strong></div>
-                                <div><span class="text-gray-500 block text-xs">Height</span> <strong id="cm-out-height" class="text-base text-gray-800">-- cm</strong></div>
-                                <div><span class="text-gray-500 block text-xs">Weight</span> <strong id="cm-out-weight" class="text-base text-gray-800">-- kg</strong></div>
-                                <div><span class="text-gray-500 block text-xs">Target</span> <strong id="cm-out-diff" class="text-base text-orange-500">-- kg</strong></div>
-                            </div>
-                            <table class="w-full text-sm border-collapse border border-white">
-                                <tbody>
-                                    <tr><td class="p-3 bg-white font-bold text-gray-600 w-1/3 border-b border-gray-50">Daily Protein</td><td class="p-3 border-b border-gray-50 font-bold text-gray-800" id="cm-out-protein">--</td></tr>
-                                    <tr><td class="p-3 bg-white font-bold text-gray-600 border-b border-gray-50">Daily Water</td><td class="p-3 border-b border-gray-50 font-bold text-blue-600" id="cm-out-water">--</td></tr>
-                                    <tr><td class="p-3 bg-white font-bold text-gray-600 border-b border-gray-50">Fiber</td><td class="p-3 border-b border-gray-50">30-35 gm</td></tr>
-                                    <tr><td class="p-3 bg-white font-bold text-gray-600">Updated On</td><td class="p-3 text-xs text-gray-500" id="cm-out-date">--</td></tr>
-                                </tbody>
-                            </table>
+                        
+                        <!-- Add Task Form -->
+                        <form id="form-add-task" class="hidden bg-white p-3 rounded-xl border border-gray-200 mb-3 space-y-2" onsubmit="event.preventDefault(); saveUserTask();">
+                            <input type="text" id="task-title" required placeholder="Task (e.g. Drink Water)" class="w-full text-xs p-2 border rounded focus:border-brand outline-none bg-gray-50">
+                            <input type="text" id="task-desc" placeholder="Target (e.g. 3 Liters)" class="w-full text-xs p-2 border rounded focus:border-brand outline-none bg-gray-50">
+                            <label class="flex items-center gap-2 text-xs font-bold text-gray-600 cursor-pointer">
+                                <input type="checkbox" id="task-daily" checked class="w-4 h-4 text-brand accent-brand"> Set as Daily Automatic Routine
+                            </label>
+                            <button type="submit" class="w-full bg-brand text-white text-xs py-2 rounded font-bold">Save Task</button>
+                        </form>
+                        
+                        <!-- Task List -->
+                        <div id="cm-task-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                            <div class="text-center text-gray-400 text-xs italic py-2">Loading tasks...</div>
+                        </div>
+                    </div>
+
+                    <!-- Resource Management -->
+                    <div class="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-sm text-blue-800"><i class="fa-solid fa-folder-open mr-1"></i> Shared Resources</h3>
+                            <button onclick="document.getElementById('form-add-resource').classList.toggle('hidden')" class="bg-white text-blue-600 border border-blue-600 px-2 py-1 rounded text-xs font-bold hover:bg-blue-600 hover:text-white transition"><i class="fa-solid fa-plus"></i> Add Info</button>
+                        </div>
+                        
+                        <!-- Add Resource Form -->
+                        <form id="form-add-resource" class="hidden bg-white p-3 rounded-xl border border-blue-200 mb-3 space-y-2" onsubmit="event.preventDefault(); saveUserResource();">
+                            <select id="res-type" class="w-full text-xs p-2 border rounded outline-none bg-gray-50">
+                                <option value="link">Website Link</option>
+                                <option value="youtube">YouTube Video</option>
+                                <option value="text">Text Note</option>
+                            </select>
+                            <input type="text" id="res-title" required placeholder="Title (e.g. Diet Plan / Video Name)" class="w-full text-xs p-2 border rounded outline-none bg-gray-50">
+                            <textarea id="res-content" required placeholder="Paste URL or text here..." class="w-full text-xs p-2 border rounded outline-none bg-gray-50 h-16"></textarea>
+                            <button type="submit" class="w-full bg-blue-600 text-white text-xs py-2 rounded font-bold">Share Resource</button>
+                        </form>
+                        
+                        <!-- Resource List -->
+                        <div id="cm-resource-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                            <div class="text-center text-blue-400 text-xs italic py-2">Loading resources...</div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 print-hide">
-                <a id="cm-btn-wa" href="#" target="_blank" class="px-5 py-2.5 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition flex items-center gap-2"><i class="fa-brands fa-whatsapp"></i> Chat</a>
-                <button onclick="window.print()" class="px-5 py-2.5 bg-gray-800 text-white font-bold rounded-xl hover:bg-black transition flex items-center gap-2"><i class="fa-solid fa-print"></i> Print Details</button>
             </div>
         </div>
     </div>
@@ -979,21 +981,17 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Collections
         const COL_USERS = 'users';
         const COL_REPORTS = 'reports';
         const COL_SETTINGS = 'settings';
         const COL_RESULTS = 'results';
         const COL_BOOKINGS = 'bookings';
-        const COL_PACKAGES = 'packages'; // New Collection for Sales Funnel
+        const COL_PACKAGES = 'packages';
         
         let currentUser = null;
-        let siteSettings = { 
-            admins: ['befitindia1@gmail.com'], 
-            wa: '916289308561', call: '', fb: '', ig: '', yt: '', logo: '', banner: '' 
-        };
+        let siteSettings = { admins: ['befitindia1@gmail.com'], wa: '916289308561' };
+        let activeMemberId = null; // Used in Coach Modal
 
-        // --- UTILITIES ---
         window.showToast = (msg) => {
             const t = document.getElementById('toast');
             t.innerText = msg;
@@ -1010,11 +1008,9 @@
             window.scrollTo(0,0);
         };
 
-        // Image Compression
         window.compressAndPreview = (inputElement, previewId, dataId, isAvatar) => {
             const file = inputElement.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (event) => {
@@ -1023,32 +1019,16 @@
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
                     const MAX_WIDTH = 400; 
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > MAX_WIDTH) {
-                        height = Math.round((height *= MAX_WIDTH / width));
-                        width = MAX_WIDTH;
-                    }
-                    
-                    if(isAvatar) {
-                        width = MAX_WIDTH;
-                        height = MAX_WIDTH;
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
+                    let width = img.width, height = img.height;
+                    if (width > MAX_WIDTH) { height = Math.round((height *= MAX_WIDTH / width)); width = MAX_WIDTH; }
+                    if(isAvatar) { width = MAX_WIDTH; height = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
-                    
                     if(isAvatar) {
                         const minDim = Math.min(img.width, img.height);
-                        const sx = (img.width - minDim) / 2;
-                        const sy = (img.height - minDim) / 2;
+                        const sx = (img.width - minDim) / 2, sy = (img.height - minDim) / 2;
                         ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, width, height);
-                    } else {
-                        ctx.drawImage(img, 0, 0, width, height);
-                    }
-
+                    } else ctx.drawImage(img, 0, 0, width, height);
                     const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
                     document.getElementById(previewId).src = compressedDataUrl;
                     document.getElementById(dataId).value = compressedDataUrl;
@@ -1056,7 +1036,7 @@
             }
         };
 
-        // --- AUTH LOGIC ---
+        // --- AUTH & LOGIN LOGIC ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
@@ -1066,6 +1046,7 @@
                 const docSnap = await getDoc(doc(db, COL_USERS, user.uid));
                 if (docSnap.exists()) {
                     window.userProfile = docSnap.data();
+                    processDailyTaskReset(window.userProfile); // Reset Daily Tasks logic
                     updateSidebarUI(window.userProfile);
                 } else {
                     window.userProfile = null;
@@ -1074,51 +1055,64 @@
                     document.getElementById('ob-phone').value = user.phoneNumber || '';
                 }
             } else {
-                currentUser = null;
-                window.userProfile = null;
+                currentUser = null; window.userProfile = null;
                 document.getElementById('btn-sidebar-login').classList.remove('hidden');
                 document.getElementById('sidebar-user-widget').classList.add('hidden');
                 closeViewsAndShowMain();
             }
         });
 
+        // Daily Task Auto Reset Logic for Users
+        async function processDailyTaskReset(profile) {
+            const today = new Date().toLocaleDateString();
+            if(profile.lastLoginDate !== today) {
+                let tasksUpdated = false;
+                let updatedTasks = (profile.tasks || []).filter(t => {
+                    if(t.isDaily) { t.isCompleted = false; tasksUpdated = true; return true; }
+                    // Keep one-time tasks only if they are NOT completed yet. If completed yesterday, remove them.
+                    if(t.isCompleted) { tasksUpdated = true; return false; }
+                    return true; 
+                });
+                
+                if(tasksUpdated) {
+                    profile.tasks = updatedTasks;
+                    profile.lastLoginDate = today;
+                    await updateDoc(doc(db, COL_USERS, currentUser.uid), { tasks: updatedTasks, lastLoginDate: today });
+                }
+            }
+        }
+
         function updateSidebarUI(p) {
             document.getElementById('sidebar-username').innerText = p.name;
             document.getElementById('sidebar-useremail').innerText = p.email || p.phone || 'User';
             document.getElementById('sidebar-avatar').src = p.photo || `https://ui-avatars.com/api/?name=${p.name.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
-            
-            // Show VIP badge if paid member
-            if(p.isVIP) {
-                document.getElementById('sidebar-vip-badge').classList.remove('hidden');
-            } else {
-                document.getElementById('sidebar-vip-badge').classList.add('hidden');
-            }
+            if(p.isVIP) document.getElementById('sidebar-vip-badge').classList.remove('hidden');
+            else document.getElementById('sidebar-vip-badge').classList.add('hidden');
         }
 
-        window.handleDashboardAccess = () => {
+        window.handleDashboardAccess = async () => {
             if (!currentUser) {
                 const provider = new GoogleAuthProvider();
-                signInWithPopup(auth, provider).catch(e => showToast("Login Error: " + e.message));
-                return;
+                signInWithPopup(auth, provider).catch(e => showToast("Login Error")); return;
             }
-            if (!window.userProfile) {
-                openModal('modal-onboard');
-                return;
-            }
+            if (!window.userProfile) { openModal('modal-onboard'); return; }
+            
+            // Re-fetch profile to ensure fresh tasks/resources data
+            const docSnap = await getDoc(doc(db, COL_USERS, currentUser.uid));
+            window.userProfile = docSnap.data();
+            const p = window.userProfile;
+
             document.getElementById('public-views').classList.add('hidden');
             document.getElementById('coach-view').classList.add('hidden');
             document.getElementById('dashboard-view').classList.remove('hidden');
             
-            const p = window.userProfile;
             document.getElementById('dash-name').innerText = p.name;
             document.getElementById('dash-email').innerHTML = `<i class="fa-regular fa-envelope w-4"></i> ${p.email}`;
             document.getElementById('dash-phone').innerHTML = `<i class="fa-solid fa-phone w-4"></i> ${p.phone}`;
             document.getElementById('dash-goal').innerText = `Goal: ${p.goal}`;
             const avatar = p.photo || `https://ui-avatars.com/api/?name=${p.name.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
-            document.getElementById('dash-avatar-main').src = avatar;
-            document.getElementById('dash-avatar-top').src = avatar;
+            document.getElementById('dash-avatar-main').src = avatar; document.getElementById('dash-avatar-top').src = avatar;
             
-            // Handle VIP UI in dashboard
             if(p.isVIP) {
                 document.getElementById('dash-vip-badge').classList.remove('hidden');
                 document.getElementById('btn-dash-upgrade').classList.add('hidden');
@@ -1128,240 +1122,217 @@
             }
 
             loadUserReport();
+            renderUserDashboardTasks(p.tasks || []);
+            renderUserDashboardResources(p.resources || []);
             
-            // Prefill edit form
-            document.getElementById('ob-name').value = p.name;
-            document.getElementById('ob-email').value = p.email;
-            document.getElementById('ob-phone').value = p.phone;
-            document.getElementById('ob-goal').value = p.goal;
-            document.getElementById('ob-address').value = p.address || '';
-            document.getElementById('ob-pin').value = p.pin || '';
+            document.getElementById('ob-name').value = p.name; document.getElementById('ob-email').value = p.email;
+            document.getElementById('ob-phone').value = p.phone; document.getElementById('ob-goal').value = p.goal;
+            document.getElementById('ob-address').value = p.address || ''; document.getElementById('ob-pin').value = p.pin || '';
             document.getElementById('ob-city').value = p.city || '';
-            const stateInput = document.getElementById('ob-state');
-            if(stateInput) stateInput.value = p.state || '';
-            
-            document.getElementById('ob-img-preview').src = avatar;
-            document.getElementById('ob-img-data').value = p.photo || '';
-            if(p.currentBodyImage) {
-                document.getElementById('ob-current-img-preview').src = p.currentBodyImage;
-                document.getElementById('ob-current-img-data').value = p.currentBodyImage;
-            }
-            document.getElementById('ob-file').removeAttribute('required');
-            document.getElementById('ob-current-file').removeAttribute('required');
-            
+            const stateInput = document.getElementById('ob-state'); if(stateInput) stateInput.value = p.state || '';
+            document.getElementById('ob-img-preview').src = avatar; document.getElementById('ob-img-data').value = p.photo || '';
+            if(p.currentBodyImage) { document.getElementById('ob-current-img-preview').src = p.currentBodyImage; document.getElementById('ob-current-img-data').value = p.currentBodyImage; }
+            document.getElementById('ob-file').removeAttribute('required'); document.getElementById('ob-current-file').removeAttribute('required');
             window.scrollTo(0,0);
         };
 
         window.saveProfileData = async () => {
-            if(!currentUser) { showToast("User not logged in!"); return; }
-
+            if(!currentUser) return showToast("User not logged in!");
             const submitBtn = document.getElementById('btn-save-profile');
             const originalHTML = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Saving Profile...</span>';
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Saving...</span>'; submitBtn.disabled = true;
 
             try {
-                const stateInput = document.getElementById('ob-state');
-                const stateValue = stateInput ? stateInput.value : '';
-                
-                // Preserve VIP status if already set
                 const isVIP = window.userProfile ? (window.userProfile.isVIP || false) : false;
+                const tasks = window.userProfile ? (window.userProfile.tasks || []) : [];
+                const resources = window.userProfile ? (window.userProfile.resources || []) : [];
 
                 const p = {
-                    name: document.getElementById('ob-name').value, 
-                    email: document.getElementById('ob-email').value,
-                    phone: document.getElementById('ob-phone').value, 
-                    goal: document.getElementById('ob-goal').value,
-                    address: document.getElementById('ob-address').value, 
-                    pin: document.getElementById('ob-pin').value,
-                    city: document.getElementById('ob-city').value, 
-                    state: stateValue, 
+                    name: document.getElementById('ob-name').value, email: document.getElementById('ob-email').value,
+                    phone: document.getElementById('ob-phone').value, goal: document.getElementById('ob-goal').value,
+                    address: document.getElementById('ob-address').value, pin: document.getElementById('ob-pin').value,
+                    city: document.getElementById('ob-city').value, state: document.getElementById('ob-state') ? document.getElementById('ob-state').value : '', 
                     photo: document.getElementById('ob-img-data').value || 'https://ui-avatars.com/api/?name=' + document.getElementById('ob-name').value.replace(/ /g, '+') + '&background=random',
                     currentBodyImage: document.getElementById('ob-current-img-data').value || '',
-                    uid: currentUser.uid,
-                    isVIP: isVIP,
-                    updatedAt: new Date().toISOString()
+                    uid: currentUser.uid, isVIP: isVIP, tasks: tasks, resources: resources,
+                    lastLoginDate: new Date().toLocaleDateString(), updatedAt: new Date().toISOString()
                 };
                 
                 await setDoc(doc(db, COL_USERS, currentUser.uid), p);
-                
-                window.userProfile = p;
-                updateSidebarUI(p);
-                closeModal('modal-onboard');
-                showToast("Profile Saved Successfully!");
-                window.handleDashboardAccess();
-
-            } catch(e) { 
-                console.error("Save Error:", e);
-                let errMsg = e.message;
-                if (e.code === 'permission-denied') errMsg = "Permission Denied. Check Firestore Rules.";
-                if (e.message && e.message.includes('payload too large')) errMsg = "Image size still too big. Try smaller image.";
-                showToast(errMsg); 
-            } finally {
-                submitBtn.innerHTML = originalHTML;
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
-            }
+                window.userProfile = p; updateSidebarUI(p); closeModal('modal-onboard');
+                showToast("Profile Saved Successfully!"); window.handleDashboardAccess();
+            } catch(e) { showToast(e.message); } 
+            finally { submitBtn.innerHTML = originalHTML; submitBtn.disabled = false; }
         };
 
         window.logoutUser = () => signOut(auth).then(() => { showToast("Logged out"); closeViewsAndShowMain(); });
 
-
-        // --- DASHBOARD LOGIC (PRESCRIPTION) ---
+        // --- DASHBOARD TABS & RENDERING ---
         window.switchDashTab = (tabId) => {
             document.querySelectorAll('#dashboard-view .flex button').forEach(b => {
-                if(b.id !== 'btn-dash-upgrade') {
-                    b.classList.remove('text-brand', 'border-brand');
-                    b.classList.add('text-gray-500', 'border-transparent');
-                }
+                b.classList.remove('text-brand', 'border-brand');
+                b.classList.add('text-gray-500', 'border-transparent');
             });
             document.getElementById('btn-dash-'+tabId).classList.remove('text-gray-500', 'border-transparent');
             document.getElementById('btn-dash-'+tabId).classList.add('text-brand', 'border-brand');
 
             document.getElementById('dash-tab-progress').classList.add('hidden');
+            document.getElementById('dash-tab-resources').classList.add('hidden');
             document.getElementById('dash-tab-report').classList.add('hidden');
             document.getElementById('dash-tab-'+tabId).classList.remove('hidden');
         };
 
-        window.generatePrescription = async () => {
-            const age = document.getElementById('rx-age').value;
-            const gender = document.getElementById('rx-gender').value;
-            const h = document.getElementById('rx-height').value;
-            const w = document.getElementById('rx-weight').value;
-
-            if(!age || !h || !w) return showToast("Please fill all details");
-
-            const idealWeight = gender === 'Male' ? (h - 100) * 0.9 : (h - 100) * 0.85; 
-            const diff = w - idealWeight;
-            const water = w / 20; 
-            const protein = w * 1; 
-
-            const report = {
-                age: age, gender: gender, height: h, weight: w,
-                idealWeight: idealWeight.toFixed(1),
-                diff: diff.toFixed(1),
-                water: water.toFixed(1),
-                protein: protein.toFixed(1),
-                date: new Date().toLocaleDateString(),
-                timestamp: new Date().getTime()
-            };
-
-            try {
-                await setDoc(doc(db, COL_REPORTS, currentUser.uid), report);
-                showToast("Report Generated!");
-                displayReport(report);
-            } catch(e) { showToast("Error saving report."); }
+        // Render Tasks in User Dashboard
+        window.renderUserDashboardTasks = (tasks) => {
+            const container = document.getElementById('dyn-user-tasks');
+            if(!tasks || tasks.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-400 italic py-4">No tasks assigned for today.</div>';
+                return;
+            }
+            container.innerHTML = '';
+            tasks.forEach(t => {
+                container.innerHTML += `
+                    <label class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border ${t.isCompleted ? 'border-green-300 bg-green-50' : 'border-gray-100'} cursor-pointer hover:bg-gray-100 transition group">
+                        <div class="flex items-center gap-4 opacity-${t.isCompleted ? '50' : '100'} transition-opacity">
+                            <div class="w-10 h-10 rounded-full ${t.isCompleted ? 'bg-green-200 text-green-600' : 'bg-white border text-brand'} flex items-center justify-center">
+                                ${t.isDaily ? '<i class="fa-solid fa-rotate text-xs"></i>' : '<i class="fa-solid fa-thumbtack text-xs"></i>'}
+                            </div>
+                            <div>
+                                <p class="font-bold ${t.isCompleted ? 'text-gray-500 line-through' : 'text-gray-800'}">${t.title}</p>
+                                <p class="text-xs text-gray-500">Target: <span class="font-bold">${t.desc}</span></p>
+                            </div>
+                        </div>
+                        <input type="checkbox" ${t.isCompleted ? 'checked' : ''} onchange="toggleUserTask('${t.id}', this.checked)" class="w-6 h-6 rounded text-brand focus:ring-brand accent-brand cursor-pointer">
+                    </label>
+                `;
+            });
         };
 
-        const loadUserReport = async () => {
-            if(!currentUser) return;
-            const snap = await getDoc(doc(db, COL_REPORTS, currentUser.uid));
-            if(snap.exists()) {
-                displayReport(snap.data());
-            } else {
-                document.getElementById('rx-print-area').classList.add('hidden');
-                document.getElementById('rx-action-btns').classList.add('hidden');
-                document.getElementById('rx-action-btns').classList.remove('flex');
-                document.getElementById('rx-data-entry').classList.remove('hidden');
+        window.toggleUserTask = async (taskId, isCompleted) => {
+            const tasks = window.userProfile.tasks || [];
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if(taskIndex > -1) {
+                tasks[taskIndex].isCompleted = isCompleted;
+                window.userProfile.tasks = tasks;
+                try {
+                    await updateDoc(doc(db, COL_USERS, currentUser.uid), { tasks: tasks });
+                    renderUserDashboardTasks(tasks); // Re-render to show strikethrough
+                } catch(e) { showToast("Failed to update task."); }
             }
         };
 
-        const displayReport = (r) => {
-            document.getElementById('rx-data-entry').classList.add('hidden');
-            document.getElementById('rx-print-area').classList.remove('hidden');
-            document.getElementById('rx-action-btns').classList.remove('hidden');
-            document.getElementById('rx-action-btns').classList.add('flex');
-
-            document.getElementById('rx-out-name').innerText = window.userProfile.name;
-            document.getElementById('rx-out-age').innerText = `${r.age} yrs / ${r.gender.charAt(0)}`;
-            document.getElementById('rx-out-date').innerText = r.date;
-            document.getElementById('rx-out-goal').innerText = window.userProfile.goal;
-
-            document.getElementById('rx-out-height').innerText = `${r.height} cm`;
-            document.getElementById('rx-out-weight').innerText = `${r.weight} kg`;
-            document.getElementById('rx-out-ideal').innerText = `${r.idealWeight} kg`;
-            
-            const dElem = document.getElementById('rx-out-diff');
-            if(r.diff > 0) dElem.innerHTML = `Lose <br>${Math.abs(r.diff)} kg`;
-            else if(r.diff < 0) dElem.innerHTML = `Gain <br>${Math.abs(r.diff)} kg`;
-            else dElem.innerHTML = `Perfect`;
-
-            document.getElementById('rx-out-protein').innerText = `${r.protein} gm (1g/kg)`;
-            document.getElementById('rx-out-water').innerText = `${r.water} Liters (1L per 20kg)`;
-            
-            document.getElementById('dash-water-goal').innerText = `${r.water} Liters`;
-        };
-
-        // --- BOOKING LOGIC ---
-        window.submitBooking = async () => {
-            const btn = document.getElementById('btn-submit-booking');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Booking...';
-            btn.disabled = true;
-
-            const name = document.getElementById('book-name').value;
-            const phone = document.getElementById('book-phone').value;
-            const age = document.getElementById('book-age').value;
-            const goal = document.getElementById('book-goal').value;
-
-            const bookingId = 'book_' + Date.now();
-            const bookingData = {
-                id: bookingId,
-                name: name,
-                phone: phone,
-                age: age,
-                goal: goal,
-                date: new Date().toLocaleDateString(),
-                timestamp: Date.now()
-            };
-
-            try {
-                await setDoc(doc(db, COL_BOOKINGS, bookingId), bookingData);
-                showToast("Booking successful! We will contact you soon.");
-                document.getElementById('book-name').value = '';
-                document.getElementById('book-phone').value = '';
-                document.getElementById('book-age').value = '';
-                document.getElementById('book-goal').value = '';
-            } catch(e) {
-                showToast("Booking failed. Please check Firebase rules.");
-                console.error(e);
-            } finally {
-                btn.innerHTML = 'Book Appointment';
-                btn.disabled = false;
+        // Render Resources in User Dashboard
+        window.renderUserDashboardResources = (resources) => {
+            const container = document.getElementById('dyn-user-resources');
+            if(!resources || resources.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center text-gray-400 italic py-4">No resources shared yet.</div>';
+                return;
             }
+            container.innerHTML = '';
+            resources.forEach(r => {
+                let icon = 'fa-file-lines', color = 'text-gray-500';
+                let contentHTML = `<p class="text-sm text-gray-600 mt-2 whitespace-pre-line">${r.content}</p>`;
+                
+                if(r.type === 'youtube') {
+                    icon = 'fa-youtube text-red-500'; color = 'text-red-500';
+                    contentHTML = `<a href="${r.content}" target="_blank" class="mt-2 inline-block text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg border border-red-100 font-bold hover:bg-red-100">Watch Video</a>`;
+                } else if(r.type === 'link') {
+                    icon = 'fa-link text-blue-500'; color = 'text-blue-500';
+                    contentHTML = `<a href="${r.content}" target="_blank" class="mt-2 inline-block text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg border border-blue-100 font-bold hover:bg-blue-100">Open Link</a>`;
+                }
+                
+                container.innerHTML += `
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-brands ${icon} ${color}"></i>
+                            <h4 class="font-bold text-gray-800 text-sm">${r.title}</h4>
+                        </div>
+                        ${contentHTML}
+                        <div class="text-[9px] text-gray-400 mt-3 text-right">Added by Coach</div>
+                    </div>
+                `;
+            });
         };
 
-        // --- COACH ADMIN LOGIC ---
+        // --- AUTOMATED PAYMENT (RAZORPAY) ---
+        let selectedPkgId = null, selectedPkgPrice = 0;
+        
+        window.initiatePurchase = (pkgId, price) => {
+            if(!currentUser) {
+                showToast("Please login first to buy a package.");
+                const provider = new GoogleAuthProvider();
+                signInWithPopup(auth, provider).catch(e => showToast("Login Cancelled"));
+                return;
+            }
+            if(!window.userProfile) {
+                showToast("Complete your profile first!");
+                openModal('modal-onboard');
+                return;
+            }
+            selectedPkgId = pkgId; selectedPkgPrice = price;
+            openModal('modal-tnc');
+        };
+
+        document.getElementById('btn-accept-tnc').addEventListener('click', () => {
+            closeModal('modal-tnc');
+            processPayment(selectedPkgId, selectedPkgPrice);
+        });
+
+        window.processPayment = (pkgId, price) => {
+            if(!siteSettings.rzpKey || siteSettings.rzpKey === '') {
+                showToast("Payment Gateway not configured by Coach. Contact on WhatsApp.");
+                window.open(`https://wa.me/91${siteSettings.wa.replace(/\D/g,'')}?text=I%20want%20to%20buy%20package%20${pkgId}`, '_blank');
+                return;
+            }
+
+            var options = {
+                "key": siteSettings.rzpKey, // Public Key from settings
+                "amount": price * 100, // paise
+                "currency": "INR",
+                "name": "Health Station 360",
+                "description": "Premium Club Subscription",
+                "image": siteSettings.logo || "https://ui-avatars.com/api/?name=HS&background=1a8d1a&color=fff",
+                "handler": async function (response) {
+                    // Success Callback
+                    try {
+                        const newProfileData = { isVIP: true, activePackage: pkgId, paymentId: response.razorpay_payment_id, upgradedAt: new Date().toISOString() };
+                        await updateDoc(doc(db, COL_USERS, currentUser.uid), newProfileData);
+                        window.userProfile.isVIP = true;
+                        showToast("Payment Successful! Welcome to VIP Club.");
+                        handleDashboardAccess(); // Take to dashboard
+                    } catch(e) { showToast("Error updating status. Contact coach."); }
+                },
+                "prefill": {
+                    "name": window.userProfile.name,
+                    "email": window.userProfile.email,
+                    "contact": window.userProfile.phone
+                },
+                "theme": { "color": "#1a8d1a" }
+            };
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response){
+                showToast("Payment Failed: " + response.error.description);
+            });
+            rzp.open();
+        };
+
+        // --- COACH ADMIN LOGIC & COACH MODAL ---
         window.checkCoachAccess = async () => {
             if(!currentUser) {
                 const provider = new GoogleAuthProvider();
-                try {
-                    await signInWithPopup(auth, provider);
-                } catch(e) {
-                    return showToast("Please login first.");
-                }
+                try { await signInWithPopup(auth, provider); } catch(e) { return showToast("Login first."); }
             }
-            
-            const btn = event.currentTarget;
-            const prevHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
-
+            const btn = event.currentTarget; const prevHtml = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             try {
                 const docSnap = await getDoc(doc(db, COL_SETTINGS, 'core'));
-                if (docSnap.exists()) {
-                    siteSettings = docSnap.data();
-                }
+                if (docSnap.exists()) siteSettings = docSnap.data();
                 
                 if (siteSettings.admins.includes(currentUser.email)) {
                     document.getElementById('public-views').classList.add('hidden');
                     document.getElementById('dashboard-view').classList.add('hidden');
                     document.getElementById('coach-view').classList.remove('hidden');
                     
-                    loadMembersList();
-                    loadAdminResults();
-                    loadBookingsList();
-                    loadAdminPackages(); // New Call
-                    
+                    loadMembersList(); loadAdminResults(); loadBookingsList(); loadAdminPackages();
                     document.getElementById('set-admins').value = siteSettings.admins.join(', ');
                     document.getElementById('set-wa').value = siteSettings.wa || '';
                     document.getElementById('set-call').value = siteSettings.call || '';
@@ -1370,218 +1341,221 @@
                     document.getElementById('set-yt').value = siteSettings.yt || '';
                     document.getElementById('set-logo').value = siteSettings.logo || '';
                     document.getElementById('set-banner').value = siteSettings.banner || '';
+                    document.getElementById('set-rzp').value = siteSettings.rzpKey || '';
                     window.scrollTo(0,0);
-                } else {
-                    showToast("Access Denied! Please ask coach about coach panel.");
-                }
-            } catch(e) {
-                if(currentUser.email === 'befitindia1@gmail.com') {
-                    await setDoc(doc(db, COL_SETTINGS, 'core'), siteSettings);
-                    checkCoachAccess();
-                } else {
-                    showToast("Error checking auth or Denied.");
-                }
-            } finally {
-                btn.innerHTML = prevHtml;
-            }
+                } else { showToast("Access Denied!"); }
+            } catch(e) { showToast("Error checking auth."); } finally { btn.innerHTML = prevHtml; }
         };
 
         window.switchCoachTab = (tabId) => {
-            document.querySelectorAll('.coach-tab').forEach(b => {
-                b.classList.remove('bg-brand', 'text-white');
-                b.classList.add('text-gray-600');
-            });
-            document.getElementById('btn-coach-'+tabId).classList.remove('text-gray-600');
-            document.getElementById('btn-coach-'+tabId).classList.add('bg-brand', 'text-white');
-
-            document.getElementById('coach-tab-members').classList.add('hidden');
-            document.getElementById('coach-tab-results').classList.add('hidden');
-            document.getElementById('coach-tab-bookings').classList.add('hidden');
-            document.getElementById('coach-tab-settings').classList.add('hidden');
-            document.getElementById('coach-tab-packages').classList.add('hidden');
-            
+            document.querySelectorAll('.coach-tab').forEach(b => { b.classList.remove('bg-brand', 'text-white'); b.classList.add('text-gray-600'); });
+            document.getElementById('btn-coach-'+tabId).classList.remove('text-gray-600'); document.getElementById('btn-coach-'+tabId).classList.add('bg-brand', 'text-white');
+            ['members','results','bookings','settings','packages'].forEach(id => document.getElementById('coach-tab-'+id).classList.add('hidden'));
             document.getElementById('coach-tab-'+tabId).classList.remove('hidden');
         };
 
-        // Members & VIP Management
         window.loadMembersList = async () => {
             const list = document.getElementById('admin-members-list');
-            list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></td></tr>';
+            list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center"><i class="fa-solid fa-spinner fa-spin text-brand"></i></td></tr>';
             try {
                 const querySnapshot = await getDocs(collection(db, COL_USERS));
                 list.innerHTML = '';
-                if(querySnapshot.empty) {
-                    list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">No members found.</td></tr>';
-                    return;
-                }
+                if(querySnapshot.empty) { list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">No members found.</td></tr>'; return; }
                 
                 querySnapshot.forEach((docSnap) => {
-                    const u = docSnap.data();
-                    const isVIP = u.isVIP || false;
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-green-50/50 transition';
+                    const u = docSnap.data(); const isVIP = u.isVIP || false;
+                    const tr = document.createElement('tr'); tr.className = 'hover:bg-green-50/50 transition';
                     tr.innerHTML = `
-                        <td class="px-6 py-4 cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">
-                            <div class="flex items-center gap-3">
-                                <img src="${u.photo || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full object-cover border">
-                                <div class="font-bold text-gray-800">${u.name}</div>
-                            </div>
-                        </td>
+                        <td class="px-6 py-4 cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')"><div class="flex items-center gap-3"><img src="${u.photo || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full border"><div class="font-bold text-gray-800">${u.name}</div></div></td>
                         <td class="px-6 py-4 text-gray-500 cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">${u.phone}<br><span class="text-xs">${u.email}</span></td>
                         <td class="px-6 py-4 text-brand font-medium text-xs cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">${u.goal}</td>
-                        <td class="px-6 py-4">
-                            ${isVIP ? '<span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded-full"><i class="fa-solid fa-crown mr-1"></i> VIP</span>' : '<span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-full">Free</span>'}
-                        </td>
+                        <td class="px-6 py-4">${isVIP ? '<span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded-full">VIP</span>' : '<span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-full">Free</span>'}</td>
                         <td class="px-6 py-4 text-center">
-                            <button onclick="toggleVIPStatus('${docSnap.id}', ${isVIP})" class="${isVIP ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'} px-3 py-1.5 rounded text-xs font-bold transition">
+                            <button onclick="toggleVIPStatus('${docSnap.id}', ${isVIP})" class="${isVIP ? 'bg-red-50 text-red-500' : 'bg-yellow-50 text-yellow-600'} px-3 py-1.5 rounded text-xs font-bold transition">
                                 ${isVIP ? 'Revoke VIP' : 'Make VIP'}
                             </button>
                         </td>
                     `;
                     list.appendChild(tr);
                 });
-            } catch(e) {
-                list.innerHTML = `<tr><td colspan="5" class="text-red-500 text-center py-4">Error loading members: ${e.message}</td></tr>`;
-            }
+            } catch(e) { list.innerHTML = `<tr><td colspan="5" class="text-red-500 text-center py-4">Error: ${e.message}</td></tr>`; }
         };
 
         window.toggleVIPStatus = async (uid, currentStatus) => {
-            if(confirm(`Are you sure you want to ${currentStatus ? 'REVOKE' : 'GRANT'} VIP status for this member?`)) {
-                try {
-                    await updateDoc(doc(db, COL_USERS, uid), { isVIP: !currentStatus });
-                    showToast(currentStatus ? "VIP Status Revoked" : "VIP Status Granted!");
-                    loadMembersList();
-                } catch (e) {
-                    showToast("Error updating status.");
-                    console.error(e);
-                }
+            if(confirm(`GRANT/REVOKE VIP status?`)) {
+                try { await updateDoc(doc(db, COL_USERS, uid), { isVIP: !currentStatus }); showToast("Status Updated!"); loadMembersList(); } 
+                catch (e) { showToast("Error"); }
             }
         };
 
+        // Open Coach Member Details Modal
         window.viewMemberDetails = async (uid) => {
+            activeMemberId = uid; // Store for Task/Resource addition
             openModal('modal-coach-member');
             
             const userSnap = await getDoc(doc(db, COL_USERS, uid));
             if(!userSnap.exists()) return;
             const u = userSnap.data();
             
-            document.getElementById('cm-name').innerText = u.name;
-            document.getElementById('cm-goal').innerText = u.goal;
-            document.getElementById('cm-phone').innerText = u.phone;
-            document.getElementById('cm-email').innerText = u.email;
-            document.getElementById('cm-address').innerText = `${u.address}, ${u.city}, ${u.state}, PIN: ${u.pin}`;
+            document.getElementById('cm-name').innerText = u.name; document.getElementById('cm-goal').innerText = u.goal;
+            document.getElementById('cm-phone').innerText = u.phone; document.getElementById('cm-email').innerText = u.email;
             document.getElementById('cm-avatar').src = u.photo || 'https://via.placeholder.com/150';
-            document.getElementById('cm-body').src = u.currentBodyImage || 'https://via.placeholder.com/150?text=No+Image';
-            
             document.getElementById('cm-btn-wa').href = `https://wa.me/91${u.phone.replace(/\D/g,'')}?text=Hello%20${encodeURIComponent(u.name)},%20`;
 
+            // Load Report Data
             const repSnap = await getDoc(doc(db, COL_REPORTS, uid));
             if(repSnap.exists()) {
                 const r = repSnap.data();
-                document.getElementById('cm-rx-empty').classList.add('hidden');
-                document.getElementById('cm-rx-data').classList.remove('hidden');
-                
+                document.getElementById('cm-rx-empty').classList.add('hidden'); document.getElementById('cm-rx-data').classList.remove('hidden');
                 document.getElementById('cm-out-age').innerText = `${r.age} / ${r.gender.charAt(0)}`;
-                document.getElementById('cm-out-height').innerText = `${r.height} cm`;
-                document.getElementById('cm-out-weight').innerText = `${r.weight} kg`;
-                
+                document.getElementById('cm-out-hw').innerText = `${r.height} cm / ${r.weight} kg`;
                 const dElem = document.getElementById('cm-out-diff');
-                if(r.diff > 0) dElem.innerText = `Lose ${Math.abs(r.diff)} kg`;
-                else if(r.diff < 0) dElem.innerText = `Gain ${Math.abs(r.diff)} kg`;
-                else dElem.innerText = `Perfect`;
-
-                document.getElementById('cm-out-protein').innerText = `${r.protein} gm`;
-                document.getElementById('cm-out-water').innerText = `${r.water} L`;
-                document.getElementById('cm-out-date').innerText = r.date;
+                if(r.diff > 0) dElem.innerText = `Lose ${Math.abs(r.diff)}kg`; else if(r.diff < 0) dElem.innerText = `Gain ${Math.abs(r.diff)}kg`; else dElem.innerText = `Perfect`;
+                document.getElementById('cm-out-protein').innerText = `${r.protein}gm`; document.getElementById('cm-out-water').innerText = `${r.water}L`;
             } else {
-                document.getElementById('cm-rx-empty').classList.remove('hidden');
-                document.getElementById('cm-rx-data').classList.add('hidden');
+                document.getElementById('cm-rx-empty').classList.remove('hidden'); document.getElementById('cm-rx-data').classList.add('hidden');
             }
+
+            renderCoachTaskList(u.tasks || []);
+            renderCoachResourceList(u.resources || []);
         };
 
-        // --- PACKAGE MANAGEMENT (Sales Funnel) ---
+        // Coach Save Custom Task for Member
+        window.saveUserTask = async () => {
+            if(!activeMemberId) return;
+            const title = document.getElementById('task-title').value;
+            const desc = document.getElementById('task-desc').value;
+            const isDaily = document.getElementById('task-daily').checked;
+            
+            const newTask = { id: 'task_' + Date.now(), title, desc, isDaily, isCompleted: false, dateAssigned: new Date().toLocaleDateString() };
+            
+            try {
+                const docRef = doc(db, COL_USERS, activeMemberId);
+                const userSnap = await getDoc(docRef);
+                const tasks = userSnap.data().tasks || [];
+                tasks.push(newTask);
+                await updateDoc(docRef, { tasks });
+                showToast("Task Assigned!");
+                document.getElementById('task-title').value = ''; document.getElementById('task-desc').value = '';
+                document.getElementById('form-add-task').classList.add('hidden');
+                renderCoachTaskList(tasks);
+            } catch(e) { showToast("Error assigning task."); }
+        };
+
+        window.renderCoachTaskList = (tasks) => {
+            const list = document.getElementById('cm-task-list');
+            if(tasks.length === 0) { list.innerHTML = '<div class="text-xs text-gray-400 italic">No tasks assigned.</div>'; return; }
+            list.innerHTML = '';
+            tasks.forEach(t => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded border border-gray-100 text-xs">
+                        <div>
+                            <span class="font-bold text-gray-800 ${t.isCompleted ? 'line-through text-gray-400' : ''}">${t.title}</span>
+                            <span class="text-gray-500 ml-1">(${t.desc})</span>
+                            ${t.isDaily ? '<span class="bg-blue-100 text-blue-800 px-1 rounded text-[9px] ml-1">Daily</span>' : ''}
+                        </div>
+                        <button onclick="deleteUserTask('${t.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                    </div>`;
+            });
+        };
+
+        window.deleteUserTask = async (taskId) => {
+            try {
+                const docRef = doc(db, COL_USERS, activeMemberId);
+                const userSnap = await getDoc(docRef);
+                const tasks = (userSnap.data().tasks || []).filter(t => t.id !== taskId);
+                await updateDoc(docRef, { tasks });
+                renderCoachTaskList(tasks);
+            } catch(e) { showToast("Error deleting"); }
+        };
+
+        // Coach Save Resource for Member
+        window.saveUserResource = async () => {
+            if(!activeMemberId) return;
+            const type = document.getElementById('res-type').value;
+            const title = document.getElementById('res-title').value;
+            const content = document.getElementById('res-content').value;
+            
+            const newRes = { id: 'res_' + Date.now(), type, title, content, dateAdded: new Date().toLocaleDateString() };
+            
+            try {
+                const docRef = doc(db, COL_USERS, activeMemberId);
+                const userSnap = await getDoc(docRef);
+                const resources = userSnap.data().resources || [];
+                resources.push(newRes);
+                await updateDoc(docRef, { resources });
+                showToast("Resource Shared!");
+                document.getElementById('res-title').value = ''; document.getElementById('res-content').value = '';
+                document.getElementById('form-add-resource').classList.add('hidden');
+                renderCoachResourceList(resources);
+            } catch(e) { showToast("Error sharing resource."); }
+        };
+
+        window.renderCoachResourceList = (resources) => {
+            const list = document.getElementById('cm-resource-list');
+            if(resources.length === 0) { list.innerHTML = '<div class="text-xs text-blue-400 italic">No resources shared.</div>'; return; }
+            list.innerHTML = '';
+            resources.forEach(r => {
+                let icon = r.type === 'youtube' ? 'fa-youtube text-red-500' : (r.type === 'link' ? 'fa-link text-blue-500' : 'fa-file-lines text-gray-500');
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded border border-blue-100 text-xs">
+                        <div class="truncate pr-2"><i class="fa-brands ${icon} mr-1"></i> <span class="font-bold">${r.title}</span></div>
+                        <button onclick="deleteUserResource('${r.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                    </div>`;
+            });
+        };
+
+        window.deleteUserResource = async (resId) => {
+            try {
+                const docRef = doc(db, COL_USERS, activeMemberId);
+                const userSnap = await getDoc(docRef);
+                const resources = (userSnap.data().resources || []).filter(r => r.id !== resId);
+                await updateDoc(docRef, { resources });
+                renderCoachResourceList(resources);
+            } catch(e) { showToast("Error deleting"); }
+        };
+
+        // --- PACKAGE & WEB SETTINGS LOGIC ---
         window.saveNewPackage = async () => {
             const btn = document.getElementById('btn-save-pkg');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-            btn.disabled = true;
+            btn.innerHTML = 'Saving...'; btn.disabled = true;
+            const title = document.getElementById('pkg-title').value; const price = document.getElementById('pkg-price').value;
+            const desc = document.getElementById('pkg-desc').value; const img = document.getElementById('pkg-img-data').value;
+            if(!img) { showToast("Provide an image"); btn.innerHTML = 'Add Package'; btn.disabled = false; return; }
 
-            const title = document.getElementById('pkg-title').value;
-            const price = document.getElementById('pkg-price').value;
-            const desc = document.getElementById('pkg-desc').value;
-            const img = document.getElementById('pkg-img-data').value;
-            
-            if(!img) {
-                showToast("Please provide an image for the package");
-                btn.innerHTML = 'Add Package'; btn.disabled = false;
-                return;
-            }
-
-            const id = 'pkg_' + Date.now();
             try {
-                await setDoc(doc(db, COL_PACKAGES, id), { 
-                    id, title, price, desc, img, timestamp: Date.now() 
-                });
-                showToast("Package Added!");
-                document.getElementById('pkg-title').value = '';
-                document.getElementById('pkg-price').value = '';
-                document.getElementById('pkg-desc').value = '';
-                document.getElementById('pkg-img-data').value = '';
-                document.getElementById('pkg-img-preview').classList.add('hidden');
-                document.getElementById('pkg-img-placeholder').classList.remove('hidden');
-                loadAdminPackages();
-                loadPublicPackages();
-            } catch(e) {
-                showToast("Error saving package.");
-                console.error(e);
-            } finally {
-                btn.innerHTML = 'Add Package'; btn.disabled = false;
-            }
+                const id = 'pkg_' + Date.now();
+                await setDoc(doc(db, COL_PACKAGES, id), { id, title, price: Number(price), desc, img, timestamp: Date.now() });
+                showToast("Package Added!"); document.getElementById('form-add-pkg').reset();
+                document.getElementById('pkg-img-data').value = ''; document.getElementById('pkg-img-preview').classList.add('hidden'); document.getElementById('pkg-img-placeholder').classList.remove('hidden');
+                loadAdminPackages(); loadPublicPackages();
+            } catch(e) { showToast("Error"); } finally { btn.innerHTML = 'Add Package'; btn.disabled = false; }
         };
 
         window.loadAdminPackages = async () => {
             const list = document.getElementById('admin-packages-list');
-            list.innerHTML = '<div class="col-span-full text-center py-4"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></div>';
-            
             try {
                 const querySnapshot = await getDocs(collection(db, COL_PACKAGES));
                 list.innerHTML = '';
-                if(querySnapshot.empty) {
-                    list.innerHTML = '<div class="col-span-full text-center text-gray-400 py-4">No packages added yet.</div>';
-                    return;
-                }
-                
+                if(querySnapshot.empty) { list.innerHTML = '<div class="col-span-full text-center text-gray-400">No packages</div>'; return; }
                 querySnapshot.forEach((docSnap) => {
                     const p = docSnap.data();
-                    const div = document.createElement('div');
-                    div.className = 'border border-gray-100 rounded-xl p-4 flex items-start gap-3 bg-gray-50';
-                    div.innerHTML = `
-                        <img src="${p.img}" class="w-16 h-16 rounded-lg object-cover bg-gray-200 border border-gray-300">
-                        <div class="flex-1 overflow-hidden">
-                            <h4 class="font-bold text-sm text-gray-800">${p.title}</h4>
-                            <p class="text-xs text-brand font-bold mt-1">₹${p.price}</p>
-                            <p class="text-[10px] text-gray-500 truncate mt-1">${p.desc}</p>
-                        </div>
-                        <button onclick="deletePackage('${p.id}')" class="text-red-400 hover:text-red-600 p-2"><i class="fa-solid fa-trash"></i></button>
-                    `;
-                    list.appendChild(div);
+                    list.innerHTML += `
+                        <div class="border border-gray-100 rounded-xl p-3 flex gap-3 bg-gray-50">
+                            <img src="${p.img}" class="w-12 h-12 rounded object-cover border">
+                            <div class="flex-1 overflow-hidden"><h4 class="font-bold text-sm truncate">${p.title}</h4><p class="text-xs text-brand font-bold">₹${p.price}</p></div>
+                            <button onclick="deletePackage('${p.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                        </div>`;
                 });
-            } catch(e) {
-                list.innerHTML = `<div class="text-red-500">Error: ${e.message}</div>`;
-            }
+            } catch(e) { list.innerHTML = `<div class="text-red-500">Error</div>`; }
         };
 
         window.deletePackage = async (id) => {
-            if(confirm("Are you sure you want to delete this package?")) {
-                try {
-                    await deleteDoc(doc(db, COL_PACKAGES, id));
-                    showToast("Deleted successfully!");
-                    loadAdminPackages();
-                    loadPublicPackages();
-                } catch(e) { showToast("Error deleting."); }
+            if(confirm("Delete package?")) {
+                try { await deleteDoc(doc(db, COL_PACKAGES, id)); showToast("Deleted!"); loadAdminPackages(); loadPublicPackages(); } catch(e) {}
             }
         };
 
-        // --- PUBLIC PACKAGES RENDER ---
         window.loadPublicPackages = async () => {
             const container = document.getElementById('dyn-packages-container');
             if(!container) return;
@@ -1591,201 +1565,125 @@
                     container.innerHTML = '';
                     snap.forEach(doc => {
                         const p = doc.data();
-                        
-                        // Parse comma separated features into list items
                         const featuresHTML = p.desc.split(',').map(f => `<li class="flex items-start gap-2 text-sm text-gray-600"><i class="fa-solid fa-check text-green-500 mt-1"></i> <span>${f.trim()}</span></li>`).join('');
-
                         container.innerHTML += `
-                            <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 flex flex-col hover:-translate-y-2 transition duration-300 relative group">
-                                <div class="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-md z-10"><i class="fa-solid fa-star text-[10px]"></i> VIP</div>
-                                <div class="h-48 overflow-hidden relative">
+                            <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 flex flex-col hover:-translate-y-2 transition relative group">
+                                <div class="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">VIP</div>
+                                <div class="h-48 relative">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
-                                    <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                    <img src="${p.img}" class="w-full h-full object-cover">
                                     <h3 class="absolute bottom-4 left-4 z-20 font-bold text-white text-xl">${p.title}</h3>
                                 </div>
                                 <div class="p-6 flex-1 flex flex-col">
-                                    <div class="mb-4 pb-4 border-b border-gray-100 flex items-end gap-2">
-                                        <span class="text-3xl font-extrabold text-gray-900">₹${p.price}</span>
-                                        <span class="text-sm text-gray-400 mb-1">/ month</span>
-                                    </div>
-                                    <ul class="space-y-3 mb-6 flex-1">
-                                        ${featuresHTML}
-                                    </ul>
-                                    <a href="#booking" onclick="document.getElementById('book-goal').value='Buy Package / Product';" class="w-full text-center py-3.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-brand transition shadow-md">Join & Buy Now</a>
+                                    <div class="mb-4 pb-4 border-b flex items-end gap-2"><span class="text-3xl font-extrabold">₹${p.price}</span></div>
+                                    <ul class="space-y-3 mb-6 flex-1">${featuresHTML}</ul>
+                                    <button onclick="initiatePurchase('${p.id}', ${p.price})" class="w-full text-center py-3.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-brand transition shadow-md">Buy & Join Now</button>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     });
-                } else {
-                    container.innerHTML = '<div class="col-span-full text-center text-gray-400 py-10 italic">Consult coach for premium club memberships.</div>';
-                }
-            } catch(e) { console.error("Error loading packages", e); }
-        };
-
-
-        window.loadBookingsList = async () => {
-            const list = document.getElementById('admin-bookings-list');
-            list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></td></tr>';
-            try {
-                const querySnapshot = await getDocs(collection(db, COL_BOOKINGS));
-                list.innerHTML = '';
-                if(querySnapshot.empty) {
-                    list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">No bookings yet.</td></tr>';
-                    return;
-                }
-                
-                querySnapshot.forEach((docSnap) => {
-                    const b = docSnap.data();
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-gray-50 transition';
-                    tr.innerHTML = `
-                        <td class="px-6 py-4 text-gray-500 text-xs">${b.date}</td>
-                        <td class="px-6 py-4 font-bold text-gray-800">${b.name} <br><span class="text-gray-400 font-normal text-xs">Age: ${b.age}</span></td>
-                        <td class="px-6 py-4 text-gray-700">${b.phone}</td>
-                        <td class="px-6 py-4 text-brand font-medium text-xs">${b.goal}</td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="deleteBooking('${b.id}')" class="bg-green-100 text-green-600 px-3 py-1.5 rounded text-xs font-bold hover:bg-green-200 transition"><i class="fa-solid fa-check"></i> Done</button>
-                        </td>
-                    `;
-                    list.appendChild(tr);
-                });
-            } catch(e) {
-                list.innerHTML = `<tr><td colspan="5" class="text-red-500 text-center py-4">Error loading bookings: ${e.message}</td></tr>`;
-            }
-        };
-
-        window.deleteBooking = async (id) => {
-            if(confirm("Mark this booking as Done? (It will be removed from list)")) {
-                try {
-                    await deleteDoc(doc(db, COL_BOOKINGS, id));
-                    showToast("Booking marked as Done!");
-                    loadBookingsList();
-                } catch(e) { showToast("Error processing request."); }
-            }
-        };
-
-        window.saveNewResult = async () => {
-            const btn = document.getElementById('btn-save-result');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-            btn.disabled = true;
-
-            const name = document.getElementById('res-name').value;
-            const title = document.getElementById('res-title').value;
-            const img = document.getElementById('res-img-data').value;
-            
-            if(!img) {
-                showToast("Please provide an image");
-                btn.innerHTML = 'Add Result'; btn.disabled = false;
-                return;
-            }
-
-            const id = 'res_' + Date.now();
-            try {
-                await setDoc(doc(db, COL_RESULTS, id), { id, name, title, img, timestamp: Date.now() });
-                showToast("Result Added!");
-                document.getElementById('res-name').value = '';
-                document.getElementById('res-title').value = '';
-                document.getElementById('res-img-data').value = '';
-                document.getElementById('res-url').value = '';
-                document.getElementById('res-img-preview').classList.add('hidden');
-                document.getElementById('res-img-placeholder').classList.remove('hidden');
-                loadAdminResults();
-            } catch(e) {
-                showToast("Error saving result. Maybe image too large.");
-            } finally {
-                btn.innerHTML = 'Add Result'; btn.disabled = false;
-            }
-        };
-
-        window.loadAdminResults = async () => {
-            const list = document.getElementById('admin-results-list');
-            list.innerHTML = '<div class="col-span-full text-center py-4"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></div>';
-            
-            try {
-                const querySnapshot = await getDocs(collection(db, COL_RESULTS));
-                list.innerHTML = '';
-                if(querySnapshot.empty) {
-                    list.innerHTML = '<div class="col-span-full text-center text-gray-400 py-4">No results added yet.</div>';
-                    return;
-                }
-                
-                querySnapshot.forEach((docSnap) => {
-                    const r = docSnap.data();
-                    const div = document.createElement('div');
-                    div.className = 'border border-gray-100 rounded-xl p-3 flex items-center gap-3 bg-gray-50';
-                    div.innerHTML = `
-                        <img src="${r.img}" class="w-16 h-16 rounded-lg object-cover bg-gray-200">
-                        <div class="flex-1 overflow-hidden">
-                            <h4 class="font-bold text-sm truncate text-gray-800">${r.name || 'Anonymous'}</h4>
-                            <p class="text-xs text-brand truncate">${r.title}</p>
-                        </div>
-                        <button onclick="deleteResult('${r.id}')" class="text-red-400 hover:text-red-600 p-2"><i class="fa-solid fa-trash"></i></button>
-                    `;
-                    list.appendChild(div);
-                });
-            } catch(e) {
-                list.innerHTML = `<div class="text-red-500">Error: ${e.message}</div>`;
-            }
-        };
-
-        window.deleteResult = async (id) => {
-            if(confirm("Are you sure you want to delete this result?")) {
-                try {
-                    await deleteDoc(doc(db, COL_RESULTS, id));
-                    showToast("Deleted successfully!");
-                    loadAdminResults();
-                } catch(e) { showToast("Error deleting."); }
-            }
+                } else container.innerHTML = '<div class="col-span-full text-center text-gray-400 py-10 italic">Consult coach for packages.</div>';
+            } catch(e) {}
         };
 
         window.saveWebSettings = async () => {
-            const btn = document.getElementById('btn-save-settings');
-            btn.innerHTML = 'Saving...'; btn.disabled = true;
-
+            const btn = document.getElementById('btn-save-settings'); btn.innerHTML = 'Saving...'; btn.disabled = true;
             const emails = document.getElementById('set-admins').value.split(',').map(e => e.trim()).filter(e => e);
-            const wa = document.getElementById('set-wa').value;
-            const call = document.getElementById('set-call').value;
-            const fb = document.getElementById('set-fb').value;
-            const ig = document.getElementById('set-ig').value;
-            const yt = document.getElementById('set-yt').value;
-            const logo = document.getElementById('set-logo').value;
-            const banner = document.getElementById('set-banner').value;
-
             if(!emails.includes('befitindia1@gmail.com')) emails.push('befitindia1@gmail.com');
-
-            const newSettings = { admins: emails, wa, call, fb, ig, yt, logo, banner };
-            
+            const newSettings = { 
+                admins: emails, wa: document.getElementById('set-wa').value, call: document.getElementById('set-call').value, 
+                fb: document.getElementById('set-fb').value, ig: document.getElementById('set-ig').value, yt: document.getElementById('set-yt').value, 
+                logo: document.getElementById('set-logo').value, banner: document.getElementById('set-banner').value,
+                rzpKey: document.getElementById('set-rzp').value
+            };
             try {
                 await setDoc(doc(db, COL_SETTINGS, 'core'), newSettings);
-                siteSettings = newSettings;
-                showToast("Website Settings Saved!");
-                applySettingsToUI();
-            } catch(e) { showToast("Error saving settings."); }
-            finally { btn.innerHTML = 'Save Settings'; btn.disabled = false; }
+                siteSettings = newSettings; showToast("Settings Saved!"); applySettingsToUI();
+            } catch(e) {} finally { btn.innerHTML = 'Save Settings'; btn.disabled = false; }
         };
 
         const applySettingsToUI = () => {
             if(siteSettings.wa) {
-                const waLink = `https://wa.me/${siteSettings.wa.replace(/\D/g,'')}?text=Hi%20Health%20Station%20360`;
-                document.getElementById('dyn-wa-btn').href = waLink;
-                document.getElementById('dyn-wa-book').href = waLink;
+                const waLink = `https://wa.me/${siteSettings.wa.replace(/\D/g,'')}?text=Hi`;
+                if(document.getElementById('dyn-wa-btn')) document.getElementById('dyn-wa-btn').href = waLink;
+                if(document.getElementById('dyn-wa-book')) document.getElementById('dyn-wa-book').href = waLink;
+                if(document.getElementById('dyn-rx-phone')) document.getElementById('dyn-rx-phone').innerText = `+${siteSettings.wa}`;
             }
-            if(siteSettings.call) document.getElementById('dyn-call-btn').href = `tel:+${siteSettings.call.replace(/\D/g,'')}`;
-            if(siteSettings.fb) document.getElementById('dyn-fb').href = siteSettings.fb;
-            if(siteSettings.ig) document.getElementById('dyn-ig').href = siteSettings.ig;
-            if(siteSettings.yt) document.getElementById('dyn-yt').href = siteSettings.yt;
-            
+            if(siteSettings.call) { if(document.getElementById('dyn-call-btn')) document.getElementById('dyn-call-btn').href = `tel:+${siteSettings.call.replace(/\D/g,'')}`; }
+            if(siteSettings.fb) { if(document.getElementById('dyn-fb')) document.getElementById('dyn-fb').href = siteSettings.fb; }
+            if(siteSettings.ig) { if(document.getElementById('dyn-ig')) document.getElementById('dyn-ig').href = siteSettings.ig; }
+            if(siteSettings.yt) { if(document.getElementById('dyn-yt')) document.getElementById('dyn-yt').href = siteSettings.yt; }
             if(siteSettings.logo) {
-                const logoEl = document.getElementById('dyn-logo');
-                const logoMobEl = document.getElementById('dyn-logo-mob');
-                if(logoEl) logoEl.src = siteSettings.logo;
-                if(logoMobEl) logoMobEl.src = siteSettings.logo;
+                if(document.getElementById('dyn-logo')) document.getElementById('dyn-logo').src = siteSettings.logo;
+                if(document.getElementById('dyn-logo-mob')) document.getElementById('dyn-logo-mob').src = siteSettings.logo;
             }
-            if(siteSettings.banner) {
-                const bannerEl = document.getElementById('dyn-hero-img');
-                if(bannerEl) bannerEl.src = siteSettings.banner;
-            }
+            if(siteSettings.banner) { if(document.getElementById('dyn-hero-img')) document.getElementById('dyn-hero-img').src = siteSettings.banner; }
         };
+
+        // Standard logic calls
+        window.generatePrescription = async () => {
+            const age = document.getElementById('rx-age').value; const gender = document.getElementById('rx-gender').value;
+            const h = document.getElementById('rx-height').value; const w = document.getElementById('rx-weight').value;
+            if(!age || !h || !w) return showToast("Please fill all details");
+            const idealWeight = gender === 'Male' ? (h - 100) * 0.9 : (h - 100) * 0.85; 
+            const report = { age, gender, height: h, weight: w, idealWeight: idealWeight.toFixed(1), diff: (w - idealWeight).toFixed(1), water: (w / 20).toFixed(1), protein: (w * 1).toFixed(1), date: new Date().toLocaleDateString() };
+            try { await setDoc(doc(db, COL_REPORTS, currentUser.uid), report); showToast("Report Generated!"); displayReport(report); } catch(e) { showToast("Error saving report."); }
+        };
+
+        const loadUserReport = async () => {
+            if(!currentUser) return;
+            const snap = await getDoc(doc(db, COL_REPORTS, currentUser.uid));
+            if(snap.exists()) displayReport(snap.data());
+            else { document.getElementById('rx-print-area').classList.add('hidden'); document.getElementById('rx-action-btns').classList.add('hidden'); document.getElementById('rx-data-entry').classList.remove('hidden'); }
+        };
+
+        const displayReport = (r) => {
+            document.getElementById('rx-data-entry').classList.add('hidden'); document.getElementById('rx-print-area').classList.remove('hidden'); document.getElementById('rx-action-btns').classList.remove('hidden'); document.getElementById('rx-action-btns').classList.add('flex');
+            document.getElementById('rx-out-name').innerText = window.userProfile.name; document.getElementById('rx-out-age').innerText = `${r.age} yrs / ${r.gender.charAt(0)}`;
+            document.getElementById('rx-out-date').innerText = r.date; document.getElementById('rx-out-goal').innerText = window.userProfile.goal;
+            document.getElementById('rx-out-height').innerText = `${r.height} cm`; document.getElementById('rx-out-weight').innerText = `${r.weight} kg`; document.getElementById('rx-out-ideal').innerText = `${r.idealWeight} kg`;
+            const dElem = document.getElementById('rx-out-diff');
+            if(r.diff > 0) dElem.innerHTML = `Lose <br>${Math.abs(r.diff)} kg`; else if(r.diff < 0) dElem.innerHTML = `Gain <br>${Math.abs(r.diff)} kg`; else dElem.innerHTML = `Perfect`;
+            document.getElementById('rx-out-protein').innerText = `${r.protein} gm (1g/kg)`; document.getElementById('rx-out-water').innerText = `${r.water} Liters`;
+        };
+
+        window.submitBooking = async () => {
+            const btn = document.getElementById('btn-submit-booking'); btn.innerHTML = 'Booking...'; btn.disabled = true;
+            const b = { id: 'book_' + Date.now(), name: document.getElementById('book-name').value, phone: document.getElementById('book-phone').value, age: document.getElementById('book-age').value, goal: document.getElementById('book-goal').value, date: new Date().toLocaleDateString() };
+            try { await setDoc(doc(db, COL_BOOKINGS, b.id), b); showToast("Booking successful!"); document.getElementById('book-name').value = ''; document.getElementById('book-phone').value = ''; document.getElementById('book-age').value = ''; } catch(e) {} finally { btn.innerHTML = 'Book Appointment'; btn.disabled = false; }
+        };
+        
+        window.loadBookingsList = async () => {
+            const list = document.getElementById('admin-bookings-list');
+            try {
+                const snap = await getDocs(collection(db, COL_BOOKINGS));
+                list.innerHTML = '';
+                if(snap.empty) { list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">No bookings.</td></tr>'; return; }
+                snap.forEach((doc) => {
+                    const b = doc.data();
+                    list.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4 text-gray-500 text-xs">${b.date}</td><td class="px-6 py-4 font-bold text-gray-800">${b.name} <br><span class="text-gray-400 font-normal text-xs">Age: ${b.age}</span></td><td class="px-6 py-4 text-gray-700">${b.phone}</td><td class="px-6 py-4 text-brand font-medium text-xs">${b.goal}</td><td class="px-6 py-4 text-center"><button onclick="deleteBooking('${b.id}')" class="bg-green-100 text-green-600 px-3 py-1.5 rounded text-xs font-bold">Done</button></td></tr>`;
+                });
+            } catch(e) {}
+        };
+        window.deleteBooking = async (id) => { if(confirm("Done?")) { try { await deleteDoc(doc(db, COL_BOOKINGS, id)); loadBookingsList(); } catch(e) {} } };
+
+        window.saveNewResult = async () => {
+            const btn = document.getElementById('btn-save-result'); btn.innerHTML = 'Saving...'; btn.disabled = true;
+            const img = document.getElementById('res-img-data').value; if(!img) return;
+            const id = 'res_' + Date.now();
+            try { await setDoc(doc(db, COL_RESULTS, id), { id, name: document.getElementById('res-name').value, title: document.getElementById('res-title').value, img }); showToast("Result Added!"); loadAdminResults(); } catch(e) {} finally { btn.innerHTML = 'Add Result'; btn.disabled = false; }
+        };
+        window.loadAdminResults = async () => {
+            const list = document.getElementById('admin-results-list');
+            try {
+                const snap = await getDocs(collection(db, COL_RESULTS)); list.innerHTML = '';
+                if(snap.empty) { list.innerHTML = '<div class="col-span-full text-center text-gray-400 py-4">No results.</div>'; return; }
+                snap.forEach((doc) => {
+                    const r = doc.data();
+                    list.innerHTML += `<div class="border border-gray-100 rounded-xl p-3 flex items-center gap-3 bg-gray-50"><img src="${r.img}" class="w-16 h-16 rounded-lg object-cover bg-gray-200"><div class="flex-1 overflow-hidden"><h4 class="font-bold text-sm truncate">${r.name || 'Anonymous'}</h4><p class="text-xs text-brand truncate">${r.title}</p></div><button onclick="deleteResult('${r.id}')" class="text-red-400 hover:text-red-600 p-2"><i class="fa-solid fa-trash"></i></button></div>`;
+                });
+            } catch(e) {}
+        };
+        window.deleteResult = async (id) => { if(confirm("Delete?")) { try { await deleteDoc(doc(db, COL_RESULTS, id)); loadAdminResults(); } catch(e) {} } };
 
         const loadPublicResults = async () => {
             const container = document.getElementById('dyn-results-container');
@@ -1795,148 +1693,29 @@
                     container.innerHTML = '';
                     snap.forEach(doc => {
                         const r = doc.data();
-                        container.innerHTML += `
-                            <div class="min-w-[280px] max-w-[280px] bg-white rounded-3xl p-4 shadow-sm border border-gray-100 snap-center">
-                                <img src="${r.img}" class="w-full h-48 object-cover rounded-2xl mb-4 bg-gray-100">
-                                <h3 class="font-bold text-gray-800 text-lg">${r.name || 'Anonymous'}</h3>
-                                <p class="text-brand text-sm font-medium mt-1">${r.title}</p>
-                            </div>
-                        `;
+                        container.innerHTML += `<div class="min-w-[280px] max-w-[280px] bg-white rounded-3xl p-4 shadow-sm border border-gray-100 snap-center"><img src="${r.img}" class="w-full h-48 object-cover rounded-2xl mb-4 bg-gray-100"><h3 class="font-bold text-gray-800 text-lg">${r.name || 'Anonymous'}</h3><p class="text-brand text-sm font-medium mt-1">${r.title}</p></div>`;
                     });
-                } else {
-                    container.innerHTML = '<div class="w-full text-center text-gray-400 py-8 italic">No results published yet.</div>';
-                }
-            } catch(e) { console.error("Error loading public results"); }
+                } else container.innerHTML = '<div class="w-full text-center text-gray-400 py-8 italic">No results yet.</div>';
+            } catch(e) {}
         };
 
-        // Initialize Public UI
-        getDoc(doc(db, COL_SETTINGS, 'core')).then(docSnap => {
-            if (docSnap.exists()) {
-                siteSettings = docSnap.data();
-                applySettingsToUI();
-            }
-            loadPublicResults();
-            loadPublicPackages(); // Fetch premium packages for public view
-        }).catch(() => {
-            // Error handling jodi firestore allow na kore (file:// protocol er jonyo)
-            console.log("Could not fetch settings. Running locally.");
-        });
-
-
-        // --- FREE TOOLS LOGIC ---
+        // Tools
         window.switchTool = (toolId, btnElement) => {
-            // Remove active classes from all tool buttons
-            document.querySelectorAll('.tool-btn').forEach(btn => {
-                btn.classList.remove('bg-brand', 'text-white', 'shadow-md');
-                btn.classList.add('text-gray-500');
-            });
-            
-            // Add active class to the clicked button (if exists)
-            if(btnElement) {
-                btnElement.classList.remove('text-gray-500');
-                btnElement.classList.add('bg-brand', 'text-white', 'shadow-md');
-            }
-
-            // Hide all tool content sections
-            document.querySelectorAll('.tool-content').forEach(c => {
-                c.classList.remove('active');
-            });
-            
-            // Show the specific tool content
-            if(toolId !== 'none') {
-                const activeContent = document.getElementById('tool-' + toolId);
-                if(activeContent) activeContent.classList.add('active');
-            }
+            document.querySelectorAll('.tool-btn').forEach(btn => { btn.classList.remove('bg-brand', 'text-white', 'shadow-md'); btn.classList.add('text-gray-500'); });
+            if(btnElement) { btnElement.classList.remove('text-gray-500'); btnElement.classList.add('bg-brand', 'text-white', 'shadow-md'); }
+            document.querySelectorAll('.tool-content').forEach(c => { c.classList.remove('active'); });
+            if(toolId !== 'none') { const activeContent = document.getElementById('tool-' + toolId); if(activeContent) activeContent.classList.add('active'); }
         };
+        window.calcBMI = () => { const h = document.getElementById('calc-bmi-h').value / 100; const w = document.getElementById('calc-bmi-w').value; if(!h || !w) return; const bmi = (w / (h * h)).toFixed(1); let cat = 'Normal', color = 'text-green-500'; if(bmi < 18.5) { cat = 'Underweight'; color = 'text-blue-500'; } else if(bmi > 25) { cat = 'Overweight'; color = 'text-orange-500'; } else if(bmi > 30) { cat = 'Obese'; color = 'text-red-500'; } document.getElementById('val-bmi').innerText = bmi; document.getElementById('val-bmi').className = `text-4xl font-extrabold my-1 ${color}`; document.getElementById('cat-bmi').innerText = cat; document.getElementById('res-bmi').classList.remove('hidden'); };
+        window.calcWater = () => { const w = document.getElementById('calc-wat-w').value; const a = document.getElementById('calc-wat-a').value; if(!w) return; document.getElementById('val-water').innerText = ((w / 20) * a).toFixed(1) + ' L'; document.getElementById('res-water').classList.remove('hidden'); };
+        window.calcCalorie = () => { const a = document.getElementById('calc-cal-a').value; const w = document.getElementById('calc-cal-w').value; const h = document.getElementById('calc-cal-h').value; const g = document.getElementById('calc-cal-g').value; if(!a || !w || !h) return; let bmr = (10 * w) + (6.25 * h) - (5 * a); bmr = g === 'm' ? bmr + 5 : bmr - 161; document.getElementById('val-cal').innerText = Math.round(bmr * 1.2) + ' kcal'; document.getElementById('res-cal').classList.remove('hidden'); };
 
-        window.calcBMI = () => {
-            const h = document.getElementById('calc-bmi-h').value / 100;
-            const w = document.getElementById('calc-bmi-w').value;
-            if(!h || !w) return showToast("Enter height & weight");
-            const bmi = (w / (h * h)).toFixed(1);
-            let cat = 'Normal Weight', color = 'text-green-500';
-            if(bmi < 18.5) { cat = 'Underweight'; color = 'text-blue-500'; }
-            else if(bmi > 25) { cat = 'Overweight'; color = 'text-orange-500'; }
-            else if(bmi > 30) { cat = 'Obese'; color = 'text-red-500'; }
-            
-            document.getElementById('val-bmi').innerText = bmi;
-            document.getElementById('val-bmi').className = `text-4xl font-extrabold my-1 ${color}`;
-            document.getElementById('cat-bmi').innerText = cat;
-            document.getElementById('res-bmi').classList.remove('hidden');
-        };
-
-        window.calcWater = () => {
-            const w = document.getElementById('calc-wat-w').value;
-            const a = document.getElementById('calc-wat-a').value;
-            if(!w) return showToast("Enter weight");
-            const water = ((w / 20) * a).toFixed(1);
-            document.getElementById('val-water').innerText = water + ' L';
-            document.getElementById('res-water').classList.remove('hidden');
-        };
-
-        window.calcCalorie = () => {
-            const a = document.getElementById('calc-cal-a').value;
-            const w = document.getElementById('calc-cal-w').value;
-            const h = document.getElementById('calc-cal-h').value;
-            const g = document.getElementById('calc-cal-g').value;
-            if(!a || !w || !h) return showToast("Enter all details");
-            
-            let bmr = (10 * w) + (6.25 * h) - (5 * a);
-            bmr = g === 'm' ? bmr + 5 : bmr - 161;
-            const tdee = Math.round(bmr * 1.2); 
-            
-            document.getElementById('val-cal').innerText = tdee + ' kcal';
-            document.getElementById('res-cal').classList.remove('hidden');
-        };
-
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
-        window.installPWA = async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    showToast('Thank you for installing our App!');
-                }
-                deferredPrompt = null;
-            } else {
-                showToast('To install: Open browser menu (3 dots) & select "Add to Home screen"');
-            }
-        };
-
-        const sections = document.querySelectorAll("section");
-        const navLinks = document.querySelectorAll(".nav-link");
-        const navLinksMobile = document.querySelectorAll(".nav-link-mobile");
-
+        getDoc(doc(db, COL_SETTINGS, 'core')).then(docSnap => { if (docSnap.exists()) { siteSettings = docSnap.data(); applySettingsToUI(); } loadPublicResults(); loadPublicPackages(); }).catch(() => {});
+        const sections = document.querySelectorAll("section"); const navLinks = document.querySelectorAll(".nav-link"); const navLinksMobile = document.querySelectorAll(".nav-link-mobile");
         window.onscroll = () => {
-            let current = "";
-            sections.forEach((section) => {
-                const sectionTop = section.offsetTop;
-                if (scrollY >= sectionTop - 150) current = section.getAttribute("id");
-            });
-
-            navLinks.forEach((a) => {
-                a.classList.remove("text-brand", "bg-brand/10", "font-semibold");
-                a.classList.add("text-gray-600", "font-medium");
-                if (current && a.getAttribute("href").includes(current)) {
-                    a.classList.add("text-brand", "bg-brand/10", "font-semibold");
-                    a.classList.remove("text-gray-600", "font-medium");
-                }
-            });
-            navLinksMobile.forEach((a) => {
-                if(!a.classList.contains('text-blue-500')) {
-                    a.classList.remove("text-brand", "font-bold");
-                    a.classList.add("text-gray-400");
-                    if (current && a.getAttribute("href").includes(current)) {
-                        a.classList.add("text-brand", "font-bold");
-                        a.classList.remove("text-gray-400");
-                    }
-                }
-            });
+            let current = ""; sections.forEach((section) => { const sectionTop = section.offsetTop; if (scrollY >= sectionTop - 150) current = section.getAttribute("id"); });
+            navLinks.forEach((a) => { a.classList.remove("text-brand", "bg-brand/10", "font-semibold"); a.classList.add("text-gray-600", "font-medium"); if (current && a.getAttribute("href").includes(current)) { a.classList.add("text-brand", "bg-brand/10", "font-semibold"); a.classList.remove("text-gray-600", "font-medium"); } });
+            navLinksMobile.forEach((a) => { if(!a.classList.contains('text-blue-500')) { a.classList.remove("text-brand", "font-bold"); a.classList.add("text-gray-400"); if (current && a.getAttribute("href").includes(current)) { a.classList.add("text-brand", "font-bold"); a.classList.remove("text-gray-400"); } } });
         };
     </script>
 </body>
