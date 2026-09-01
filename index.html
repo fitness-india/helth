@@ -901,7 +901,7 @@
                         </div>
                     </div>
                     
-                    <!-- Chat & Print Action -->
+                    <!-- Chat Action -->
                     <div class="flex gap-2 mt-auto pt-4 border-t border-gray-100">
                         <a id="cm-btn-wa" href="#" target="_blank" class="flex-1 text-center py-2 bg-green-500 text-white text-sm font-bold rounded-lg hover:bg-green-600 transition"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
                     </div>
@@ -990,7 +990,7 @@
         
         let currentUser = null;
         let siteSettings = { admins: ['befitindia1@gmail.com'], wa: '916289308561' };
-        let activeMemberId = null; // Used in Coach Modal
+        let activeMemberId = null; 
 
         window.showToast = (msg) => {
             const t = document.getElementById('toast');
@@ -1046,7 +1046,7 @@
                 const docSnap = await getDoc(doc(db, COL_USERS, user.uid));
                 if (docSnap.exists()) {
                     window.userProfile = docSnap.data();
-                    processDailyTaskReset(window.userProfile); // Reset Daily Tasks logic
+                    processDailyTaskReset(window.userProfile); 
                     updateSidebarUI(window.userProfile);
                 } else {
                     window.userProfile = null;
@@ -1069,7 +1069,6 @@
                 let tasksUpdated = false;
                 let updatedTasks = (profile.tasks || []).filter(t => {
                     if(t.isDaily) { t.isCompleted = false; tasksUpdated = true; return true; }
-                    // Keep one-time tasks only if they are NOT completed yet. If completed yesterday, remove them.
                     if(t.isCompleted) { tasksUpdated = true; return false; }
                     return true; 
                 });
@@ -1097,7 +1096,6 @@
             }
             if (!window.userProfile) { openModal('modal-onboard'); return; }
             
-            // Re-fetch profile to ensure fresh tasks/resources data
             const docSnap = await getDoc(doc(db, COL_USERS, currentUser.uid));
             window.userProfile = docSnap.data();
             const p = window.userProfile;
@@ -1216,7 +1214,7 @@
                 window.userProfile.tasks = tasks;
                 try {
                     await updateDoc(doc(db, COL_USERS, currentUser.uid), { tasks: tasks });
-                    renderUserDashboardTasks(tasks); // Re-render to show strikethrough
+                    renderUserDashboardTasks(tasks); 
                 } catch(e) { showToast("Failed to update task."); }
             }
         };
@@ -1286,20 +1284,19 @@
             }
 
             var options = {
-                "key": siteSettings.rzpKey, // Public Key from settings
-                "amount": price * 100, // paise
+                "key": siteSettings.rzpKey, 
+                "amount": price * 100, 
                 "currency": "INR",
                 "name": "Health Station 360",
                 "description": "Premium Club Subscription",
                 "image": siteSettings.logo || "https://ui-avatars.com/api/?name=HS&background=1a8d1a&color=fff",
                 "handler": async function (response) {
-                    // Success Callback
                     try {
                         const newProfileData = { isVIP: true, activePackage: pkgId, paymentId: response.razorpay_payment_id, upgradedAt: new Date().toISOString() };
                         await updateDoc(doc(db, COL_USERS, currentUser.uid), newProfileData);
                         window.userProfile.isVIP = true;
                         showToast("Payment Successful! Welcome to VIP Club.");
-                        handleDashboardAccess(); // Take to dashboard
+                        handleDashboardAccess(); 
                     } catch(e) { showToast("Error updating status. Contact coach."); }
                 },
                 "prefill": {
@@ -1371,7 +1368,7 @@
                         <td class="px-6 py-4 text-brand font-medium text-xs cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">${u.goal}</td>
                         <td class="px-6 py-4">${isVIP ? '<span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded-full">VIP</span>' : '<span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-full">Free</span>'}</td>
                         <td class="px-6 py-4 text-center">
-                            <button onclick="toggleVIPStatus('${docSnap.id}', ${isVIP})" class="${isVIP ? 'bg-red-50 text-red-500' : 'bg-yellow-50 text-yellow-600'} px-3 py-1.5 rounded text-xs font-bold transition">
+                            <button onclick="toggleVIPStatus('${docSnap.id}', ${isVIP})" class="${isVIP ? 'bg-red-50 text-red-500' : 'bg-yellow-50 text-yellow-600'} px-3 py-1.5 rounded text-xs font-bold transition shadow-sm border ${isVIP ? 'border-red-200 hover:bg-red-100' : 'border-yellow-200 hover:bg-yellow-100'}">
                                 ${isVIP ? 'Revoke VIP' : 'Make VIP'}
                             </button>
                         </td>
@@ -1382,15 +1379,15 @@
         };
 
         window.toggleVIPStatus = async (uid, currentStatus) => {
-            if(confirm(`GRANT/REVOKE VIP status?`)) {
+            if(confirm(`Are you sure you want to change this member's VIP status?`)) {
                 try { await updateDoc(doc(db, COL_USERS, uid), { isVIP: !currentStatus }); showToast("Status Updated!"); loadMembersList(); } 
-                catch (e) { showToast("Error"); }
+                catch (e) { showToast("Error updating status"); }
             }
         };
 
         // Open Coach Member Details Modal
         window.viewMemberDetails = async (uid) => {
-            activeMemberId = uid; // Store for Task/Resource addition
+            activeMemberId = uid; 
             openModal('modal-coach-member');
             
             const userSnap = await getDoc(doc(db, COL_USERS, uid));
