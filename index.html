@@ -75,6 +75,16 @@
         /* Fix Google Translate styling */
         .goog-te-gadget-simple { border-radius: 8px !important; padding: 4px !important; border: 1px solid #e5e7eb !important; }
         .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none; }
+
+        /* Loader Animation */
+        @keyframes fadeOut {
+            0% { opacity: 1; display: flex; }
+            99% { opacity: 0; display: flex; }
+            100% { opacity: 0; display: none; visibility: hidden; }
+        }
+        #global-loader {
+            animation: fadeOut 0.5s ease-in-out 1.5s forwards;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -92,13 +102,15 @@
             const loader = document.getElementById('global-loader');
             if (loader && loader.style.display !== 'none') {
                 loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 500);
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    loader.style.visibility = 'hidden';
+                }, 500);
             }
         }
-        // Try to hide when everything loads
-        window.addEventListener('load', hideLoader);
         // Force hide after 2 seconds (safeguard against file:// protocol hangs)
         setTimeout(hideLoader, 2000);
+        window.addEventListener('load', hideLoader);
     </script>
 
     <div id="toast" class="toast-box">Notification Message</div>
@@ -159,34 +171,22 @@
         <!-- Mobile Header -->
         <header class="lg:hidden bg-white shadow-sm sticky top-0 z-40 px-4 py-3 flex justify-between items-center h-16">
             <div class="flex items-center gap-3">
-                <button onclick="document.getElementById('mobile-sidebar').classList.remove('-translate-x-full')" class="text-gray-600 p-1 hover:text-brand transition">
+                <button onclick="document.getElementById('mobile-sidebar').classList.remove('-translate-x-full')" class="text-gray-600 p-2 hover:text-brand transition -ml-2">
                     <i class="fa-solid fa-bars text-2xl"></i>
                 </button>
                 <img id="dyn-logo-mob" src="https://ui-avatars.com/api/?name=HS+360&background=1a8d1a&color=fff&rounded=true&size=100" class="h-10 object-contain">
             </div>
             
             <div class="flex items-center gap-4">
-            <button onclick="document.getElementById('mobile-lang-menu').classList.toggle('hidden')" class="text-gray-600 relative p-1">
-                <i class="fa-solid fa-globe text-xl pointer-events-none"></i>
-            </button>
-            <button onclick="document.getElementById('noti-menu').classList.toggle('hidden')" class="text-gray-600 relative p-1">
-                <i class="fa-regular fa-bell text-xl pointer-events-none"></i><span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-white"></span>
-            </button>
-        </div>
-        
-        <!-- Mobile Language Dropdown -->
-        <div id="mobile-lang-menu" class="hidden absolute top-14 right-12 bg-white shadow-2xl rounded-xl border border-gray-200 p-3 z-[9999] min-w-[150px]">
-            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pb-1 border-b">Select Language</div>
-            <div id="google_translate_element_mob" class="text-sm min-h-[30px] flex items-center justify-center"></div>
-        </div>
-
-        <!-- Notifications Dropdown -->
-            <div id="noti-menu" class="hidden absolute top-14 right-4 w-64 bg-white shadow-2xl rounded-xl border border-gray-100 p-4 z-50">
-                <h3 class="font-bold mb-3 text-gray-800">Notifications</h3>
-                <div class="space-y-3">
-                    <div class="text-sm pb-3 border-b"><span class="text-brand font-bold">Reminder:</span> Drink your morning water! 💧</div>
-                    <div class="text-sm pb-1"><span class="text-blue-500 font-bold">Health Tip:</span> Walk 30 mins today. 🚶‍♂️</div>
-                </div>
+                <button onclick="document.getElementById('mobile-lang-menu').classList.toggle('hidden')" class="text-gray-600 relative p-2 -mr-2">
+                    <i class="fa-solid fa-globe text-xl pointer-events-none"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Language Dropdown -->
+            <div id="mobile-lang-menu" class="hidden absolute top-14 right-4 bg-white shadow-2xl rounded-xl border border-gray-200 p-3 z-[100] min-w-[150px]">
+                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pb-1 border-b">Select Language</div>
+                <div id="google_translate_element_mob" class="text-sm min-h-[40px] flex items-center justify-center"></div>
             </div>
         </header>
 
@@ -268,8 +268,8 @@
                     <!-- Tools Navigation Tabs -->
                     <div class="flex justify-center gap-2 mb-8 bg-white p-2 rounded-full shadow-sm inline-flex border border-gray-200 overflow-x-auto max-w-full hide-scrollbar relative">
                         <button onclick="switchTool('bmi', this)" id="btn-tool-bmi" class="tool-btn px-6 py-2.5 rounded-full font-bold bg-brand text-white shadow-md transition-colors duration-300">BMI Calculator</button>
-                        <button onclick="switchTool('water', this)" id="btn-tool-water" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 hover:bg-gray-50 transition-colors duration-300">Water Intake</button>
-                        <button onclick="switchTool('calorie', this)" id="btn-tool-calorie" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 hover:bg-gray-50 transition-colors duration-300">Calorie Need</button>
+                        <button onclick="switchTool('water', this)" id="btn-tool-water" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 transition-colors duration-300">Water Intake</button>
+                        <button onclick="switchTool('calorie', this)" id="btn-tool-calorie" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 transition-colors duration-300">Calorie Need</button>
                     </div>
 
                     <!-- Tools Container -->
@@ -354,19 +354,19 @@
                     </div>
                     <div class="flex-1 bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
                         <h3 class="text-xl font-bold mb-6 text-gray-800">Free Consultation Form</h3>
-                        <form class="space-y-5" onsubmit="event.preventDefault(); alert('Booking request sent successfully! We will contact you soon.');">
-                            <input type="text" required placeholder="Your Name" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none">
+                        <form class="space-y-5" onsubmit="event.preventDefault(); submitBooking();">
+                            <input type="text" id="book-name" required placeholder="Your Name" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none">
                             <div class="flex gap-4">
-                                <input type="tel" required placeholder="Mobile Number" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none">
-                                <input type="number" required placeholder="Age" class="w-1/3 px-4 py-3 rounded-xl border focus:border-brand outline-none">
+                                <input type="tel" id="book-phone" required placeholder="Mobile Number" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none">
+                                <input type="number" id="book-age" required placeholder="Age" class="w-1/3 px-4 py-3 rounded-xl border focus:border-brand outline-none">
                             </div>
-                            <select required class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-white">
+                            <select id="book-goal" required class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-white">
                                 <option value="" disabled selected>Select your goal</option>
                                 <option>Weight Loss</option>
                                 <option>Weight Gain</option>
                                 <option>Healthy Lifestyle</option>
                             </select>
-                            <button type="submit" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-4 hover:bg-brandDark transition shadow-md">Book Appointment</button>
+                            <button type="submit" id="btn-submit-booking" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-4 hover:bg-brandDark transition shadow-md">Book Appointment</button>
                         </form>
                     </div>
                 </div>
@@ -689,6 +689,7 @@
             <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-xl shadow-sm inline-flex border border-green-100">
                 <button onclick="switchCoachTab('members')" id="btn-coach-members" class="coach-tab active px-5 py-2.5 rounded-lg font-bold text-white bg-brand transition">Manage Members</button>
                 <button onclick="switchCoachTab('results')" id="btn-coach-results" class="coach-tab px-5 py-2.5 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">Add Results</button>
+                <button onclick="switchCoachTab('bookings')" id="btn-coach-bookings" class="coach-tab px-5 py-2.5 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">View Bookings</button>
                 <button onclick="switchCoachTab('settings')" id="btn-coach-settings" class="coach-tab px-5 py-2.5 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">Website Settings</button>
             </div>
 
@@ -747,6 +748,32 @@
                         <div id="admin-results-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="col-span-full text-center text-gray-400 py-8 italic">Loading...</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COACH TAB: Bookings -->
+            <div id="coach-tab-bookings" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+                <div class="bg-white rounded-2xl shadow-sm border border-green-100 overflow-hidden">
+                    <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-800">Consultation Requests</h3>
+                        <button onclick="loadBookingsList()" class="text-brand hover:text-brandDark p-2"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                                <tr>
+                                    <th class="px-6 py-4 font-bold">Date</th>
+                                    <th class="px-6 py-4 font-bold">Name & Age</th>
+                                    <th class="px-6 py-4 font-bold">Phone Number</th>
+                                    <th class="px-6 py-4 font-bold">Goal</th>
+                                    <th class="px-6 py-4 font-bold text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-bookings-list" class="divide-y divide-gray-100">
+                                <tr><td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">Loading bookings...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -869,7 +896,7 @@
     <!-- ======================= JAVASCRIPT & LOGIC ======================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -890,6 +917,7 @@
         const COL_REPORTS = 'reports';
         const COL_SETTINGS = 'settings';
         const COL_RESULTS = 'results';
+        const COL_BOOKINGS = 'bookings';
         
         let currentUser = null;
         let siteSettings = { 
@@ -1038,8 +1066,6 @@
             document.getElementById('ob-current-file').removeAttribute('required');
             
             window.scrollTo(0,0);
-            const notiMenu = document.getElementById('noti-menu');
-            if(notiMenu) notiMenu.classList.add('hidden');
         };
 
         window.saveProfileData = async () => {
@@ -1177,6 +1203,44 @@
             document.getElementById('dash-water-goal').innerText = `${r.water} Liters`;
         };
 
+        // --- BOOKING LOGIC ---
+        window.submitBooking = async () => {
+            const btn = document.getElementById('btn-submit-booking');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Booking...';
+            btn.disabled = true;
+
+            const name = document.getElementById('book-name').value;
+            const phone = document.getElementById('book-phone').value;
+            const age = document.getElementById('book-age').value;
+            const goal = document.getElementById('book-goal').value;
+
+            const bookingId = 'book_' + Date.now();
+            const bookingData = {
+                id: bookingId,
+                name: name,
+                phone: phone,
+                age: age,
+                goal: goal,
+                date: new Date().toLocaleDateString(),
+                timestamp: Date.now()
+            };
+
+            try {
+                await setDoc(doc(db, COL_BOOKINGS, bookingId), bookingData);
+                showToast("Booking successful! We will contact you soon.");
+                document.getElementById('book-name').value = '';
+                document.getElementById('book-phone').value = '';
+                document.getElementById('book-age').value = '';
+                document.getElementById('book-goal').value = '';
+            } catch(e) {
+                showToast("Booking failed. Please try again.");
+                console.error(e);
+            } finally {
+                btn.innerHTML = 'Book Appointment';
+                btn.disabled = false;
+            }
+        };
+
         // --- COACH ADMIN LOGIC ---
         window.checkCoachAccess = async () => {
             if(!currentUser) {
@@ -1204,6 +1268,7 @@
                     document.getElementById('coach-view').classList.remove('hidden');
                     loadMembersList();
                     loadAdminResults();
+                    loadBookingsList();
                     
                     document.getElementById('set-admins').value = siteSettings.admins.join(', ');
                     document.getElementById('set-wa').value = siteSettings.wa || '';
@@ -1239,6 +1304,7 @@
 
             document.getElementById('coach-tab-members').classList.add('hidden');
             document.getElementById('coach-tab-results').classList.add('hidden');
+            document.getElementById('coach-tab-bookings').classList.add('hidden');
             document.getElementById('coach-tab-settings').classList.add('hidden');
             document.getElementById('coach-tab-'+tabId).classList.remove('hidden');
         };
@@ -1317,6 +1383,47 @@
             } else {
                 document.getElementById('cm-rx-empty').classList.remove('hidden');
                 document.getElementById('cm-rx-data').classList.add('hidden');
+            }
+        };
+
+        window.loadBookingsList = async () => {
+            const list = document.getElementById('admin-bookings-list');
+            list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></td></tr>';
+            try {
+                const querySnapshot = await getDocs(collection(db, COL_BOOKINGS));
+                list.innerHTML = '';
+                if(querySnapshot.empty) {
+                    list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">No bookings yet.</td></tr>';
+                    return;
+                }
+                
+                querySnapshot.forEach((docSnap) => {
+                    const b = docSnap.data();
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition';
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 text-gray-500 text-xs">${b.date}</td>
+                        <td class="px-6 py-4 font-bold text-gray-800">${b.name} <br><span class="text-gray-400 font-normal text-xs">Age: ${b.age}</span></td>
+                        <td class="px-6 py-4 text-gray-700">${b.phone}</td>
+                        <td class="px-6 py-4 text-brand font-medium text-xs">${b.goal}</td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="deleteBooking('${b.id}')" class="bg-green-100 text-green-600 px-3 py-1.5 rounded text-xs font-bold hover:bg-green-200 transition"><i class="fa-solid fa-check"></i> Done</button>
+                        </td>
+                    `;
+                    list.appendChild(tr);
+                });
+            } catch(e) {
+                list.innerHTML = `<tr><td colspan="5" class="text-red-500 text-center py-4">Error loading bookings: ${e.message}</td></tr>`;
+            }
+        };
+
+        window.deleteBooking = async (id) => {
+            if(confirm("Mark this booking as Done? (It will be removed from list)")) {
+                try {
+                    await deleteDoc(doc(db, COL_BOOKINGS, id));
+                    showToast("Booking marked as Done!");
+                    loadBookingsList();
+                } catch(e) { showToast("Error processing request."); }
             }
         };
 
@@ -1483,11 +1590,11 @@
             // Remove active classes from all tool buttons
             document.querySelectorAll('.tool-btn').forEach(btn => {
                 btn.classList.remove('bg-brand', 'text-white', 'shadow-md');
-                btn.classList.add('text-gray-500', 'hover:bg-gray-50');
+                btn.classList.add('text-gray-500');
             });
             
             // Add active class to the clicked button
-            btnElement.classList.remove('text-gray-500', 'hover:bg-gray-50');
+            btnElement.classList.remove('text-gray-500');
             btnElement.classList.add('bg-brand', 'text-white', 'shadow-md');
 
             // Hide all tool content sections
