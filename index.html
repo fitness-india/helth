@@ -35,7 +35,7 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { brand: '#1a8d1a', brandDark: '#126312', brandLight: '#e8f5e9' }
+                    colors: { brand: '#1a8d1a', brandDark: '#126312', brandLight: '#e8f5e9', gold: '#FFD700' }
                 }
             }
         }
@@ -130,6 +130,7 @@
 
                 <a href="#home" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-brand bg-brand/10 font-semibold transition-colors"><i class="fa-solid fa-house w-5 text-center"></i> Home</a>
                 <a href="#programs" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-dumbbell w-5 text-center"></i> Programs</a>
+                <a href="#packages" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-crown text-yellow-500 w-5 text-center"></i> Premium Plans</a>
                 <a href="#results-section" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-star w-5 text-center"></i> Results</a>
                 <a href="#tools" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-calculator w-5 text-center"></i> Free Tools</a>
                 <a href="#booking" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-regular fa-calendar-check w-5 text-center"></i> Booking</a>
@@ -142,7 +143,8 @@
                 </button>
                 
                 <!-- Profile Widget (Shows when logged in) -->
-                <div id="sidebar-user-widget" class="hidden mt-2 p-3 bg-gray-50 rounded-xl mx-2 border border-gray-100 shadow-inner">
+                <div id="sidebar-user-widget" class="hidden mt-2 p-3 bg-gray-50 rounded-xl mx-2 border border-gray-100 shadow-inner relative">
+                    <div id="sidebar-vip-badge" class="hidden absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-2 py-1 rounded-full shadow-md border border-yellow-200 z-10"><i class="fa-solid fa-crown"></i> VIP</div>
                     <div class="flex items-center gap-3 mb-3">
                         <img id="sidebar-avatar" src="" class="w-10 h-10 rounded-full object-cover bg-gray-200 border border-gray-300">
                         <div class="overflow-hidden">
@@ -159,13 +161,6 @@
                     <i class="fa-solid fa-user-shield w-5 text-center"></i> Coach Panel
                 </button>
             </nav>
-
-            <div class="p-4 border-t border-gray-100">
-                <div class="bg-brand text-white rounded-xl p-4 text-center shadow-lg">
-                    <p class="font-bold mb-2">Install Our App</p>
-                    <button onclick="installPWA()" class="bg-white text-brand px-4 py-2 rounded-lg font-bold w-full text-sm hover:bg-gray-50">Install Now</button>
-                </div>
-            </div>
         </aside>
 
         <!-- Mobile Header -->
@@ -196,9 +191,11 @@
                 <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10">
                     <div class="flex-1 z-10">
                         <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">Transform Your <span class="text-brand">Health,</span> <br> Transform Your <span class="text-brand">Life.</span></h1>
-                        <p class="text-gray-600 lg:text-lg mb-8 max-w-md">Personalized nutrition guidance to help you look better, feel better and live better.</p>
+                        <p class="text-gray-600 lg:text-lg mb-8 max-w-md">Personalized nutrition guidance and exclusive club packages to help you look better, feel better and live better.</p>
                         <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                            <a href="#booking" class="bg-brand text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-brand/30 hover:bg-brandDark transition text-center">Book Free Consultation</a>
+                            <a href="#packages" class="bg-brand text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-brand/30 hover:bg-brandDark transition text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-crown text-yellow-300"></i> View Premium Plans
+                            </a>
                         </div>
                         <div class="flex gap-4">
                             <a id="dyn-wa-btn" href="#" target="_blank" class="flex items-center gap-2 px-6 py-3 border border-green-200 bg-green-50 text-brand font-bold rounded-xl hover:bg-green-100 transition"><i class="fa-brands fa-whatsapp text-xl"></i> Chat</a>
@@ -214,41 +211,54 @@
 
             <section id="programs" class="bg-white px-4 py-16">
                 <div class="max-w-6xl mx-auto">
-                    <h2 class="text-3xl font-bold mb-10 text-center">Our Programs</h2>
+                    <h2 class="text-3xl font-bold mb-10 text-center">Our Focus Areas</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <!-- Program 1 -->
                         <div class="bg-gray-50 rounded-3xl overflow-hidden p-5 border border-gray-100 hover:shadow-lg transition duration-300">
                             <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500" class="w-full h-44 object-cover rounded-2xl mb-5 shadow-sm">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">Weight Loss</h3>
                             <p class="text-gray-500 text-sm mb-4">Healthy, balanced nutrition plan to lose weight naturally without starving.</p>
-                            <a href="#booking" class="text-brand font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">Start Now <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                         <!-- Program 2 -->
                         <div class="bg-gray-50 rounded-3xl overflow-hidden p-5 border border-gray-100 hover:shadow-lg transition duration-300">
                             <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500" class="w-full h-44 object-cover rounded-2xl mb-5 shadow-sm">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">Weight Gain</h3>
                             <p class="text-gray-500 text-sm mb-4">Specialized protein-rich plan to help you gain healthy muscle mass and weight.</p>
-                            <a href="#booking" class="text-brand font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">Start Now <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                         <!-- Program 3 -->
                         <div class="bg-gray-50 rounded-3xl overflow-hidden p-5 border border-gray-100 hover:shadow-lg transition duration-300">
                             <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500" class="w-full h-44 object-cover rounded-2xl mb-5 shadow-sm">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">Healthy Lifestyle</h3>
                             <p class="text-gray-500 text-sm mb-4">Daily habits and balanced meals for a better, healthier, and happier life.</p>
-                            <a href="#booking" class="text-brand font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">Start Now <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                         <!-- Program 4 -->
                         <div class="bg-gray-50 rounded-3xl overflow-hidden p-5 border border-gray-100 hover:shadow-lg transition duration-300">
                             <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500" class="w-full h-44 object-cover rounded-2xl mb-5 shadow-sm">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">Energy & Wellness</h3>
                             <p class="text-gray-500 text-sm mb-4">Boost your daily energy, immunity, and overall wellness with our detox plans.</p>
-                            <a href="#booking" class="text-brand font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">Start Now <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="results-section" class="bg-gray-50 py-16 px-4 border-t border-b border-gray-100">
+            <!-- PREMIUM PACKAGES SECTION (NEW) -->
+            <section id="packages" class="bg-brand/5 px-4 py-16 border-y border-gray-100 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none"></div>
+                <div class="max-w-6xl mx-auto relative z-10">
+                    <div class="text-center mb-12">
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block border border-yellow-300"><i class="fa-solid fa-crown mr-1"></i> VIP Club</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Premium Nutrition Packages</h2>
+                        <p class="text-gray-600 max-w-2xl mx-auto">Get personalized guidance, premium supplements, and join our exclusive community to achieve your goals faster.</p>
+                    </div>
+
+                    <div id="dyn-packages-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Dynamic Packages Loaded Here -->
+                        <div class="col-span-full text-center text-gray-400 py-10 italic">Loading premium packages...</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="results-section" class="bg-white py-16 px-4">
                 <div class="max-w-6xl mx-auto">
                     <h2 class="text-3xl font-bold mb-2 text-center text-gray-800">Real Results, Real People</h2>
                     <p class="text-center text-gray-500 mb-10">See how we transformed lives with balanced nutrition.</p>
@@ -260,16 +270,16 @@
                 </div>
             </section>
 
-            <section id="tools" class="bg-brand/5 px-4 py-16">
+            <section id="tools" class="bg-gray-50 px-4 py-16 border-t border-gray-100">
                 <div class="max-w-4xl mx-auto text-center">
                     <h2 class="text-3xl font-bold mb-2">Free Health Tools</h2>
                     <p class="text-gray-500 mb-8">Calculate your daily needs instantly.</p>
                     
                     <!-- Tools Navigation Tabs -->
                     <div class="flex justify-center gap-2 mb-8 bg-white p-2 rounded-full shadow-sm inline-flex border border-gray-200 overflow-x-auto max-w-full hide-scrollbar relative">
-                        <button onclick="switchTool('bmi', this)" id="btn-tool-bmi" class="tool-btn px-6 py-2.5 rounded-full font-bold bg-brand text-white shadow-md transition-colors duration-300">BMI Calculator</button>
-                        <button onclick="switchTool('water', this)" id="btn-tool-water" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 transition-colors duration-300">Water Intake</button>
-                        <button onclick="switchTool('calorie', this)" id="btn-tool-calorie" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 transition-colors duration-300">Calorie Need</button>
+                        <button onclick="switchTool('bmi', this)" class="tool-btn px-6 py-2.5 rounded-full font-bold bg-brand text-white shadow-md transition-colors duration-300">BMI Calculator</button>
+                        <button onclick="switchTool('water', this)" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 transition-colors duration-300 hover:bg-gray-50">Water Intake</button>
+                        <button onclick="switchTool('calorie', this)" class="tool-btn px-6 py-2.5 rounded-full font-bold text-gray-500 transition-colors duration-300 hover:bg-gray-50">Calorie Need</button>
                     </div>
 
                     <!-- Tools Container -->
@@ -283,10 +293,14 @@
                                 <div><label class="block text-sm font-bold text-gray-600 mb-1">Weight (kg)</label><input type="number" id="calc-bmi-w" placeholder="e.g. 65" class="w-full p-3 border rounded-xl outline-none focus:border-brand bg-gray-50 focus:bg-white"></div>
                             </div>
                             <button onclick="calcBMI()" class="w-full bg-brand text-white py-3.5 rounded-xl font-bold shadow hover:bg-brandDark transition">Calculate BMI</button>
-                            <div id="res-bmi" class="hidden mt-6 p-4 bg-gray-50 rounded-2xl border text-center">
+                            <div id="res-bmi" class="hidden mt-6 p-5 bg-gray-50 rounded-2xl border text-center">
                                 <p class="text-sm text-gray-500">Your BMI Score</p>
                                 <p id="val-bmi" class="text-4xl font-extrabold text-brand my-1">0.0</p>
-                                <p id="cat-bmi" class="font-bold text-gray-700">Category</p>
+                                <p id="cat-bmi" class="font-bold text-gray-700 mb-4">Category</p>
+                                <!-- Call To Action (Sales Funnel) -->
+                                <a href="#packages" class="inline-block w-full py-2 bg-yellow-400 text-yellow-900 font-bold rounded-lg hover:bg-yellow-500 transition shadow-sm text-sm border border-yellow-500">
+                                    <i class="fa-solid fa-fire text-orange-500 mr-1"></i> Get Custom Diet Plan to Fix This
+                                </a>
                             </div>
                         </div>
 
@@ -304,10 +318,13 @@
                                 </div>
                             </div>
                             <button onclick="calcWater()" class="w-full bg-blue-500 text-white py-3.5 rounded-xl font-bold shadow hover:bg-blue-600 transition">Calculate Water</button>
-                            <div id="res-water" class="hidden mt-6 p-4 bg-blue-50 rounded-2xl border border-blue-100 text-center">
+                            <div id="res-water" class="hidden mt-6 p-5 bg-blue-50 rounded-2xl border border-blue-100 text-center">
                                 <p class="text-sm text-blue-600 font-bold">You should drink</p>
                                 <p id="val-water" class="text-4xl font-extrabold text-blue-700 my-1">0 L</p>
-                                <p class="text-xs text-blue-500">Per day to stay hydrated based on 20kg = 1L logic.</p>
+                                <p class="text-xs text-blue-500 mb-4">Per day to stay hydrated based on 20kg = 1L logic.</p>
+                                <a href="#booking" class="inline-block w-full py-2 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-50 transition shadow-sm text-sm border border-blue-200">
+                                    Book Free Consultation for Full Plan
+                                </a>
                             </div>
                         </div>
 
@@ -324,10 +341,13 @@
                                 <select id="calc-cal-g" class="w-full p-3 border rounded-xl outline-none bg-gray-50 focus:bg-white focus:border-brand"><option value="m">Male</option><option value="f">Female</option></select>
                             </div>
                             <button onclick="calcCalorie()" class="w-full bg-orange-500 text-white py-3.5 rounded-xl font-bold shadow hover:bg-orange-600 transition">Calculate Maintenance Calories</button>
-                            <div id="res-cal" class="hidden mt-6 p-4 bg-orange-50 rounded-2xl border border-orange-100 text-center">
+                            <div id="res-cal" class="hidden mt-6 p-5 bg-orange-50 rounded-2xl border border-orange-100 text-center">
                                 <p class="text-sm text-orange-600 font-bold">To maintain weight you need</p>
                                 <p id="val-cal" class="text-4xl font-extrabold text-orange-700 my-1">0 kcal</p>
-                                <p class="text-xs text-orange-500">To lose weight, eat 500 kcal less. To gain, eat 500 kcal more.</p>
+                                <p class="text-xs text-orange-500 mb-4">To lose weight, eat 500 kcal less. To gain, eat 500 kcal more.</p>
+                                <a href="#packages" class="inline-block w-full py-2 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition shadow-sm text-sm">
+                                    Check Premium Weight Loss Packages
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -336,16 +356,17 @@
 
             <section id="booking" class="bg-white px-4 py-16">
                 <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-10">
-                    <div class="flex-1 bg-brand text-white rounded-3xl p-8 shadow-lg">
-                        <h2 class="text-3xl font-bold mb-4">Book Free Consultation</h2>
-                        <p class="mb-8 opacity-90">Take the first step towards a healthier you. Talk to our experts today.</p>
-                        <ul class="space-y-4 font-medium mb-12">
+                    <div class="flex-1 bg-brand text-white rounded-3xl p-8 shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -z-0"></div>
+                        <h2 class="text-3xl font-bold mb-4 relative z-10">Book Free Consultation</h2>
+                        <p class="mb-8 opacity-90 relative z-10">Take the first step towards a healthier you. Talk to our experts today.</p>
+                        <ul class="space-y-4 font-medium mb-12 relative z-10">
                             <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> Personalized Guidance</li>
                             <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> 100% Free Consultation</li>
                             <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> Expert Nutrition Advice</li>
                             <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-green-200"></i> Achieve Your Health Goals</li>
                         </ul>
-                        <div class="p-4 bg-white/10 rounded-2xl border border-white/20">
+                        <div class="p-4 bg-white/10 rounded-2xl border border-white/20 relative z-10">
                             <p class="text-sm font-bold mb-2">Quick Booking via WhatsApp</p>
                             <a id="dyn-wa-book" href="#" target="_blank" class="w-full bg-white text-brand py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition">
                                 <i class="fa-brands fa-whatsapp text-xl"></i> Book on WhatsApp
@@ -355,16 +376,17 @@
                     <div class="flex-1 bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
                         <h3 class="text-xl font-bold mb-6 text-gray-800">Free Consultation Form</h3>
                         <form class="space-y-5" onsubmit="event.preventDefault(); submitBooking();">
-                            <input type="text" id="book-name" required placeholder="Your Name" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none">
+                            <input type="text" id="book-name" required placeholder="Your Name" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50 focus:bg-white transition">
                             <div class="flex gap-4">
-                                <input type="tel" id="book-phone" required placeholder="Mobile Number" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none">
-                                <input type="number" id="book-age" required placeholder="Age" class="w-1/3 px-4 py-3 rounded-xl border focus:border-brand outline-none">
+                                <input type="tel" id="book-phone" required placeholder="Mobile Number" class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50 focus:bg-white transition">
+                                <input type="number" id="book-age" required placeholder="Age" class="w-1/3 px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50 focus:bg-white transition">
                             </div>
-                            <select id="book-goal" required class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-white">
+                            <select id="book-goal" required class="w-full px-4 py-3 rounded-xl border focus:border-brand outline-none bg-gray-50 focus:bg-white transition text-gray-700">
                                 <option value="" disabled selected>Select your goal</option>
                                 <option>Weight Loss</option>
                                 <option>Weight Gain</option>
                                 <option>Healthy Lifestyle</option>
+                                <option>Buy Package / Product</option>
                             </select>
                             <button type="submit" id="btn-submit-booking" class="w-full bg-brand text-white py-4 rounded-xl font-bold mt-4 hover:bg-brandDark transition shadow-md">Book Appointment</button>
                         </form>
@@ -382,6 +404,7 @@
                         <h4 class="font-bold mb-4">Quick Links</h4>
                         <ul class="space-y-2 text-gray-400 text-sm">
                             <li><a href="#home" class="hover:text-brand transition">Home</a></li>
+                            <li><a href="#packages" class="hover:text-brand transition text-yellow-400">Premium Plans</a></li>
                             <li><a href="#programs" class="hover:text-brand transition">Programs</a></li>
                         </ul>
                     </div>
@@ -441,6 +464,7 @@
                 <nav class="flex-1 py-4 px-3 space-y-2">
                     <a href="#home" onclick="document.getElementById('mobile-sidebar').classList.add('-translate-x-full')" class="flex items-center gap-3 px-4 py-3 rounded-xl text-brand bg-brand/10 font-bold transition-colors"><i class="fa-solid fa-house w-5 text-center"></i> Home</a>
                     <a href="#programs" onclick="document.getElementById('mobile-sidebar').classList.add('-translate-x-full')" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-dumbbell w-5 text-center"></i> Programs</a>
+                    <a href="#packages" onclick="document.getElementById('mobile-sidebar').classList.add('-translate-x-full')" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-yellow-50 font-medium transition-colors"><i class="fa-solid fa-crown text-yellow-500 w-5 text-center"></i> Premium Plans</a>
                     <a href="#results-section" onclick="document.getElementById('mobile-sidebar').classList.add('-translate-x-full')" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-star w-5 text-center"></i> Results</a>
                     <a href="#tools" onclick="document.getElementById('mobile-sidebar').classList.add('-translate-x-full')" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-solid fa-calculator w-5 text-center"></i> Free Tools</a>
                     <a href="#booking" onclick="document.getElementById('mobile-sidebar').classList.add('-translate-x-full')" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 font-medium transition-colors"><i class="fa-regular fa-calendar-check w-5 text-center"></i> Booking</a>
@@ -546,7 +570,7 @@
                 
                 <div class="relative w-24 h-24 flex-shrink-0 z-10">
                     <img id="dash-avatar-main" src="" class="w-full h-full rounded-full object-cover border-4 border-white shadow-md bg-gray-200">
-                    <div class="absolute -bottom-2 -right-2 bg-brand text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-sm"><i class="fa-solid fa-crown text-xs"></i></div>
+                    <div id="dash-vip-badge" class="hidden absolute -bottom-2 -right-2 bg-yellow-400 text-yellow-900 text-xs font-bold w-auto px-2 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-sm"><i class="fa-solid fa-crown mr-1"></i> VIP</div>
                 </div>
                 
                 <div class="text-center md:text-left flex-1 z-10">
@@ -556,9 +580,13 @@
                     <p id="dash-phone" class="text-gray-500 text-sm"><i class="fa-solid fa-phone w-4"></i> +91 0000000000</p>
                 </div>
                 
-                <div class="z-10 mt-4 md:mt-0">
-                    <button onclick="document.getElementById('modal-onboard').classList.remove('hidden')" class="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-200 transition flex items-center gap-2">
+                <div class="z-10 mt-4 md:mt-0 flex flex-col gap-2">
+                    <button onclick="document.getElementById('modal-onboard').classList.remove('hidden')" class="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-200 transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-pen text-xs"></i> Edit Profile
+                    </button>
+                    <!-- VIP Upsell button (shows if not VIP) -->
+                    <button id="btn-dash-upgrade" onclick="closeViewsAndShowMain(); window.location.hash='packages'" class="bg-yellow-400 text-yellow-900 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-yellow-500 transition flex items-center justify-center gap-2 shadow-sm border border-yellow-500">
+                        <i class="fa-solid fa-crown text-xs"></i> Upgrade to VIP
                     </button>
                 </div>
             </div>
@@ -601,8 +629,8 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-10 h-10 rounded-full bg-green-100 text-green-500 flex items-center justify-center"><i class="fa-solid fa-bowl-food"></i></div>
                                 <div>
-                                    <p class="font-bold text-gray-800">Healthy Meals</p>
-                                    <p class="text-xs text-gray-500">Protein focused diet</p>
+                                    <p class="font-bold text-gray-800">Healthy Meals & Shake</p>
+                                    <p class="text-xs text-gray-500">Follow coach plan</p>
                                 </div>
                             </div>
                             <input type="checkbox" class="w-6 h-6 rounded text-brand focus:ring-brand accent-brand cursor-pointer">
@@ -663,7 +691,7 @@
                         </table>
                     </div>
                     <div class="text-xs text-gray-400 text-center italic border-t border-gray-100 pt-4 mt-8">
-                        *This is an automatically generated report based on standard wellness logic. Consult coach for personalized plan.*
+                        *This is an automatically generated report based on standard wellness logic. Consult coach for personalized plan and premium products.*
                     </div>
                 </div>
                 
@@ -686,8 +714,10 @@
         </header>
 
         <div class="max-w-7xl mx-auto p-4 md:p-6 no-print">
-            <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-xl shadow-sm inline-flex border border-green-100">
+            <!-- Scrollable tab container -->
+            <div class="flex overflow-x-auto mb-6 bg-white p-2 rounded-xl shadow-sm border border-green-100 hide-scrollbar whitespace-nowrap">
                 <button onclick="switchCoachTab('members')" id="btn-coach-members" class="coach-tab active px-5 py-2.5 rounded-lg font-bold text-white bg-brand transition">Manage Members</button>
+                <button onclick="switchCoachTab('packages')" id="btn-coach-packages" class="coach-tab px-5 py-2.5 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">Manage Packages</button>
                 <button onclick="switchCoachTab('results')" id="btn-coach-results" class="coach-tab px-5 py-2.5 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">Add Results</button>
                 <button onclick="switchCoachTab('bookings')" id="btn-coach-bookings" class="coach-tab px-5 py-2.5 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">View Bookings</button>
                 <button onclick="switchCoachTab('settings')" id="btn-coach-settings" class="coach-tab px-5 py-2.5 rounded-lg font-bold text-gray-600 hover:bg-gray-50 transition">Website Settings</button>
@@ -707,13 +737,50 @@
                                     <th class="px-6 py-4 font-bold">Member</th>
                                     <th class="px-6 py-4 font-bold">Contact</th>
                                     <th class="px-6 py-4 font-bold">Goal</th>
+                                    <th class="px-6 py-4 font-bold">Status</th>
                                     <th class="px-6 py-4 font-bold text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-members-list" class="divide-y divide-gray-100">
-                                <tr><td colspan="4" class="px-6 py-10 text-center text-gray-400 italic">Loading members...</td></tr>
+                                <tr><td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">Loading members...</td></tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COACH TAB: Manage Packages (NEW) -->
+            <div id="coach-tab-packages" class="hidden animate-[fadeIn_0.3s_ease-in-out]">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-1 bg-white rounded-2xl p-6 shadow-sm border border-green-100">
+                        <h3 class="font-bold text-lg mb-4 text-gray-800 border-b pb-2">Create Package</h3>
+                        <form onsubmit="event.preventDefault(); saveNewPackage();" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Package Image *</label>
+                                <div class="relative group cursor-pointer w-full h-32 mb-2 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-brand transition bg-gray-50 flex items-center justify-center">
+                                    <img id="pkg-img-preview" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+                                    <div id="pkg-img-placeholder" class="text-center text-gray-400 group-hover:text-brand transition">
+                                        <i class="fa-solid fa-box-open text-3xl mb-2"></i>
+                                        <p class="text-xs font-bold">Click to upload</p>
+                                    </div>
+                                    <input type="file" id="pkg-file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="compressAndPreview(this, 'pkg-img-preview', 'pkg-img-data', false); document.getElementById('pkg-img-preview').classList.remove('hidden'); document.getElementById('pkg-img-placeholder').classList.add('hidden');">
+                                </div>
+                                <input type="hidden" id="pkg-img-data">
+                            </div>
+                            <div><label class="block text-sm font-bold text-gray-700 mb-1">Package Name *</label><input type="text" id="pkg-title" required placeholder="e.g. 30-Day Weight Loss" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand"></div>
+                            <div><label class="block text-sm font-bold text-gray-700 mb-1">Price (₹) *</label><input type="text" id="pkg-price" required placeholder="e.g. 2999" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand"></div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Features (Comma separated) *</label>
+                                <textarea id="pkg-desc" rows="3" required placeholder="Diet chart, Daily Follow-up, Supplements included" class="w-full p-3 rounded-xl border outline-none bg-gray-50 focus:border-brand text-sm"></textarea>
+                            </div>
+                            <button type="submit" id="btn-save-pkg" class="w-full bg-brand text-white py-3.5 rounded-xl font-bold hover:bg-brandDark transition shadow flex justify-center items-center gap-2">Add Package</button>
+                        </form>
+                    </div>
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-green-100">
+                        <h3 class="font-bold text-lg mb-4 text-gray-800 border-b pb-2 flex justify-between">Manage Packages <button onclick="loadAdminPackages()" class="text-sm font-normal text-brand"><i class="fa-solid fa-rotate"></i></button></h3>
+                        <div id="admin-packages-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="col-span-full text-center text-gray-400 py-8 italic">Loading...</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -897,7 +964,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB1k5DPETIoN97uQC_lF3zllSTqw0EbNHI",
@@ -918,6 +985,7 @@
         const COL_SETTINGS = 'settings';
         const COL_RESULTS = 'results';
         const COL_BOOKINGS = 'bookings';
+        const COL_PACKAGES = 'packages'; // New Collection for Sales Funnel
         
         let currentUser = null;
         let siteSettings = { 
@@ -1018,6 +1086,13 @@
             document.getElementById('sidebar-username').innerText = p.name;
             document.getElementById('sidebar-useremail').innerText = p.email || p.phone || 'User';
             document.getElementById('sidebar-avatar').src = p.photo || `https://ui-avatars.com/api/?name=${p.name.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
+            
+            // Show VIP badge if paid member
+            if(p.isVIP) {
+                document.getElementById('sidebar-vip-badge').classList.remove('hidden');
+            } else {
+                document.getElementById('sidebar-vip-badge').classList.add('hidden');
+            }
         }
 
         window.handleDashboardAccess = () => {
@@ -1042,6 +1117,15 @@
             const avatar = p.photo || `https://ui-avatars.com/api/?name=${p.name.replace(/ /g, '+')}&background=1a8d1a&color=fff`;
             document.getElementById('dash-avatar-main').src = avatar;
             document.getElementById('dash-avatar-top').src = avatar;
+            
+            // Handle VIP UI in dashboard
+            if(p.isVIP) {
+                document.getElementById('dash-vip-badge').classList.remove('hidden');
+                document.getElementById('btn-dash-upgrade').classList.add('hidden');
+            } else {
+                document.getElementById('dash-vip-badge').classList.add('hidden');
+                document.getElementById('btn-dash-upgrade').classList.remove('hidden');
+            }
 
             loadUserReport();
             
@@ -1080,6 +1164,9 @@
             try {
                 const stateInput = document.getElementById('ob-state');
                 const stateValue = stateInput ? stateInput.value : '';
+                
+                // Preserve VIP status if already set
+                const isVIP = window.userProfile ? (window.userProfile.isVIP || false) : false;
 
                 const p = {
                     name: document.getElementById('ob-name').value, 
@@ -1093,6 +1180,7 @@
                     photo: document.getElementById('ob-img-data').value || 'https://ui-avatars.com/api/?name=' + document.getElementById('ob-name').value.replace(/ /g, '+') + '&background=random',
                     currentBodyImage: document.getElementById('ob-current-img-data').value || '',
                     uid: currentUser.uid,
+                    isVIP: isVIP,
                     updatedAt: new Date().toISOString()
                 };
                 
@@ -1123,8 +1211,10 @@
         // --- DASHBOARD LOGIC (PRESCRIPTION) ---
         window.switchDashTab = (tabId) => {
             document.querySelectorAll('#dashboard-view .flex button').forEach(b => {
-                b.classList.remove('text-brand', 'border-brand');
-                b.classList.add('text-gray-500', 'border-transparent');
+                if(b.id !== 'btn-dash-upgrade') {
+                    b.classList.remove('text-brand', 'border-brand');
+                    b.classList.add('text-gray-500', 'border-transparent');
+                }
             });
             document.getElementById('btn-dash-'+tabId).classList.remove('text-gray-500', 'border-transparent');
             document.getElementById('btn-dash-'+tabId).classList.add('text-brand', 'border-brand');
@@ -1233,7 +1323,7 @@
                 document.getElementById('book-age').value = '';
                 document.getElementById('book-goal').value = '';
             } catch(e) {
-                showToast("Booking failed. Please try again.");
+                showToast("Booking failed. Please check Firebase rules.");
                 console.error(e);
             } finally {
                 btn.innerHTML = 'Book Appointment';
@@ -1266,9 +1356,11 @@
                     document.getElementById('public-views').classList.add('hidden');
                     document.getElementById('dashboard-view').classList.add('hidden');
                     document.getElementById('coach-view').classList.remove('hidden');
+                    
                     loadMembersList();
                     loadAdminResults();
                     loadBookingsList();
+                    loadAdminPackages(); // New Call
                     
                     document.getElementById('set-admins').value = siteSettings.admins.join(', ');
                     document.getElementById('set-wa').value = siteSettings.wa || '';
@@ -1306,42 +1398,63 @@
             document.getElementById('coach-tab-results').classList.add('hidden');
             document.getElementById('coach-tab-bookings').classList.add('hidden');
             document.getElementById('coach-tab-settings').classList.add('hidden');
+            document.getElementById('coach-tab-packages').classList.add('hidden');
+            
             document.getElementById('coach-tab-'+tabId).classList.remove('hidden');
         };
 
+        // Members & VIP Management
         window.loadMembersList = async () => {
             const list = document.getElementById('admin-members-list');
-            list.innerHTML = '<tr><td colspan="4" class="px-6 py-10 text-center"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></td></tr>';
+            list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></td></tr>';
             try {
                 const querySnapshot = await getDocs(collection(db, COL_USERS));
                 list.innerHTML = '';
                 if(querySnapshot.empty) {
-                    list.innerHTML = '<tr><td colspan="4" class="px-6 py-10 text-center text-gray-400">No members found.</td></tr>';
+                    list.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">No members found.</td></tr>';
                     return;
                 }
                 
                 querySnapshot.forEach((docSnap) => {
                     const u = docSnap.data();
+                    const isVIP = u.isVIP || false;
                     const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-green-50/50 transition cursor-pointer';
-                    tr.onclick = () => viewMemberDetails(docSnap.id);
+                    tr.className = 'hover:bg-green-50/50 transition';
                     tr.innerHTML = `
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">
                             <div class="flex items-center gap-3">
                                 <img src="${u.photo || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full object-cover border">
                                 <div class="font-bold text-gray-800">${u.name}</div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-gray-500">${u.phone}<br><span class="text-xs">${u.email}</span></td>
-                        <td class="px-6 py-4 text-brand font-medium text-xs">${u.goal}</td>
+                        <td class="px-6 py-4 text-gray-500 cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">${u.phone}<br><span class="text-xs">${u.email}</span></td>
+                        <td class="px-6 py-4 text-brand font-medium text-xs cursor-pointer" onclick="viewMemberDetails('${docSnap.id}')">${u.goal}</td>
+                        <td class="px-6 py-4">
+                            ${isVIP ? '<span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-1 rounded-full"><i class="fa-solid fa-crown mr-1"></i> VIP</span>' : '<span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-full">Free</span>'}
+                        </td>
                         <td class="px-6 py-4 text-center">
-                            <button class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-200 transition">View</button>
+                            <button onclick="toggleVIPStatus('${docSnap.id}', ${isVIP})" class="${isVIP ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'} px-3 py-1.5 rounded text-xs font-bold transition">
+                                ${isVIP ? 'Revoke VIP' : 'Make VIP'}
+                            </button>
                         </td>
                     `;
                     list.appendChild(tr);
                 });
             } catch(e) {
-                list.innerHTML = `<tr><td colspan="4" class="text-red-500 text-center py-4">Error loading members: ${e.message}</td></tr>`;
+                list.innerHTML = `<tr><td colspan="5" class="text-red-500 text-center py-4">Error loading members: ${e.message}</td></tr>`;
+            }
+        };
+
+        window.toggleVIPStatus = async (uid, currentStatus) => {
+            if(confirm(`Are you sure you want to ${currentStatus ? 'REVOKE' : 'GRANT'} VIP status for this member?`)) {
+                try {
+                    await updateDoc(doc(db, COL_USERS, uid), { isVIP: !currentStatus });
+                    showToast(currentStatus ? "VIP Status Revoked" : "VIP Status Granted!");
+                    loadMembersList();
+                } catch (e) {
+                    showToast("Error updating status.");
+                    console.error(e);
+                }
             }
         };
 
@@ -1385,6 +1498,130 @@
                 document.getElementById('cm-rx-data').classList.add('hidden');
             }
         };
+
+        // --- PACKAGE MANAGEMENT (Sales Funnel) ---
+        window.saveNewPackage = async () => {
+            const btn = document.getElementById('btn-save-pkg');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            const title = document.getElementById('pkg-title').value;
+            const price = document.getElementById('pkg-price').value;
+            const desc = document.getElementById('pkg-desc').value;
+            const img = document.getElementById('pkg-img-data').value;
+            
+            if(!img) {
+                showToast("Please provide an image for the package");
+                btn.innerHTML = 'Add Package'; btn.disabled = false;
+                return;
+            }
+
+            const id = 'pkg_' + Date.now();
+            try {
+                await setDoc(doc(db, COL_PACKAGES, id), { 
+                    id, title, price, desc, img, timestamp: Date.now() 
+                });
+                showToast("Package Added!");
+                document.getElementById('pkg-title').value = '';
+                document.getElementById('pkg-price').value = '';
+                document.getElementById('pkg-desc').value = '';
+                document.getElementById('pkg-img-data').value = '';
+                document.getElementById('pkg-img-preview').classList.add('hidden');
+                document.getElementById('pkg-img-placeholder').classList.remove('hidden');
+                loadAdminPackages();
+                loadPublicPackages();
+            } catch(e) {
+                showToast("Error saving package.");
+                console.error(e);
+            } finally {
+                btn.innerHTML = 'Add Package'; btn.disabled = false;
+            }
+        };
+
+        window.loadAdminPackages = async () => {
+            const list = document.getElementById('admin-packages-list');
+            list.innerHTML = '<div class="col-span-full text-center py-4"><i class="fa-solid fa-spinner fa-spin text-brand text-xl"></i></div>';
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, COL_PACKAGES));
+                list.innerHTML = '';
+                if(querySnapshot.empty) {
+                    list.innerHTML = '<div class="col-span-full text-center text-gray-400 py-4">No packages added yet.</div>';
+                    return;
+                }
+                
+                querySnapshot.forEach((docSnap) => {
+                    const p = docSnap.data();
+                    const div = document.createElement('div');
+                    div.className = 'border border-gray-100 rounded-xl p-4 flex items-start gap-3 bg-gray-50';
+                    div.innerHTML = `
+                        <img src="${p.img}" class="w-16 h-16 rounded-lg object-cover bg-gray-200 border border-gray-300">
+                        <div class="flex-1 overflow-hidden">
+                            <h4 class="font-bold text-sm text-gray-800">${p.title}</h4>
+                            <p class="text-xs text-brand font-bold mt-1">₹${p.price}</p>
+                            <p class="text-[10px] text-gray-500 truncate mt-1">${p.desc}</p>
+                        </div>
+                        <button onclick="deletePackage('${p.id}')" class="text-red-400 hover:text-red-600 p-2"><i class="fa-solid fa-trash"></i></button>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch(e) {
+                list.innerHTML = `<div class="text-red-500">Error: ${e.message}</div>`;
+            }
+        };
+
+        window.deletePackage = async (id) => {
+            if(confirm("Are you sure you want to delete this package?")) {
+                try {
+                    await deleteDoc(doc(db, COL_PACKAGES, id));
+                    showToast("Deleted successfully!");
+                    loadAdminPackages();
+                    loadPublicPackages();
+                } catch(e) { showToast("Error deleting."); }
+            }
+        };
+
+        // --- PUBLIC PACKAGES RENDER ---
+        window.loadPublicPackages = async () => {
+            const container = document.getElementById('dyn-packages-container');
+            if(!container) return;
+            try {
+                const snap = await getDocs(collection(db, COL_PACKAGES));
+                if(!snap.empty) {
+                    container.innerHTML = '';
+                    snap.forEach(doc => {
+                        const p = doc.data();
+                        
+                        // Parse comma separated features into list items
+                        const featuresHTML = p.desc.split(',').map(f => `<li class="flex items-start gap-2 text-sm text-gray-600"><i class="fa-solid fa-check text-green-500 mt-1"></i> <span>${f.trim()}</span></li>`).join('');
+
+                        container.innerHTML += `
+                            <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 flex flex-col hover:-translate-y-2 transition duration-300 relative group">
+                                <div class="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-md z-10"><i class="fa-solid fa-star text-[10px]"></i> VIP</div>
+                                <div class="h-48 overflow-hidden relative">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+                                    <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                    <h3 class="absolute bottom-4 left-4 z-20 font-bold text-white text-xl">${p.title}</h3>
+                                </div>
+                                <div class="p-6 flex-1 flex flex-col">
+                                    <div class="mb-4 pb-4 border-b border-gray-100 flex items-end gap-2">
+                                        <span class="text-3xl font-extrabold text-gray-900">₹${p.price}</span>
+                                        <span class="text-sm text-gray-400 mb-1">/ month</span>
+                                    </div>
+                                    <ul class="space-y-3 mb-6 flex-1">
+                                        ${featuresHTML}
+                                    </ul>
+                                    <a href="#booking" onclick="document.getElementById('book-goal').value='Buy Package / Product';" class="w-full text-center py-3.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-brand transition shadow-md">Join & Buy Now</a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = '<div class="col-span-full text-center text-gray-400 py-10 italic">Consult coach for premium club memberships.</div>';
+                }
+            } catch(e) { console.error("Error loading packages", e); }
+        };
+
 
         window.loadBookingsList = async () => {
             const list = document.getElementById('admin-bookings-list');
@@ -1579,6 +1816,7 @@
                 applySettingsToUI();
             }
             loadPublicResults();
+            loadPublicPackages(); // Fetch premium packages for public view
         }).catch(() => {
             // Error handling jodi firestore allow na kore (file:// protocol er jonyo)
             console.log("Could not fetch settings. Running locally.");
@@ -1593,9 +1831,11 @@
                 btn.classList.add('text-gray-500');
             });
             
-            // Add active class to the clicked button
-            btnElement.classList.remove('text-gray-500');
-            btnElement.classList.add('bg-brand', 'text-white', 'shadow-md');
+            // Add active class to the clicked button (if exists)
+            if(btnElement) {
+                btnElement.classList.remove('text-gray-500');
+                btnElement.classList.add('bg-brand', 'text-white', 'shadow-md');
+            }
 
             // Hide all tool content sections
             document.querySelectorAll('.tool-content').forEach(c => {
@@ -1603,8 +1843,10 @@
             });
             
             // Show the specific tool content
-            const activeContent = document.getElementById('tool-' + toolId);
-            if(activeContent) activeContent.classList.add('active');
+            if(toolId !== 'none') {
+                const activeContent = document.getElementById('tool-' + toolId);
+                if(activeContent) activeContent.classList.add('active');
+            }
         };
 
         window.calcBMI = () => {
